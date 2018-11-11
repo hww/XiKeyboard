@@ -38,7 +38,7 @@ EnableMinorMode(mode)  // Enable minor mode
 DisableMinorMode(mode) // Disable minor mode
 ```
 
-To lockup keysequence in the buffer use method _Lockup_ with arguments: key sequence, start index of sequence, end index of sequence and accept or not default mode.  
+To lockup keysequence in the buffer use method _Lockup_ with arguments: key sequence, start index of sequence, end index of sequence and accept or not default mode. The method returns the _KeyMapItem_ ofject in case of recognized sequence.
 
 ```C#
   KeyMapItem Lockup([NotNull] int[] sequence, int starts, int ends, bool acceptDefaults)
