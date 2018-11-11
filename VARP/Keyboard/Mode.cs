@@ -4,10 +4,10 @@ using UnityEngine.UI;
 
 namespace VARP.Keyboard
 {
-
     public class Mode
     {
         private EventHandler onEnableListeners;
+        /// <summary>Activate mode listeners</summary>
         public event EventHandler OnEnableListeners
         {
             add
@@ -22,9 +22,9 @@ namespace VARP.Keyboard
         }
 
         private EventHandler onDisableListeners;
+        /// <summary>Inactivate mode listeners</summary>
         public event EventHandler OnDisableListeners
         {
-
             add
             {
                 onDisableListeners -= value;
@@ -36,25 +36,15 @@ namespace VARP.Keyboard
             }
         }
 
+        /// <summary>Null mode</summary>
         public static Mode Null = new Mode("null", "Empty unused mode", KeyMap.GlobalKeymap);
-        /// <summary>
-        /// This is the curent mode key map
-        /// </summary>
+        /// <summary>This is the curent mode key map</summary>
         public KeyMap keyMap;
-
-        /// <summary>
-        /// The mode name
-        /// </summary>
+        /// <summary>The mode name</summary>
         public readonly string name;
-
-        /// <summary>
-        /// Mode help
-        /// </summary>
+        /// <summary>Mode help</summary>
         public readonly string help;
-
-        /// <summary>
-        /// When this mode recogni
-        /// </summary>
+        /// <summary>When this mode recogni</summary>
         private Mode parentMode;
 
         public Mode(string name, string help = null, KeyMap keyMap = null)
@@ -85,7 +75,6 @@ namespace VARP.Keyboard
         }
 
         #endregion
-
     }
 
 

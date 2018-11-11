@@ -69,7 +69,7 @@ namespace VARP.Keyboard
         /// end evaluate it
         /// </summary>
         /// <param name="evt"></param>
-        public bool OnKeyDown(int evt)
+        public bool OnKeyDown(KeyEvent evt)
         {
             inputBuffer.OnKeyDown(evt);
             var result = Lockup(inputBuffer.buffer, 0, inputBuffer.Count, true);
@@ -91,29 +91,30 @@ namespace VARP.Keyboard
         {
             var value = item.value;
             
-            if (value is KeyMap)
-            {
-                var o = value as KeyMap;
-                // KeyMap without title is just keyMap
-                if (o.Title == null)
-                    return;
-                // KeyMap with title behave as menu
-                UiManager.I.CreateMenu(o, Vector3.zero, 200f);
-            }
-            else if (value is NativeFunction)                    
-            {
-                // native function
-                var o = value as NativeFunction;
-                var returns = o.Call();
-                inputBuffer.Clear();
-            }
-            else if (value is string)
-            {
-                // string expression
-                var o = value as string;
-                NativeFunctionRepl.Instance.Evaluate(o);
-            }
-            else if (value is MenuLineBaseComplex)
+            //if (value is KeyMap)
+            //{
+            //    var o = value as KeyMap;
+            //    // KeyMap without title is just keyMap
+            //    if (o.Title == null)
+            //        return;
+            //    // KeyMap with title behave as menu
+            //    //UiManager.I.CreateMenu(o, Vector3.zero, 200f);
+            //}
+            //else if (value is NativeFunction)                    
+            //{
+            //    // native function
+            //    var o = value as NativeFunction;
+            //    var returns = o.Call();
+            //    inputBuffer.Clear();
+            //}
+            //else if (value is string)
+            //{
+            //    // string expression
+            //    var o = value as string;
+            //    NativeFunctionRepl.Instance.Evaluate(o);
+            //}
+            //else 
+            if (value is MenuLineBaseComplex)
             {
 
             }
@@ -123,38 +124,24 @@ namespace VARP.Keyboard
             }
         }
 
-        private void Eval(string function)
-        {
-            string[] args = function.Split(' ');
-            
-            var func = NativeFunction.Lockup(function);
-        }
-
         public void Enable()
         {
             CurentBuffer = this;
         }
 
-        protected virtual void OnEnable()
-        {
-            if (onEnableListeners != null) onEnableListeners(this, null);
-        }
 
-        protected virtual void OnDisable()
-        {
-            if (onDisableListeners != null) onDisableListeners(this, null);
-        }
-
+        /// <summary>Get buffer's name</summary>
         public string Name {
             get { return name; } 
         }
 
+        /// <summary>Get buffer's help</summary>
         public string Help
         {
             get { return help; } 
         }
 
-        public void EnabeMinorMode(Mode mode)
+        public void EnableMinorMode(Mode mode)
         {
             if (minorModes.Contains(mode))
                 return;
@@ -170,7 +157,7 @@ namespace VARP.Keyboard
             minorModes.Remove(mode);
         }
 
-        public void EnabeMajorMode(Mode mode)
+        public void EnableMajorMode(Mode mode)
         {
             mode.OnEnable();
             majorMode = mode;
@@ -183,7 +170,7 @@ namespace VARP.Keyboard
             majorMode = Mode.Null;
         }
 
-        public KeyMapItem Lockup([NotNull] int[] sequence, int starts, int ends, bool acceptDefaults)
+        public KeyMapItem Lockup([NotNull] KeyEvent[] sequence, int starts, int ends, bool acceptDefaults)
         {
             if (sequence == null) throw new ArgumentNullException("sequence");
             if (starts < 0 || starts >= sequence.Length) throw new ArgumentOutOfRangeException("starts");
@@ -205,31 +192,32 @@ namespace VARP.Keyboard
 
         #endregion
 
+        /// <summary>Get current active buffer</summary>
         public static Buffer CurentBuffer
         {
             get { return curentBuffer ?? Null; }
             set
             {
-                CurentBuffer.OnDisable();
+                curentBuffer.onDisableListeners?.Invoke(curentBuffer, null);
                 curentBuffer = value ?? Null;
-                curentBuffer.OnEnable();
+                curentBuffer.onEnableListeners?.Invoke(curentBuffer, null);
             }
         }
 
         #region Nested Types
 
         /// <summary>The line of characters collected in the array</summary>
-        public class InputBuffer
+        public sealed class InputBuffer
         {
             /// <summary>Collection of input keys</summary>
-            public readonly int[] buffer = new int[32];
+            public readonly KeyEvent[] buffer = new KeyEvent[32];
             /// <summary>Constructor</summary>
             public InputBuffer()
             {
                 Count = 0;
             }
             /// <summary>Called every key down event</summary>
-            public virtual void OnKeyDown(int evt)
+            public void OnKeyDown(KeyEvent evt)
             {
                 if (Count >= buffer.Length)
                     Clear();
@@ -248,7 +236,7 @@ namespace VARP.Keyboard
                 var s = "";
                 for (var i = 0; i < Count; i++)
                 {
-                    s += Event.GetName(buffer[i]);
+                    s += buffer[i].GetName();
                 }
                 return s;
             }

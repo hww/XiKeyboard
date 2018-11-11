@@ -5,10 +5,10 @@
         void Enable();
         string Name { get; }
         string Help { get; }
-        void EnabeMajorMode(Mode mode);
+        void EnableMajorMode(Mode mode);
         void DisableMajorMode();
-        void EnabeMinorMode(Mode mode);
+        void EnableMinorMode(Mode mode);
         void DisableMinorMode(Mode mode);
-        KeyMapItem Lockup(int[] sequence, int starts, int ends, bool acceptDefaults);
+        KeyMapItem Lockup(KeyEvent[] sequence, int starts, int ends, bool acceptDefaults);
     }
 }

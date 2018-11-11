@@ -8,6 +8,7 @@ namespace VARP.Keyboard
 
     public partial struct KeyEvent
     {
+        /// <summary>The keycode include modifyers</summary>
         public int Code;
 
         public KeyEvent(char c) { Code = c; }
@@ -17,6 +18,7 @@ namespace VARP.Keyboard
         public KeyEvent(KeyEvent evt) { Code = evt.Code; }
         public KeyEvent([NotNull] string expression) { Code = ParseExpression(expression) ; }
         
+        public bool IsControlCode() { return (Code < 32); }
         public bool IsModifyer(int modifyers) { return (Code & modifyers) == modifyers; }
         public bool IsValid() { return Code >= 0 && Code < KeyModifyers.MaxCode; }
         public bool IsNotValid() { return Code < 0 && Code >= KeyModifyers.MaxCode; }
@@ -46,6 +48,39 @@ namespace VARP.Keyboard
         public override int GetHashCode ( ) { return Code; }
         public static bool operator == ( KeyEvent x, KeyEvent y ) { return x.Code == y.Code; }
         public static bool operator != ( KeyEvent x, KeyEvent y ) { return x.Code != y.Code; }
+        
+        // -- Casting ---------------------------------------------------------------------------
+        
+        /// <summary>
+        /// Get name of key code code 
+        /// </summary>
+        public string GetName()
+        {
+            var keyModifyers = GetModifyers();
+            var keyCodeOnly = GetKeyCode();
+            var modifyerName = string.Empty;
+            if (keyModifyers != 0)
+            {
+                foreach (var m in KeyModifyers.AllModifyersList)
+                {
+                    if (IsModifyer(m))
+                    {
+                        string name;
+                        if (KeyCodeToNameTable.TryGetValue(m, out name))
+                            modifyerName += name;
+                        else
+                            throw new Exception(string.Format("Unexpected modifyer in keycode '{0:X}'", this));
+                    }
+                }
+            }
+            string keyCodeName;
+            if (KeyCodeToNameTable.TryGetValue(keyCodeOnly, out keyCodeName))
+                return modifyerName + keyCodeName;
+            else if (IsControlCode())
+                return string.Format("^{0}", (char)(keyCodeOnly.Code + 0x40));
+            else
+                throw new Exception(string.Format("Unexpected keycode '{0:X}'", Code));
+        }
         
         // -- Debuging ---------------------------------------------------------------------------
         

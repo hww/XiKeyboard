@@ -7,6 +7,6 @@ namespace VARP.Keyboard
     /// </summary>
     public interface IOnKeyDown
     {
-        bool OnKeyDown ( int evt );
+        bool OnKeyDown ( KeyEvent evt );
     }
 }
