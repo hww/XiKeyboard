@@ -6,16 +6,16 @@ The asset for Unity with keyboard manager similar to keyboard manager of Emacs. 
 
 The KeyEvent is container with KeyCode and key modfyers. The modifyers packed to most significant bits.
 
-| Modifier    | Bit         | 
-|-------------|-------------|
-| MaxCode     | 1 << 28 - 1 |
-| Meta        | 1 << 27     |
-| Control     | 1 << 26     |
-| Shift       | 1 << 25     |
-| Hyper       | 1 << 24     |
-| Super       | 1 << 23     |
-| Alt         | 1 << 22     |
-| Pseudo      | 1 << 21     |
+| Modifier                 | Bit         | 
+|--------------------------|-------------|
+| KeyModifyers.MaxCode     | 1 << 28 - 1 |
+| KeyModifyers.Meta        | 1 << 27     |
+| KeyModifyers.Control     | 1 << 26     |
+| KeyModifyers.Shift       | 1 << 25     |
+| KeyModifyers.Hyper       | 1 << 24     |
+| KeyModifyers.Super       | 1 << 23     |
+| KeyModifyers.Alt         | 1 << 22     |
+| KeyModifyers.Pseudo      | 1 << 21     |
 
 # Mode
 
