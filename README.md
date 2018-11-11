@@ -4,7 +4,7 @@ The asset for Unity with keyboard manager similar to keyboard manager of Emacs. 
 
 # Key Even
 
-The KeyEvent is container with KeyCode and key modfyers. The modifyers packed to most significant bits.
+The KeyEvent is container with KeyCode and key modfyers. The modifyers packed to most significant bits. Every key press will convert KeyCode to the KeyEvent and send to current input buffer<sup>Read Below</sup>
 
 | Modifier                 | Bit         | 
 |--------------------------|-------------|
