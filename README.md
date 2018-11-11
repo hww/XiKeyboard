@@ -4,6 +4,33 @@ The asset for Unity with keyboard manager similar to keyboard manager of Emacs. 
 
 # Mode
 
+To create new mode use constructors.
+
+```C#
+// Create new mode with name, help and given key map
+public Mode(string name, string help = null, KeyMap keyMap = null)
+// Create new child mode with name, help and given key map 
+public Mode(Mode parentMode, string name, string help = null, KeyMap keyMap = null)
+```
+
+To read name and help
+
+```C#
+Debug.Log(mode.name);
+Debug.Log(mode.help);
+```
+
+To add remove listeners use delegates  _OnEnableListeners_ and _OnDisableListeners_.
+
+```C#
+mode.OnEnableListeners += () => { Debug.Log("Enabled"); };
+mode.OnDisableListeners += () => { Debug.Log("Disabled"); };
+mode.Enable();  // Print "Enabled"
+mode.Disable(); // Print "Disabled"
+```
+
+To get parrent mode use _parentMode_ field and to read keymap use _keyMap_ field. 
+
 # Buffer
 
 Buffer is similar to text input line. There is only one current buffer is active for input. To create new bufffer.
