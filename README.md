@@ -2,9 +2,9 @@
 
 The asset for Unity with keyboard manager similar to keyboard manager of Emacs. <sup>Work In Progress</sup> 
 
-## Key Modifyers
+## Key Modifiers
 
-Key modifyers encoded as most significant bits of integer value. The virutal key _Pseudo_ used to generate pseudo keys<sup>Read Below</sup>.
+Key modifiers encoded as most significant bits of integer value. The virtual key _Pseudo_ used to generate pseudo keys<sup>Read Below</sup>.
 
 | Modifier                 | Bit         | 
 |--------------------------|-------------|
@@ -19,7 +19,7 @@ Key modifyers encoded as most significant bits of integer value. The virutal key
 
 ## Event
 
-The KeyEvent is container with KeyCode and key modfyers. The modifyers packed to most significant bits. Every key press will convert KeyCode to the KeyEvent and send to current input buffer<sup>Read Below</sup>. 
+The KeyEvent is container with KeyCode and key modelers. The modifiers packed to most significant bits. Every key press will convert KeyCode to the KeyEvent and send to current input buffer<sup>Read Below</sup>. 
 
 To create new event there is  method _MakeEvent_.
 
@@ -34,8 +34,8 @@ var keyModf = Event.GetModifyers(event);                         // Return KeyMo
 
 ## Pseudo Keys
 
-The pseudocode looks like unique random key code (non existed in keyboard). For example: "pseudo-1", "pseudo-2",...,"pseudo-N"
-The pseudo code has large keycode and the key modifyer _Pseudo_ is in pressed state.
+The pseudo code looks like unique random key code (non existed in keyboard). For example: "pseudo-1", "pseudo-2",...,"pseudo-N"
+The pseudo code has large key code and the key modifier _Pseudo_ is in pressed state.
 
 ```C#
 var pseudo = Event.GetPseudocodeOfName(); // Get random pseudo code
@@ -44,7 +44,7 @@ var default = Event.DefaultPseudoCode;    // Get default pseudo code
 
 ## Humanized Key Name
 
-The key code can be convert to humanize name, or reversed. To declarate the name use method _SetName_
+The key code can be convert to humanize name, or reversed. To define the name use method _SetName_
 
 ```C#
 Event.SetName((int)KeyCode.RightCommand, "\\c-");
@@ -85,7 +85,7 @@ SequenceBinding(string name, int[] sequence, string help = null)
 
 ### Key Map Item
 
-Any object wich can be binded to the keymap have to be based on this class.
+Any object wich can be binded to the key map have to be based on this class.
     
 | Field | Info |
 |-------|------|
@@ -100,7 +100,7 @@ KeyMapItem(int key, object value)
 
 ### Key Map
 
-There are two variants of constructor available. One for the ordinary keymap and another for child keymap. When called LookUp method of keymap, and in case if key binding not found, and default binding is not alowed, will be called LookUp method of parent key map. The default binding is the field of each key map, used only when allowed by dedicated argument.
+There are two variants of constructor available. One for the ordinary key-map and another for child key map. When called LookUp method of key-map, and in case if key binding not found, and default binding is not alowed, will be called LookUp method of parent key map. The default binding is the field of each key map, used only when allowed by dedicated argument.
 
 ```C#
 KeyMap(string title = null, string help = null )
@@ -112,7 +112,7 @@ To define and read local binding means does not look at parent key map.
 
 ```C#
 var event = Event.MakeEvent((int)KeyCode.A, KeyModifyers.Shift); // Makes S-a event
-keyMap.SetLocal(event, "Foo");                                   // Bind to S-a event of this keymap the string "Foo"
+keyMap.SetLocal(event, "Foo");                                   // Bind to S-a event of this key map the string "Foo"
 var binding = keyMap.GetLocal(event, false);                     // Second argument accept default binding.
 ```
 #### Define Global Binding
@@ -123,13 +123,13 @@ The define binding to the sequence use _Define_ method, use event sequence and o
 Define(int[] sequence, object value)
 ``` 
 
-Alternative version of this method dedicated for menu definition, and will buse pseudo codes for this bnding.
+Alternative version of this method dedicated for menu definition, and will use pseudo codes for this binding.
 
 ```C#
 Define(string[] sequence, object value)
 ```
 
-For example lets define menu _File_ and option _Save_ and bnd to it a menu item.<sup>Read Menu chapter</sup>
+For example lets define menu _File_ and option _Save_ and bind to it a menu item.<sup>Read Menu chapter</sup>
 
 ```C#
 Define(new string[]{"File", "Save"}, menuItem )
@@ -137,7 +137,7 @@ Define(new string[]{"File", "Save"}, menuItem )
 
 #### Look Up Binding
 
-To lockup biding in hierary use _LokupKey_ method.
+To lockup biding in hierarchy use _LokupKey_ method.
 
 ```C#
 KeyMapItem LokupKey(int[] sequence, bool acceptDefaults = false)
@@ -151,11 +151,11 @@ KeyMapItem LokupKey(int[] sequence, int starts, int ends, bool acceptDefaults = 
 
 ## Full Keymap
 
-If an element of a keymap is a char-table, it counts as holding bindings for all character events with no modifier element n is the binding for the character with code n. This is a compact way to record lots of bindings. A keymap with such a char-table is called a full keymap. Other keymaps are called sparse keymaps.
+If an element of a key map is a char-table, it counts as holding bindings for all character events with no modifier element n is the binding for the character with code n. This is a compact way to record lots of bindings. A key map with such a char-table is called a full key-map. Other key-maps are called sparse key-maps.
 
-## Global Keymap
+## Global Key Map
 
-The default global keymap, can be used in most cases without creating additional keymaps.
+The default global key map, can be used in most cases without creating additional key-maps.
 
 ```C#
 var globalKeyMap = KeyMap.GlobalKeymap;
@@ -188,17 +188,17 @@ mode.Enable();  // Print "Enabled"
 mode.Disable(); // Print "Disabled"
 ```
 
-To get parrent mode use _parentMode_ field and to read keymap use _keyMap_ field. 
+To get parrent mode use _parentMode_ field and to read key-map use _keyMap_ field. 
 
 ## Buffer
 
-Buffer is similar to text input line. There is only one current buffer is active for input. To create new bufffer.
+Buffer is similar to text input line. There is only one current buffer is active for input. To create new buffer.
 
 ```C#
 var buffer = new Buffer("REPL", "Evaluate LISP command");
 ```
 
-To activate buffer use _Enable_ method. After activation current buffer will be accesible via static property _Buffer.CurrentBuffer_
+To activate buffer use _Enable_ method. After activation current buffer will be accessible via static property _Buffer.CurrentBuffer_
 
 ```C#
 buffer.Enable();
@@ -224,14 +224,14 @@ EnableMinorMode(mode)  // Enable minor mode
 DisableMinorMode(mode) // Disable minor mode
 ```
 
-To lockup keysequence in the buffer use method _Lookup_ with arguments: key sequence, start index of sequence, end index of sequence and accept or not default key binding<sup>read KeyMap chapter</sup>. The method returns the _KeyMapItem_ ofject in case of recognized sequence.
+To lockup key sequence in the buffer use method _Lookup_ with arguments: key sequence, start index of sequence, end index of sequence and accept or not default key binding<sup>read KeyMap chapter</sup>. The method returns the _KeyMapItem_ object in case of recognized sequence.
 
 ```C#
   KeyMapItem Lookup([NotNull] int[] sequence, int starts, int ends, bool acceptDefaults)
 ```
 
 To get current string in the buffer use _GetBufferString_ and _GetBufferSubString_ methods.
-To select substring in the buffer use _SetSelection_ and to read selection _GetSelection_ methods. The first method set begin and end position of selection, but last method returns thispostions.
+To select substring in the buffer use _SetSelection_ and to read selection _GetSelection_ methods. The first method set begin and end position of selection, but last method returns current positions.
 
 Additoanal delegates _OnSequencePressed_ will be called when one of sequence bindings triggered.
 
@@ -244,14 +244,14 @@ OnSequencePressed.Add((Buffer buffer, KeyMapItem item) =>
 
 ## Menu
 
-The key maps in EMACS also used for making menus. The menu byself is a key map. Where instead of key events used pseudocodes, but menu items as bindings.
+The key maps in EMACS also used for making menus. The menu by self is a key map. Where instead of key events used pseudo codes, but menu items as bindings.
 
-There are several variants of menu tiems available.
+There are several variants of menu items available.
 
 | Menu Item | Description |
 |-----------|-------------|
 |MenuLineBase| Abstract class for all menu items |
-|MenuLineBaseSimple| Very simple menu item. Has fields: text, help, shortcut and bnding |
+|MenuLineBaseSimple| Very simple menu item. Has fields: text, help, shortcut and binding |
 |MenuLineBaseComplex| Advanced menu item has various of additional options and delegates |
 |MenuSeparator| Just a line to separate menu items |
 
@@ -276,7 +276,7 @@ public abstract class MenuLineBase
 {
     public virtual string Text { get { return null; } }
     public virtual string Help { get { return null; } }
-    public virtual string Shorcut { get { return null; } }
+    public virtual string Shortcut { get { return null; } }
     public virtual object Binding { get { return null; } }
 }
 ```
@@ -343,9 +343,9 @@ Lets make example of menu.
 ```C#
 // Create file menu
 var menu = new KeyMap("File", "File Menu" );
-// Declarate menu as member of MainMenu
+// Define menu as member of MainMenu
 KeyMap.GlobalKeyMap.Define(new string[] { "MainMenu", "File" }, menu );
-// Create save menu item (shortuc will be only displayed and can be ommited)
+// Create save menu item (shortcut will be only displayed and can be omitted)
 // Bind method Save to this menu item
 var menuItem = MenuLineBaseSimple("Save", Save, "C-s", "Save current file") 
 // Define this item as member of File menu 
