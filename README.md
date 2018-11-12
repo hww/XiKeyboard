@@ -283,13 +283,13 @@ MenuLineBaseSimple(string text, string shortcut = null, string help = null)
 MenuLineBaseSimple(string text, object binding, string shortcut = null, string help = null) 
 ```
 
-And fields:
+And this menu item has next fields:
 
 ```C#
-protected string text;
-protected string help;
-protected string shortcut;
-public object binding;
+protected string text;      // Menu Text
+protected string help;      // Menu Help
+protected string shortcut;  // Menu Shortcut/Value Text 
+public object binding;      // Menu Biding
 ```
 
 ### MenuLineBaseComplex
@@ -297,10 +297,9 @@ public object binding;
 The fields of complex menu item:
 
 ```C#
-protected string text;      // Menu Text
-protected string help;      // Menu Help
-protected string shortcut;  // Shortcut Text or Value text. Will be rendered at right side. 
-
+protected string text;                      // Menu Text
+protected string help;                      // Menu Help
+protected string shortcut;                  // Shortcut Text or Value text. Will be rendered at right side. 
 public readonly object binding;             // Binding to menu item
 public readonly ButtonType buttonType;      // Enum value NoButton, Toggle, Radio
 public readonly Filter filter;              // Delegate to get filtered menu item<sup>See below</sup>
@@ -309,27 +308,25 @@ public readonly Precodition visible;        // Delegate to get status of visibil
 public readonly Precodition buttonState;    // Delegate to get button state
 ```
 
-The constructors
+The constructors for this menu item:
 
 ```C#
 MenuLineBaseComplex(string text, string shortcut = null, string help = null) 
 MenuLineBaseComplex(string text, object binding, string shortcut = null, string help = null) : this(text, shortcut, help)
-MenuLineBaseComplex(
-            string text, 
-            object binging,
-            Precodition enable = null, 
-            Precodition visible = null,
-            Filter filter = null,
-            string shortcut = null,
-            string help = null)
-MenuLineBaseComplex(
-            string text, 
-            object binging,
-            Precodition enable = null,
-            Precodition visible = null,
-            Filter filter = null,
-            ButtonType buttonType = ButtonType.NoButton,
-            Precodition buttonState = null,
-            string shortcut = null,
-            string help = null)            
+MenuLineBaseComplex(string text, 
+                    object binging,
+                    Precodition enable = null, 
+                    Precodition visible = null,
+                    Filter filter = null,
+                    string shortcut = null,
+                    string help = null)
+MenuLineBaseComplex(string text, 
+                    object binging,
+                    Precodition enable = null,
+                    Precodition visible = null,
+                    Filter filter = null,
+                    ButtonType buttonType = ButtonType.NoButton,
+                    Precodition buttonState = null,
+                    string shortcut = null,
+                    string help = null)            
 ```
