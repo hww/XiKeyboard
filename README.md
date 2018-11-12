@@ -62,7 +62,7 @@ int[] sequence = new int[2] { Event.MakeEvent((int)KeyCode.X, KeyModifyers.Contr
 Alternative way is parsing the string expression.
 
 ```C#
-var sequence = ParseExpression("C-x C-f");
+var sequence = Kbd.ParseExpression("C-x C-f");
 ```
 
 ## Key Map
