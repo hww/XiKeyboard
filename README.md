@@ -2,6 +2,21 @@
 
 The asset for Unity with keyboard manager similar to keyboard manager of Emacs. <sup>Work In Progress</sup> 
 
+# Key Even
+
+The KeyEvent is container with KeyCode and key modfyers. The modifyers packed to most significant bits. Every key press will convert KeyCode to the KeyEvent and send to current input buffer<sup>Read Below</sup>
+
+| Modifier                 | Bit         | 
+|--------------------------|-------------|
+| KeyModifyers.MaxCode     | 1 << 28 - 1 |
+| KeyModifyers.Meta        | 1 << 27     |
+| KeyModifyers.Control     | 1 << 26     |
+| KeyModifyers.Shift       | 1 << 25     |
+| KeyModifyers.Hyper       | 1 << 24     |
+| KeyModifyers.Super       | 1 << 23     |
+| KeyModifyers.Alt         | 1 << 22     |
+| KeyModifyers.Pseudo      | 1 << 21     |
+
 # Mode
 
 To create new mode use constructors.
