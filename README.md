@@ -110,7 +110,8 @@ var binding = keyMap.GetLocal(event, false);                     // Second argum
 The define binding to the sequence use _Define_ method, use event sequence and object to bind as arguments.
 
 ```C#
-Define(int[] sequence, object value)
+Define(int[] sequence, object value);
+Define(string expression, object value);
 ``` 
 
 Alternative version of this method dedicated for menu definition, and will use pseudo codes for this binding.
