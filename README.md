@@ -360,3 +360,7 @@ KeyMap.GlobalKeymap.SetLocal("A-f", menu);
 KeyMap.GlobalKeymap.SetLocal("C-s", menuItem.binding);                  
 ```
 
+But this can be done by shorter way. 
+
+<sup>To Do ...</sup>
+
