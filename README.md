@@ -328,10 +328,12 @@ The constructors for this menu item:
 MenuLineBaseComplex(string text,                                  // Menu text
                     string shortcut = null,                       // Menu shortcut only for screen
                     string help = null)                           // Menu help 
+
 MenuLineBaseComplex(string text,                                  // Menu text
                     object binding,                               // Binding to menu: other menu, function, etc
                     string shortcut = null,                       // Menu shortcut only for screen
                     string help = null)                           // Menu text
+
 MenuLineBaseComplex(string text,                                  // Menu text
                     object binging,                               // Binding to menu: other menu, function, etc
                     Precodition enable = null,                    // Predicate: is this menu active
@@ -339,6 +341,7 @@ MenuLineBaseComplex(string text,                                  // Menu text
                     Filter filter = null,                         // Filter: Method to compute actual menu item
                     string shortcut = null,                       // Menu shortcut only for screen
                     string help = null)                           // Menu help 
+
 MenuLineBaseComplex(string text,                                  // Menu text
                     object binging,                               // Binding to menu: other menu, function, etc
                     Precodition enable = null,                    // Predicate: is this menu active
