@@ -67,30 +67,28 @@ var sequence = ParseExpression("C-x C-f");
 
 ## Key Map
 
-### Sequence Binding
-
-This is simple keysequence binding to any key. The pressing this key will invoke this sequence.
-
-| Field          | Info             |
-|----------------|------------------|
-| string name    | Binding's name   |
-| string help    | Binding's help   |
-[ int[] sequence | The key sequence |
-
-The constructor for sequence requires two fields values.
+There are two variants of constructor available. One for the ordinary key-map and another for child key map. When called LookUp method of key-map, and in case if key binding not found, and default binding is not alowed, will be called LookUp method of parent key map. The default binding is the field of each key map, used only when allowed by dedicated argument.
 
 ```C#
-SequenceBinding(string name, int[] sequence, string help = null)
+KeyMap(string title = null, string help = null )
+KeyMap(KeyMap parent, string title = null, string help = null )
 ```
+#### Key Map Item
 
-### Key Map Item
+This object link a key event with other item: 
 
-Any object wich can be binded to the key map have to be based on this class.
-    
-| Field | Info |
-|-------|------|
-| int key | Key event |
-| object value | Binded value |
+- other keymap
+- sequence binding
+- menu item
+- lambda function
+- anything else... 
+ 
+KeyMapItem contains the next fields.
+
+| Field         | Info         |
+|---------------|--------------|
+| int key       | Key event    |
+| object value  | Binded value |
 
 The constructor requires those two fields as arguments.
 
@@ -98,14 +96,6 @@ The constructor requires those two fields as arguments.
 KeyMapItem(int key, object value)
 ```
 
-### Key Map
-
-There are two variants of constructor available. One for the ordinary key-map and another for child key map. When called LookUp method of key-map, and in case if key binding not found, and default binding is not alowed, will be called LookUp method of parent key map. The default binding is the field of each key map, used only when allowed by dedicated argument.
-
-```C#
-KeyMap(string title = null, string help = null )
-KeyMap(KeyMap parent, string title = null, string help = null )
-```
 #### Define Local Binding
 
 To define and read local binding means does not look at parent key map.
@@ -135,7 +125,7 @@ For example lets define menu _File_ and option _Save_ and bind to it a menu item
 Define(new string[]{"File", "Save"}, menuItem )
 ```
 
-#### Look Up Binding
+#### Lookup Binding
 
 To lockup biding in hierarchy use _LokupKey_ method.
 
@@ -149,10 +139,6 @@ Additionaly there is version of this method with start and end index in the sequ
 KeyMapItem LokupKey(int[] sequence, int starts, int ends, bool acceptDefaults = false)
 ```
 
-## Full Keymap
-
-If an element of a key map is a char-table, it counts as holding bindings for all character events with no modifier element n is the binding for the character with code n. This is a compact way to record lots of bindings. A key map with such a char-table is called a full key-map. Other key-maps are called sparse key-maps.
-
 ## Global Key Map
 
 The default global key map, can be used in most cases without creating additional key-maps.
@@ -160,6 +146,27 @@ The default global key map, can be used in most cases without creating additiona
 ```C#
 var globalKeyMap = KeyMap.GlobalKeymap;
 ```
+
+## Full Keymap
+
+If an element of a key map is a char-table, it counts as holding bindings for all character events with no modifier element n is the binding for the character with code n. This is a compact way to record lots of bindings. A key map with such a char-table is called a full key-map. Other key-maps are called sparse key-maps.
+
+#### Sequence Binding
+
+This is simple keysequence binding to any key. The pressing this key will invoke this sequence.
+
+| Field          | Info             |
+|----------------|------------------|
+| string name    | Binding's name   |
+| string help    | Binding's help   |
+| int[] sequence | The key sequence |
+
+The constructor for sequence requires two fields values.
+
+```C#
+SequenceBinding(string name, int[] sequence, string help = null)
+```
+
 
 ## Mode
 
