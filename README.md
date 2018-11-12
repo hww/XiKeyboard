@@ -149,6 +149,11 @@ Additionaly there is version of this method with start and end index in the sequ
 ```
 KeyMapItem LokupKey(int[] sequence, int starts, int ends, bool acceptDefaults = false)
 ```
+
+## Full Keymap
+
+If an element of a keymap is a char-table, it counts as holding bindings for all character events with no modifier element n is the binding for the character with code n. This is a compact way to record lots of bindings. A keymap with such a char-table is called a full keymap. Other keymaps are called sparse keymaps.
+    
 ## Mode
 
 To create new mode use constructors.
@@ -216,4 +221,16 @@ To lockup keysequence in the buffer use method _Lockup_ with arguments: key sequ
 
 ```C#
   KeyMapItem Lockup([NotNull] int[] sequence, int starts, int ends, bool acceptDefaults)
+```
+
+To get current string in the buffer use _GetBufferString_ and _GetBufferSubString_ methods.
+To select substring in the buffer use _SetSelection_ and to read selection _GetSelection_ methods. The first method set begin and end position of selection, but last method returns thispostions.
+
+Additoanal delegates _OnSequencePressed_ will be called when one of sequence bindings triggered.
+
+```C#
+    OnSequencePressed.Add((Buffer buffer, KeyMapItem item) => 
+    {
+        Debug.LogFormat("The buffer {0} detected keys sequence with binding {1}", buffer.name, item.value);
+    });
 ```
