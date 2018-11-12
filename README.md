@@ -264,16 +264,10 @@ There are several variants of menu items available.
 
 ### MenuSeparator
 
-Has only one field with type of separator.
+Has only one field with type of separator: NoLine, Space, SingleLine, DashedLine.
 
 ```C#
-public enum Type
-{
-    NoLine,
-    Space,
-    SingleLine,
-    DashedLine
-}
+var menuLine = new MenuSeparator(MenuSeparator.Type.SingleLine);
 ```
 
 ### MenuLineBase
