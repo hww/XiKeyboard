@@ -325,24 +325,29 @@ public readonly Precodition buttonState;    // Delegate to get button state
 The constructors for this menu item:
 
 ```C#
-MenuLineBaseComplex(string text, string shortcut = null, string help = null) 
-MenuLineBaseComplex(string text, object binding, string shortcut = null, string help = null) : this(text, shortcut, help)
-MenuLineBaseComplex(string text, 
-                    object binging,
-                    Precodition enable = null, 
-                    Precodition visible = null,
-                    Filter filter = null,
-                    string shortcut = null,
-                    string help = null)
-MenuLineBaseComplex(string text, 
-                    object binging,
-                    Precodition enable = null,
-                    Precodition visible = null,
-                    Filter filter = null,
-                    ButtonType buttonType = ButtonType.NoButton,
-                    Precodition buttonState = null,
-                    string shortcut = null,
-                    string help = null)            
+MenuLineBaseComplex(string text,                                  // Menu text
+                    string shortcut = null,                       // Menu shortcut only for screen
+                    string help = null)                           // Menu help 
+MenuLineBaseComplex(string text,                                  // Menu text
+                    object binding,                               // Binding to menu: other menu, function, etc
+                    string shortcut = null,                       // Menu shortcut only for screen
+                    string help = null)                           // Menu text
+MenuLineBaseComplex(string text,                                  // Menu text
+                    object binging,                               // Binding to menu: other menu, function, etc
+                    Precodition enable = null,                    // Predicate: is this menu active
+                    Precodition visible = null,                   // Predicate: is this menu visible
+                    Filter filter = null,                         // Filter: Method to compute actual menu item
+                    string shortcut = null,                       // Menu shortcut only for screen
+                    string help = null)                           // Menu help 
+MenuLineBaseComplex(string text,                                  // Menu text
+                    object binging,                               // Binding to menu: other menu, function, etc
+                    Precodition enable = null,                    // Predicate: is this menu active
+                    Precodition visible = null,                   // Predicate: is this menu visible
+                    Filter filter = null,                         // Filter: Method to compute actual menu item
+                    ButtonType buttonType = ButtonType.NoButton,  // Button Type
+                    Precodition buttonState = null,               // Predicate: is this button pressed
+                    string shortcut = null,                       // Menu shortcut only for screen
+                    string help = null)                           // Menu help     
 ```
 
 Lets make example of menu definition. 
