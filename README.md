@@ -129,10 +129,10 @@ Alternative version of this method dedicated for menu definition, and will buse 
 Define(string[] sequence, object value)
 ```
 
-For example lets define menu _File_ and option _Save_ and bnd to it lambda function.
+For example lets define menu _File_ and option _Save_ and bnd to it a menu item.<sup>Read Menu chapter</sup>
 
 ```C#
-Define(new string[]{"File", "Save"}, () => { Debug.Log("Save"); })
+Define(new string[]{"File", "Save"}, menuItem )
 ```
 
 
@@ -233,4 +233,61 @@ OnSequencePressed.Add((Buffer buffer, KeyMapItem item) =>
 {
     Debug.LogFormat("The buffer {0} detected keys sequence with binding {1}", buffer.name, item.value);
 });
+```
+
+## Menu
+
+The key maps in EMACS also used for making menus. The menu byself is a key map. Where instead of key events used pseudocodes, but menu items as bindings.
+
+There are several variants of menu tiems available.
+
+| Menu Item | Description |
+|-----------|-------------|
+|MenuLineBase| Abstract class for all menu items |
+|MenuLineBaseSimple| Very simple menu item. Has fields: text, help, shortcut and bnding |
+|MenuLineBaseComplex| Advanced menu item has various of additional options and delegates |
+|MenuSeparator| Just a line to separate menu items |
+
+### MenuSeparator
+
+Has only one field with type of separator.
+
+```C#
+public enum Type
+{
+    NoLine,
+    Space,
+    SingleLine,
+    DashedLine
+}
+```
+
+### MenuLineBase
+
+```C#
+public abstract class MenuLineBase
+{
+    public virtual string Text { get { return null; } }
+    public virtual string Help { get { return null; } }
+    public virtual string Shorcut { get { return null; } }
+    public virtual object Binding { get { return null; } }
+}
+```
+
+### MenuLineBaseSimple
+
+Has two constructors.
+
+```C#
+MenuLineBaseSimple(string text, string shortcut = null, string help = null)
+MenuLineBaseSimple(string text, object binding, string shortcut = null, string help = null) 
+```
+
+And fields:
+
+```C#
+protected string text;
+protected string help;
+protected string shortcut;
+public object binding;
 ```
