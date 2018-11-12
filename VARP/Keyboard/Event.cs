@@ -49,6 +49,7 @@ namespace VARP.Keyboard
                 return code | modifyers;
             }
         }
+        
         /// <summary>
         /// Get modifyers of this event
         /// </summary>

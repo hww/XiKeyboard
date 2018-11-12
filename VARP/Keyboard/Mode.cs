@@ -1,6 +1,7 @@
 ﻿/* Copyright (c) 2016 Valery Alex P. All rights reserved. */
 
 using System;
+using TMPro;
 
 namespace VARP.Keyboard
 {
@@ -30,16 +31,14 @@ namespace VARP.Keyboard
         /// </summary>
         public virtual void Enable()
         {
-            if (onEnableListeners != null)
-                onEnableListeners (this, null);
+            OnEnableListeners.Call(this);
         }
         /// <summary>
         /// Disable this mode
         /// </summary>
         public virtual void Disable()
         {
-            if (onDisableListeners != null)
-                onDisableListeners (this, null);
+            OnDisableListeners.Call(this);
         }
         // ===============================================================================================
         // Object's members
@@ -51,29 +50,8 @@ namespace VARP.Keyboard
         // ===============================================================================================
         // Hooks of mode
         // ===============================================================================================
-        private EventHandler onEnableListeners;
-        public event EventHandler OnEnableListeners
-        {
-            add {
-                onEnableListeners -= value;
-                onEnableListeners += value;
-            }
-            remove {
-                onEnableListeners -= value;
-            }
-        }
-
-        private EventHandler onDisableListeners;
-        public event EventHandler OnDisableListeners
-        {
-            add {
-                onDisableListeners -= value;
-                onDisableListeners += value;
-            }
-            remove {
-                onDisableListeners -= value;
-            }
-        }
+        private readonly FastAction<Mode> OnEnableListeners = new FastAction<Mode>();
+        private readonly FastAction<Mode> OnDisableListeners= new FastAction<Mode>();
         // ===============================================================================================
         // Statc members
         // ===============================================================================================
@@ -82,6 +60,5 @@ namespace VARP.Keyboard
         /// </summary>
         public static Mode Null = new Mode ( "null", "Empty unused mode", KeyMap.GlobalKeymap );
     }
-
 
 }

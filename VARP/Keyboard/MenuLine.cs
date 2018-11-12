@@ -67,12 +67,11 @@ namespace VARP.Keyboard
         protected string text;
         protected string help;
         protected string shortcut;
-        protected object function;
 
         public readonly object binding;
+        public readonly Filter filter;
         public readonly Precodition enable;
         public readonly Precodition visible;            
-        public readonly Filter filter;
         public readonly ButtonType buttonType;
         public readonly Precodition buttonState;
 
@@ -84,7 +83,6 @@ namespace VARP.Keyboard
         public override object Binding { get { return binding; } }
 
         #endregion
-
 
         public bool IsEnabled { get { return enable == null || enable(this); } }
         public bool IsVisible { get { return visible == null || visible(this); } }
@@ -108,10 +106,7 @@ namespace VARP.Keyboard
             this.shortcut = shortcut;
         }
 
-
-        /// <summary>
-        /// Non selectable string
-        /// </summary>
+        /// <summary>Non selectable string</summary>
         /// <param name="text"></param>
         /// <param name="binding"></param>
         /// <param name="shortcut"></param>
@@ -124,10 +119,7 @@ namespace VARP.Keyboard
             this.filter = null;
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Constructor for a complex menu item</summary>
         /// <param name="text"></param>
         /// <param name="binging"></param>
         /// <param name="enable"></param>
@@ -149,9 +141,7 @@ namespace VARP.Keyboard
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Constructor for a complex menu item</summary>
         /// <param name="text"></param>
         /// <param name="binging"></param>
         /// <param name="enable"></param>
@@ -184,25 +174,14 @@ namespace VARP.Keyboard
     /// </summary>
     public class MenuSeparator : MenuLineBase
     {
-        public enum Type
-        {
-            NoLine,
-            Space,
-            SingleLine,
-            DashedLine
-        }
-
+        public enum Type { NoLine, Space, SingleLine, DashedLine }
+        /// <summary>The separator type</summary>
         public Type type;
-
-        /// <summary>
-        /// The separator type
-        /// </summary>
-        /// <param name="separatorType"></param>
+        /// <summary>The cosntructor of separator</summary>
         public MenuSeparator(Type separatorType) 
         {
             type = separatorType;
         }
-
     }
 
 }

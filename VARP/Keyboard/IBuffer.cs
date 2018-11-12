@@ -15,7 +15,7 @@ namespace VARP.Keyboard
         void DisableMajorMode ( );
         void EnabeMinorMode ( Mode mode );
         void DisableMinorMode ( Mode mode );
-        KeyMapItem Lockup ( int[] sequence, int starts, int ends, bool acceptDefaults );
+        KeyMapItem Lookup ( int[] sequence, int starts, int ends, bool acceptDefaults );
         string GetBufferString();
         string GetBufferSubString(int starts, int ends);
         int Point { get; set; }

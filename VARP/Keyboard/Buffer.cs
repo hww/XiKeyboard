@@ -82,7 +82,7 @@ namespace VARP.Keyboard
         /// <summary>
         /// Lockup sequence for this buffer.
         /// </summary>
-        public KeyMapItem Lockup ( int[] sequence, int starts, int ends, bool acceptDefaults )
+        public KeyMapItem Lookup ( int[] sequence, int starts, int ends, bool acceptDefaults )
         {
             if ( sequence == null )
                 throw new ArgumentNullException ( "sequence" );
@@ -93,16 +93,16 @@ namespace VARP.Keyboard
             // Minor modes searcg
             foreach ( var minorMode in minorModes )
             {
-                var minorItem = minorMode.keyMap.LokupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
+                var minorItem = minorMode.keyMap.LookupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
                 if ( minorItem != null )
                     return minorItem;
             }
             // Major mode search
-            var majorItem = majorMode.keyMap.LokupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
+            var majorItem = majorMode.keyMap.LookupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
             if ( majorItem != null )
                 return majorItem;
             // Global bindings search
-            return KeyMap.GlobalKeymap.LokupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
+            return KeyMap.GlobalKeymap.LookupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
         }
         /// <summary>
         /// Get current buffer string
@@ -155,9 +155,8 @@ namespace VARP.Keyboard
         /// </summary>
         public bool OnKeyDown(int evt)
         {
-            onKeyDown.Call(this, evt);
             textBuffer.InsertCharacter(evt);
-            var result = Lockup(textBuffer.buffer, textBuffer.SequenceStarts, textBuffer.BufferSize, true);
+            var result = Lookup(textBuffer.buffer, textBuffer.SequenceStarts, textBuffer.BufferSize, true);
             if (result == null)
             {
                 // next time will scan from next character because nothing interesting before
@@ -171,7 +170,7 @@ namespace VARP.Keyboard
                 Debug.Log("Found sequence without bindng " + result.ToString());
                 textBuffer.Clear(); // no reason to continue
             }
-            onSequencePressed.Call(this, result);
+            OnSequencePressed.Call(this, result);
             return true;
         }
         // when buffer is enabling this method will be called
@@ -223,11 +222,7 @@ namespace VARP.Keyboard
         /// <summary>
         /// When some key sequence found
         /// </summary>
-        public FastAction<Buffer,KeyMapItem> onSequencePressed = new FastAction<Buffer, KeyMapItem>();
-        /// <summary>
-        /// When key pressed
-        /// </summary>
-        public FastAction<Buffer, int> onKeyDown = new FastAction<Buffer, int>();
+        public FastAction<Buffer,KeyMapItem> OnSequencePressed = new FastAction<Buffer, KeyMapItem>();
         #endregion
     }
 }

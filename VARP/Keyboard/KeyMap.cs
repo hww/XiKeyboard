@@ -22,8 +22,7 @@ namespace VARP.Keyboard
         }
     }
     /// <summary>
-    /// Any class wich can be in the keymap have to be
-    /// based on this class
+    /// Any object wich can be binded to the keymap have to be based on this class
     /// </summary>
     public class KeyMapItem
     {
@@ -158,9 +157,9 @@ namespace VARP.Keyboard
         /// <summary>
         /// Lockup keymap item by full sequence of keys
         /// </summary>
-        public virtual KeyMapItem LokupKey(int[] sequence, bool acceptDefaults = false)
+        public virtual KeyMapItem LookupKey(int[] sequence, bool acceptDefaults = false)
         {
-            return LokupKey(sequence, 0, sequence.Length - 1, acceptDefaults);
+            return LookupKey(sequence, 0, sequence.Length - 1, acceptDefaults);
         }
         /// <summary>
         /// Lockup keymap item by full sequence of keys
@@ -170,7 +169,7 @@ namespace VARP.Keyboard
         /// <param name="ends">Last index in the sequence</param>
         /// <param name="acceptDefaults">Allow to return default binding</param>
         /// <returns>KeyMapItem or Null</returns>
-        public virtual KeyMapItem LokupKey(int[] sequence, int starts, int ends, bool acceptDefaults = false)
+        public virtual KeyMapItem LookupKey(int[] sequence, int starts, int ends, bool acceptDefaults = false)
         {
             if (sequence == null) throw new ArgumentNullException("sequence");
             if (starts < 0 || starts >= sequence.Length) throw new ArgumentOutOfRangeException("starts");
@@ -183,7 +182,7 @@ namespace VARP.Keyboard
             { 
                 tmp = curentMap.GetLocal(sequence[i], acceptDefaults);
                 if (tmp == null)
-                    return curentMap.parent != null ? curentMap.parent.LokupKey(sequence, acceptDefaults) : null;
+                    return curentMap.parent != null ? curentMap.parent.LookupKey(sequence, acceptDefaults) : null;
 
                 var map = tmp.value as KeyMap;
                 if (map != null)
