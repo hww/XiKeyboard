@@ -1,14 +1,12 @@
-﻿using System;
+﻿/* Copyright (c) 2016 Valery Alex P. All rights reserved. */
+
+using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 using JetBrains.Annotations;
-using UnityEngine;
 
 namespace VARP.Keyboard
 {
-
     /// <summary>
     /// This class alwo to convert string expression to the 
     /// keycode sequence. The sequence is the aray of integers.
@@ -27,7 +25,6 @@ namespace VARP.Keyboard
             UnityEngine.Debug.Assert(sequence != null);
             return ConvertToString(sequence, 0, sequence.Length, separator);
         }
-
         /// <summary>
         /// Convert the keycode sequence to the string
         /// </summary>
@@ -55,7 +52,7 @@ namespace VARP.Keyboard
                 while (cnt < quantity)
                 {
                     if (addSeparator) sb.Append(separator);
-                    sb.Append(KeyEvent.GetName(sequence[idx++]));
+                    sb.Append(Event.GetName(sequence[idx++]));
                     addSeparator = true;
                     cnt++;
                 }
@@ -64,14 +61,12 @@ namespace VARP.Keyboard
             {
                 while (cnt < quantity)
                 {
-                    sb.Append(KeyEvent.GetName(sequence[idx++]));
+                    sb.Append(Event.GetName(sequence[idx++]));
                     cnt++;
                 }
             }
             return sb.ToString();
         }
-
-
         /// <summary>
         /// Convert the keycode sequence to the string
         /// </summary>
@@ -86,22 +81,21 @@ namespace VARP.Keyboard
                 return result;
             var i = 0;
             foreach (var code in sequence)
-                result[i++] = KeyEvent.GetName(code);
+                result[i++] = Event.GetName(code);
             return result;
         }
-
         /// <summary>
         /// Supports multiple or single tokens
         /// When multiple tokens each one separated with ' ' space
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static KeyEvent[] Parse([NotNull] string expression)
+        public static int[] Parse([NotNull] string expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");
             if (expression == string.Empty) throw new ArgumentException("expression");
 
-            var sequence = new List<KeyEvent>();
+            var sequence = new List<int>();
             var tags = expression.Split(' ');
 
             foreach (var s in tags)
@@ -109,11 +103,11 @@ namespace VARP.Keyboard
                 if (string.IsNullOrEmpty(s))
                     continue;
 
-                var evtCode = KeyEvent.ParseExpression(s);
+                var evt = Event.ParseExpression(s);
 
-                if (evtCode >= 0)
+                if (evt >= 0)
                 {
-                    sequence.Add(evtCode);
+                    sequence.Add(evt);
                 }
                 else
                 {
@@ -127,15 +121,17 @@ namespace VARP.Keyboard
             }
             return sequence.ToArray();
         }
-
-
-
-        public static KeyEvent[] ParsePseudo(string[] sequence)
+        /// <summary>
+        /// Convert list of strings to list of events
+        /// </summary>
+        /// <param name="sequence">Array of strings</param>
+        /// <returns>Array of events</returns>
+        public static int[] ParsePseudo(string[] sequence)
         {
             var idx = 0;
-            var result = new KeyEvent[sequence.Length];
+            var result = new int[sequence.Length];
             foreach (var s in sequence)
-                result[idx++] = KeyEvent.GetPseudocodeOfName(s);
+                result[idx++] = Event.GetPseudocodeOfName(s);
             return result;
         }
     }

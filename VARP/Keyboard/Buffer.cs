@@ -1,60 +1,23 @@
-﻿using System;
-using System.Collections;
+﻿/* Copyright (c) 2016 Valery Alex P. All rights reserved. */
+
+using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.VR;
+using VARP.delegates;
 
 namespace VARP.Keyboard
 {
-    public class Buffer : IBuffer, IOnKeyDown
+    /// <summary>
+    /// Each buffer is like a recipient of events. And only one of them receive events in this moment.
+    /// As every buffer has its own modes activated, to switch buffer means switch the modes too.
+    /// </summary>
+    public partial class Buffer : IBuffer
     {
-        private EventHandler onEnableListeners;
-        /// <summary>Listeners on enabling this buffer</summary>
-        public event EventHandler OnEnableListeners
-        {
-            add
-            {
-                onEnableListeners -= value;
-                onEnableListeners += value;
-            }
-            remove
-            {
-                onEnableListeners -= value;
-            }
-        }
-
-        private EventHandler onDisableListeners;
-        /// <summary>Listeners on disabling this buffer</summary>
-        public event EventHandler OnDisableListeners
-        {
-            add
-            {
-                onDisableListeners -= value;
-                onDisableListeners += value;
-            }
-            remove
-            {
-                onDisableListeners -= value;
-            }
-        }
-
-        /// <summary>Current active buffer</summary>
-        private static Buffer curentBuffer;
-        /// <summary>Null buffer</summary>
-        private static readonly Buffer Null = new Buffer("null", "Empty unused buffer");
-        /// <summary>Buffer name</summary>
-        private readonly string name;
-        /// <summary>Buffer help</summary>
-        private readonly string help;
-        /// <summary>Buffer's major mode</summary>
-        private Mode majorMode;
-        /// <summary>Collection of buffer's minor modes</summary>
-        private readonly List<Mode> minorModes = new List<Mode>();
-        /// <summary>Iput buffer is an array of input keys</summary>
-        private readonly InputBuffer inputBuffer = new InputBuffer();
-
-        public Buffer([NotNull] string name, string help = null)
+        /// <summary>
+        /// New buffer with name and optinaly help info
+        /// </summary>
+        public Buffer(string name, string help = null)
         {
             if (name == null) throw new ArgumentNullException("name");
             this.name = name;
@@ -62,188 +25,210 @@ namespace VARP.Keyboard
             this.majorMode = Mode.Null;
         }
 
-        #region IBuffer
+        #region IBuffer methods
+        /// <summary>
+        /// Enable this buffer and makes it current
+        /// </summary>
+        public void Enable ( ) { CurentBuffer = this;  }
+        /// <summary>
+        /// Get name of this buffer
+        /// </summary>
+        public string Name { get { return name; } }
+        /// <summary>
+        /// Get help for this buffer
+        /// </summary>
+        public string Help { get { return help; } }
+        /// <summary>
+        /// Enable minor mode in this buffer
+        /// </summary>
+        /// <param name="mode"></param>
+        public void EnabeMinorMode ( Mode mode )
+        {
+            if ( minorModes.Contains ( mode ) )
+                return;
+            mode.Enable ( );
+            minorModes.Add ( mode );
+        }
+        /// <summary>
+        /// Disable minor mode in this buffer
+        /// </summary>
+        /// <param name="mode"></param>
+        public void DisableMinorMode ( Mode mode )
+        {
+            if ( !minorModes.Contains ( mode ) )
+                return;
+            mode.Disable ( );
+            minorModes.Remove ( mode );
+        }
+        /// <summary>
+        /// Enable major mode in this buffer
+        /// </summary>
+        /// <param name="mode"></param>
+        public void EnabeMajorMode ( Mode mode )
+        {
+            mode.Enable ( );
+            majorMode = mode;
+        }
+        /// <summary>
+        /// Disable major mode in this buffer
+        /// </summary>
+        public void DisableMajorMode ( )
+        {
+            if ( majorMode == null )
+                return;
+            majorMode.Disable ( );
+            majorMode = Mode.Null;
+        }
+        /// <summary>
+        /// Lockup sequence for this buffer.
+        /// </summary>
+        public KeyMapItem Lockup ( int[] sequence, int starts, int ends, bool acceptDefaults )
+        {
+            if ( sequence == null )
+                throw new ArgumentNullException ( "sequence" );
+            if ( starts < 0 || starts >= sequence.Length )
+                throw new ArgumentOutOfRangeException ( "starts" );
+            if ( ends < starts || ends >= sequence.Length )
+                throw new ArgumentOutOfRangeException ( "ends" );
+            // Minor modes searcg
+            foreach ( var minorMode in minorModes )
+            {
+                var minorItem = minorMode.keyMap.LokupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
+                if ( minorItem != null )
+                    return minorItem;
+            }
+            // Major mode search
+            var majorItem = majorMode.keyMap.LokupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
+            if ( majorItem != null )
+                return majorItem;
+            // Global bindings search
+            return KeyMap.GlobalKeymap.LokupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
+        }
+        /// <summary>
+        /// Get current buffer string
+        /// </summary>
+        /// <returns></returns>
+        public string GetBufferString()
+        {
+            return textBuffer.GetBufferString();
+        }
+        /// <summary>
+        /// Get buffer substring
+        /// </summary>
+        /// <param name="starts"></param>
+        /// <param name="ends"></param>
+        public string GetBufferSubString(int starts, int ends)
+        {
+            return textBuffer.GetBufferSubString(starts, ends);
+        }
+        /// <summary>
+        /// Get curent cursor position
+        /// </summary>
+        /// <returns></returns>
+        public int Point
+        {
+            get { return textBuffer.Point; }
+            set { textBuffer.Point = value; }
+        }
+        /// <summary>
+        /// Get current selection
+        /// </summary>
+        public void GetSelection(out int begin, out int end)
+        {
+            textBuffer.GetSelection(out begin, out end);
+        }
+        /// <summary>
+        ///  Set selection
+        /// </summary>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        public void SetSelection(int begin, int end)
+        {
+            textBuffer.SetSelection( begin, end);
+        }
+        #endregion
 
+        #region Lockup the keybinding recursively
         /// <summary>
         /// Main entry of all keys. Will find the binding for the curen mode
         /// end evaluate it
         /// </summary>
-        /// <param name="evt"></param>
-        public bool OnKeyDown(KeyEvent evt)
+        public bool OnKeyDown(int evt)
         {
-            inputBuffer.OnKeyDown(evt);
-            var result = Lockup(inputBuffer.buffer, 0, inputBuffer.Count, true);
-            if (result == null || result.value == null)
+            onKeyDown.Call(this, evt);
+            textBuffer.InsertCharacter(evt);
+            var result = Lockup(textBuffer.buffer, textBuffer.SequenceStarts, textBuffer.BufferSize, true);
+            if (result == null)
             {
-                inputBuffer.Clear(); // no reason to continue
-                return false;
+                // next time will scan from next character because nothing interesting before
+                textBuffer.SequenceStarts = textBuffer.BufferSize;
+                return true;
             }
-
-            Eval(result);
+            else if (result.value == null)
+            {
+                // the binding found but it does not do anything, then undo last sequence
+                textBuffer.BufferSize = textBuffer.SequenceStarts;
+                Debug.Log("Found sequence without bindng " + result.ToString());
+                textBuffer.Clear(); // no reason to continue
+            }
+            onSequencePressed.Call(this, result);
             return true;
         }
-
-        /// <summary>
-        /// Evaluate the keybinding. 
-        /// </summary>
-        /// <param name="item"></param>
-        private void Eval(KeyMapItem item)
+        // when buffer is enabling this method will be called
+        protected virtual void OnEnable()
         {
-            var value = item.value;
-            
-            //if (value is KeyMap)
-            //{
-            //    var o = value as KeyMap;
-            //    // KeyMap without title is just keyMap
-            //    if (o.Title == null)
-            //        return;
-            //    // KeyMap with title behave as menu
-            //    //UiManager.I.CreateMenu(o, Vector3.zero, 200f);
-            //}
-            //else if (value is NativeFunction)                    
-            //{
-            //    // native function
-            //    var o = value as NativeFunction;
-            //    var returns = o.Call();
-            //    inputBuffer.Clear();
-            //}
-            //else if (value is string)
-            //{
-            //    // string expression
-            //    var o = value as string;
-            //    NativeFunctionRepl.Instance.Evaluate(o);
-            //}
-            //else 
-            if (value is MenuLineBaseComplex)
-            {
-
-            }
-            else if (value is MenuLineBaseSimple)
-            {
-
-            }
+            OnEnableListeners.Call(this);
         }
-
-        public void Enable()
+        // when buffer is disabling this method will be called
+        protected virtual void OnDisable()
         {
-            CurentBuffer = this;
+            OnEnableListeners.Call(this);
         }
-
-
-        /// <summary>Get buffer's name</summary>
-        public string Name {
-            get { return name; } 
-        }
-
-        /// <summary>Get buffer's help</summary>
-        public string Help
-        {
-            get { return help; } 
-        }
-
-        public void EnableMinorMode(Mode mode)
-        {
-            if (minorModes.Contains(mode))
-                return;
-            mode.OnEnable();
-            minorModes.Add(mode);
-        }
-
-        public void DisableMinorMode(Mode mode)
-        {
-            if (!minorModes.Contains(mode))
-                return;
-            mode.OnDisable();
-            minorModes.Remove(mode);
-        }
-
-        public void EnableMajorMode(Mode mode)
-        {
-            mode.OnEnable();
-            majorMode = mode;
-        }
-
-        public void DisableMajorMode()
-        {
-            if (majorMode == null) return;
-            majorMode.OnDisable();
-            majorMode = Mode.Null;
-        }
-
-        public KeyMapItem Lockup([NotNull] KeyEvent[] sequence, int starts, int ends, bool acceptDefaults)
-        {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (starts < 0 || starts >= sequence.Length) throw new ArgumentOutOfRangeException("starts");
-            if (ends < starts || ends >= sequence.Length) throw new ArgumentOutOfRangeException("ends");
-
-            foreach (var minorMode in minorModes)
-            {
-                var minorItem = minorMode.keyMap.LokupKey(inputBuffer.buffer, 0, inputBuffer.Count, acceptDefaults);
-                if (minorItem != null)
-                    return minorItem;
-            }
-
-            var majorItem = majorMode.keyMap.LokupKey(inputBuffer.buffer, 0, inputBuffer.Count, acceptDefaults);
-            if (majorItem != null)
-                return majorItem;
-
-            return KeyMap.GlobalKeymap.LokupKey(inputBuffer.buffer, 0, inputBuffer.Count, acceptDefaults);
-        }
-
         #endregion
 
-        /// <summary>Get current active buffer</summary>
+        #region Object's members
+        private readonly string name;
+        private readonly string help;
+        private Mode majorMode;
+        private readonly List<Mode> minorModes = new List<Mode> ( );
+        private readonly TextBuffer textBuffer = new TextBuffer ( );
+        #endregion
+
+        #region Static members
+        /// <summary>
+        /// There is only one current buffer exists. This method returns or set curent buffer
+        /// </summary>
         public static Buffer CurentBuffer
         {
             get { return curentBuffer ?? Null; }
-            set
-            {
-                curentBuffer.onDisableListeners?.Invoke(curentBuffer, null);
+            set {
+                CurentBuffer.OnDisable ( );
                 curentBuffer = value ?? Null;
-                curentBuffer.onEnableListeners?.Invoke(curentBuffer, null);
+                curentBuffer.OnEnable ( );
             }
         }
+        private static Buffer curentBuffer;
+        private static readonly Buffer Null = new Buffer ( "null", "Empty unused buffer" );
+        #endregion
 
-        #region Nested Types
-
-        /// <summary>The line of characters collected in the array</summary>
-        public sealed class InputBuffer
-        {
-            /// <summary>Collection of input keys</summary>
-            public readonly KeyEvent[] buffer = new KeyEvent[32];
-            /// <summary>Constructor</summary>
-            public InputBuffer()
-            {
-                Count = 0;
-            }
-            /// <summary>Called every key down event</summary>
-            public void OnKeyDown(KeyEvent evt)
-            {
-                if (Count >= buffer.Length)
-                    Clear();
-                buffer[Count++] = evt;
-            }
-            /// <summary>Clear this buffer</summary>
-            public void Clear()
-            {
-                Count = 0;
-            }
-            /// <summary>Get size of this buffer</summary>
-            public int Count { get; private set; }
-            /// <summary>Print buffer content</summary>
-            public override string ToString()
-            {
-                var s = "";
-                for (var i = 0; i < Count; i++)
-                {
-                    s += buffer[i].GetName();
-                }
-                return s;
-            }
-        }
-
+        #region Enable/Disable Hooks
+        /// <summary>
+        /// On enable buffer hook
+        /// </summary>
+        public FastAction<Buffer> OnEnableListeners = new FastAction<Buffer>();
+        /// <summary>
+        /// On disable buffer hook
+        /// </summary>
+        public FastAction<Buffer> OnDisableListeners = new FastAction<Buffer>();
+        /// <summary>
+        /// When some key sequence found
+        /// </summary>
+        public FastAction<Buffer,KeyMapItem> onSequencePressed = new FastAction<Buffer, KeyMapItem>();
+        /// <summary>
+        /// When key pressed
+        /// </summary>
+        public FastAction<Buffer, int> onKeyDown = new FastAction<Buffer, int>();
         #endregion
     }
-
 }
 

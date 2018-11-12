@@ -1,59 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine.UI;
+﻿/* Copyright (c) 2016 Valery Alex P. All rights reserved. */
+
+using System;
 
 namespace VARP.Keyboard
 {
     public class Mode
     {
-        private EventHandler onEnableListeners;
-        /// <summary>Activate mode listeners</summary>
-        public event EventHandler OnEnableListeners
-        {
-            add
-            {
-                onEnableListeners -= value;
-                onEnableListeners += value;
-            }
-            remove
-            {
-                onEnableListeners -= value;
-            }
-        }
-
-        private EventHandler onDisableListeners;
-        /// <summary>Inactivate mode listeners</summary>
-        public event EventHandler OnDisableListeners
-        {
-            add
-            {
-                onDisableListeners -= value;
-                onDisableListeners += value;
-            }
-            remove
-            {
-                onDisableListeners -= value;
-            }
-        }
-
-        /// <summary>Null mode</summary>
-        public static Mode Null = new Mode("null", "Empty unused mode", KeyMap.GlobalKeymap);
-        /// <summary>This is the curent mode key map</summary>
-        public KeyMap keyMap;
-        /// <summary>The mode name</summary>
-        public readonly string name;
-        /// <summary>Mode help</summary>
-        public readonly string help;
-        /// <summary>When this mode recogni</summary>
-        private Mode parentMode;
-
+        /// <summary>
+        /// Constructor without parent
+        /// </summary>
         public Mode(string name, string help = null, KeyMap keyMap = null)
         {
             this.name = name;
             this.help = help;
             this.keyMap = keyMap;
         }
-
+        /// <summary>
+        /// Construct with parent node
+        /// </summary>
         public Mode(Mode parentMode, string name, string help = null, KeyMap keyMap = null)
         {
             this.parentMode = parentMode;
@@ -61,20 +25,62 @@ namespace VARP.Keyboard
             this.help = help;
             this.keyMap = keyMap;
         }
-
-        #region Mode
-
-        public virtual void OnEnable()
+        /// <summary>
+        /// Enable this mode
+        /// </summary>
+        public virtual void Enable()
         {
-            if (onEnableListeners != null) onEnableListeners(this, null);
+            if (onEnableListeners != null)
+                onEnableListeners (this, null);
+        }
+        /// <summary>
+        /// Disable this mode
+        /// </summary>
+        public virtual void Disable()
+        {
+            if (onDisableListeners != null)
+                onDisableListeners (this, null);
+        }
+        // ===============================================================================================
+        // Object's members
+        // ===============================================================================================
+        public KeyMap keyMap;           //< This is the curent mode key map
+        public readonly string name;    //< The mode's name
+        public readonly string help;    //< The mode's help
+        private Mode parentMode;        //< The parent mode
+        // ===============================================================================================
+        // Hooks of mode
+        // ===============================================================================================
+        private EventHandler onEnableListeners;
+        public event EventHandler OnEnableListeners
+        {
+            add {
+                onEnableListeners -= value;
+                onEnableListeners += value;
+            }
+            remove {
+                onEnableListeners -= value;
+            }
         }
 
-        public virtual void OnDisable()
+        private EventHandler onDisableListeners;
+        public event EventHandler OnDisableListeners
         {
-            if (onDisableListeners != null) onDisableListeners(this, null);
+            add {
+                onDisableListeners -= value;
+                onDisableListeners += value;
+            }
+            remove {
+                onDisableListeners -= value;
+            }
         }
-
-        #endregion
+        // ===============================================================================================
+        // Statc members
+        // ===============================================================================================
+        /// <summary>
+        /// Null mode. Returned instead of null
+        /// </summary>
+        public static Mode Null = new Mode ( "null", "Empty unused mode", KeyMap.GlobalKeymap );
     }
 
 

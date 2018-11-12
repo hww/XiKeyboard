@@ -1,7 +1,7 @@
-﻿using System;
+﻿/* Copyright (c) 2016 Valery Alex P. All rights reserved. */
+
+using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using JetBrains.Annotations;
 
 namespace VARP.Keyboard
 {
@@ -10,18 +10,17 @@ namespace VARP.Keyboard
     /// </summary>
     public class SequenceBinding 
     {
-        public string name;
-        public string help;
-        public readonly KeyEvent[] sequence;
+        public string name;              //< Menu name, or key binding name
+        public string help;              //< Help information for this bnding
+        public readonly int[] sequence;  //< Sequence of events required to invoke it 
 
-        public SequenceBinding(string name, KeyEvent[] sequence, string help = null)
+        public SequenceBinding(string name, int[] sequence, string help = null)
         {
             this.name = name;
             this.sequence = sequence;
             this.help = help;
         }
     }
-
     /// <summary>
     /// Any class wich can be in the keymap have to be
     /// based on this class
@@ -30,114 +29,93 @@ namespace VARP.Keyboard
     {
         public static readonly KeyMapItem Empty = new KeyMapItem(0, null);
 
-        public KeyEvent key;  //< this is the fake key
-        public object value;  //< there can be any avaiable value
+        public int key;             //< this is the fake key
+        public object value;        //< there can be any avaiable value
 
         public KeyMapItem(int key, object value)
-        {
-            this.key = new KeyEvent(key);
-            this.value = value;
-        }
-        
-        public KeyMapItem(KeyEvent key, object value)
         {
             this.key = key;
             this.value = value;
         }
-
         /// <summary>
         /// Compare with single event
         /// </summary>
         /// <param name="evt"></param>
         /// <returns></returns>
-        public bool Compare(KeyEvent evt) { return evt == key; }
-
-        public override string ToString() { return string.Format("key: {0} value: {1}", key, value); }
+        public bool Compare(int evt)
+        {
+            return evt == key;
+        }
+        public override string ToString()
+        {
+            return string.Format("key: {0} value: {1}", key, value);
+        }
     }
- 
 
     /// <summary>
-    /// This class have to alow to build the tree of the keymaps
+    /// This class have to alow to build the tree of the keymaps.
+    /// Each keymap contains List of KeyMapItem(s). Additionaly 
+    /// the keymap has title and help information as whell it 
+    /// reffers to parent keymap.
     /// </summary>
     public class KeyMap 
     {
+        /// <summary>
+        /// The global keymap. It is represent top level of keymaps
+        /// </summary>
         public static readonly KeyMap GlobalKeymap = new KeyMap("global-keymap");
 
         public string title;                //< title of keymap
         public string help;                 //< help for this item (used for menu only)
         public KeyMap parent;               //< parent key map
         public List<KeyMapItem> items;      //< kay map items
-        public KeyMapItem defaultBinding;   //< default binding or null
-
+        // This binding can be returned when the requested key binding is not found
+        public KeyMapItem defaultBinding;   //< default binding or null. 
+        /// <summary>
+        /// Get title name of this keymap
+        /// </summary>
         public virtual string Title { get { return title; } }
         public virtual string Help { get { return help; } }
-
         /// <summary>
         /// Create emty keymap
         /// </summary>
-        /// <param name="title"></param>
-        public KeyMap(string title = null)
+        public KeyMap(string title = null, string help = null )
         {
             this.title = title;
-            items = new List<KeyMapItem>();
+            this.help = help;
+            this.items = new List<KeyMapItem>();
         }
-
         /// <summary>
         /// Create empty keymap based on parent keymap
         /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="title"></param>
-        public KeyMap([NotNull] KeyMap parent, string title = null)
+        public KeyMap(KeyMap parent, string title = null, string help = null )
         {
             if (parent == null) throw new ArgumentNullException("parent");
             this.title = title;
+            this.help = help;
             this.parent = parent;
             items = new List<KeyMapItem>();
         }
-
-        public KeyMap(string title, string help = null) : this(title)
-        {
-            this.title = help;
-        }
-
-        public KeyMap(KeyMap parent, string title, string help = null) : this(parent, title)
-        {
-            this.title = help;
-        }
-
-        public virtual void CopyTo(KeyMap other)
-        {
-            other.title = title;
-            other.title = help;
-            other.parent = parent;
-            foreach (var item in items)
-                other.SetLocal(item.key, item.value);
-        }
-
         /// <summary>
-        /// Get index of element which has given sequence
+        /// Copy this keymap to target one
         /// </summary>
-        /// <param name="evt"></param>
-        /// <returns></returns>
-        private int GetIndexOf(KeyEvent evt)
+        public virtual void CopyTo(KeyMap target)
         {
-            for (var i = 0; i < items.Count; i++)
-            {
-                if (items[i].Compare(evt))
-                    return i;
-            }
-
-            return -1;
+            target.title = title;
+            target.title = help;
+            target.parent = parent;
+            foreach (var item in items)
+                target.SetLocal(item.key, item.value);
         }
-
+        // ===============================================================================================
+        // SET & GET bindings in this keymap only
+        // ===============================================================================================
         /// <summary>
         /// Set key value pair. Replace existing
         /// </summary>
-        /// <param name="evt"></param>
-        /// <param name="value"></param>
-        public virtual void SetLocal(KeyEvent evt, object value)
+        public virtual void SetLocal(int evt, object value)
         {
-            if (evt.IsNotValid())
+            if (!Event.IsValid(evt))
                 throw new ArgumentOutOfRangeException("evt");
             var binding = new KeyMapItem(evt, value);
             var index = GetIndexOf(evt);
@@ -146,29 +124,53 @@ namespace VARP.Keyboard
             else
                 items.Add(binding);
 
-            if (evt == KeyEvent.DefaultPseudoCode)
+            if (evt == Event.DefaultPseudoCode)
                 defaultBinding = binding;
         }
-
-        public virtual KeyMapItem GetLocal(KeyEvent evt, bool acceptDefaults = false)
+        /// <summary>
+        ///  Get key binding of this keymap, returns: null or deffault binding (if allowed)
+        /// </summary>
+        public virtual KeyMapItem GetLocal(int evt, bool acceptDefaults = false)
         {
-            if (evt.IsNotValid())
+            if (!Event.IsValid(evt))
                 throw new ArgumentOutOfRangeException("evt");
             var index = GetIndexOf(evt);
             if (index >= 0 && items[index].value != null)
                 return items[index];
-
             return acceptDefaults ? defaultBinding : null;
         }
+        /// <summary>
+        /// Get index of element which has given sequence
+        /// </summary>
+        private int GetIndexOf ( int evt )
+        {
+            for ( var i = 0 ; i < items.Count ; i++ )
+            {
+                if ( items[ i ].Compare ( evt ) )
+                    return i;
+            }
 
-        #region Use full expression to define and lookup the definition
-
-        public virtual KeyMapItem LokupKey(KeyEvent[] sequence, bool acceptDefaults = false)
+            return -1;
+        }
+        // ===============================================================================================
+        // Lockup the keybinding recursively
+        // ===============================================================================================
+        /// <summary>
+        /// Lockup keymap item by full sequence of keys
+        /// </summary>
+        public virtual KeyMapItem LokupKey(int[] sequence, bool acceptDefaults = false)
         {
             return LokupKey(sequence, 0, sequence.Length - 1, acceptDefaults);
         }
-
-        public virtual KeyMapItem LokupKey([NotNull] KeyEvent[] sequence, int starts, int ends, bool acceptDefaults = false)
+        /// <summary>
+        /// Lockup keymap item by full sequence of keys
+        /// </summary>
+        /// <param name="sequence">Full sequence of keys</param>
+        /// <param name="starts">First index in the sequence</param>
+        /// <param name="ends">Last index in the sequence</param>
+        /// <param name="acceptDefaults">Allow to return default binding</param>
+        /// <returns>KeyMapItem or Null</returns>
+        public virtual KeyMapItem LokupKey(int[] sequence, int starts, int ends, bool acceptDefaults = false)
         {
             if (sequence == null) throw new ArgumentNullException("sequence");
             if (starts < 0 || starts >= sequence.Length) throw new ArgumentOutOfRangeException("starts");
@@ -191,15 +193,21 @@ namespace VARP.Keyboard
             }
             return tmp;
         }
-
-        // this way used for defining menu
+        // ===============================================================================================
+        // Define the keybinding recursively
+        // ===============================================================================================
+        /// <summary>
+        /// Define list of key-strings. This way used for defining menu
+        /// </summary>
         public bool Define(string[] sequence, object value)
         {
             var newsequence = Kbd.ParsePseudo(sequence);
             return Define(newsequence, value);
         }
-
-        public virtual bool Define([NotNull] KeyEvent[] sequence, object value)
+        /// <summary>
+        /// Define 
+        /// </summary>
+        public virtual bool Define(int[] sequence, object value)
         {
             if (sequence == null) throw new ArgumentNullException("sequence");
 
@@ -249,11 +257,7 @@ namespace VARP.Keyboard
             }
             throw new Exception("We can\'t be here");
         }
-
-        #endregion
     }
-
-
     /// <summary>
     /// If an element of a keymap is a char-table, it counts as holding bindings for all
     /// character events with no modifier element n
@@ -264,7 +268,6 @@ namespace VARP.Keyboard
     public class FullKeymap : KeyMap
     {
         private const int MaxSize = 2048;
-
         /// <summary>
         /// Create emty keymap
         /// </summary>
@@ -272,67 +275,67 @@ namespace VARP.Keyboard
         public FullKeymap(string title = null) : base(title)
         {
         }
-
         /// <summary>
         /// Create empty keymap based on parent keymap
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="title"></param>
-        public FullKeymap([NotNull] KeyMap parent, string title = null) : base(parent, title)
+        public FullKeymap(KeyMap parent, string title = null) : base(parent, title)
         {
         }
-
         /// <summary>
         /// Set key value pair. Replace existing.
         /// </summary>
         /// <param name="evt"></param>
         /// <param name="value"></param>
-        public override void SetLocal(KeyEvent evt, object value)
+        public override void SetLocal(int evt, object value)
         {
-            if (evt.IsNotValid())
+            if (!Event.IsValid(evt))
                 throw new ArgumentOutOfRangeException("evt");
 
             // do not support keys with modificators
-            if (evt.HasModifyers())
+            if (evt >= KeyModifyers.Alt)
                 throw new ArgumentOutOfRangeException("evt");
 
             // limit by some "rational" number ;)
-            if (evt.Code >= MaxSize)
+            if (evt >= MaxSize)
                 throw new ArgumentOutOfRangeException("evt");
 
-            if (evt.Code >= items.Count)
+            if (evt >= items.Count)
             {
                 // extend size of the items list
-                var large = new List<KeyMapItem>(evt.Code + 10);
+                var large = new List<KeyMapItem>(evt + 10);
                 var i = 0;
                 foreach (var item in items)
                     large[i++] = item;
                 items = large;
             }
 
-            items[evt.Code] = new KeyMapItem(evt, value);
+            items[evt] = new KeyMapItem(evt, value);
         }
-
-        public override KeyMapItem GetLocal(KeyEvent evt, bool acceptDefaults = false)
+        /// <summary>
+        /// Get key binding localy
+        /// </summary>
+        /// <param name="evt"></param>
+        /// <param name="acceptDefaults"></param>
+        /// <returns></returns>
+        public override KeyMapItem GetLocal(int evt, bool acceptDefaults = false)
         {
-            if (evt.IsNotValid())
+            if (!Event.IsValid(evt))
                 throw new ArgumentOutOfRangeException("evt");
 
             // do not support keys with modificators
-            if (evt.HasModifyers())
+            if (evt >= KeyModifyers.Alt)
                 throw new ArgumentOutOfRangeException("evt");
 
-            var code = evt.Code;
             // limit by some "rational" number ;)
-            if (code >= MaxSize)
+            if (evt >= MaxSize)
                 throw new ArgumentOutOfRangeException("evt");
 
-            if (code < items.Count && items[code] != null && items[code].value != null)
-                return items[code];
+            if (evt < items.Count && items[evt] != null && items[evt].value != null)
+                return items[evt];
 
             return acceptDefaults ? defaultBinding : null;
         }
-      
     }
-
 }
