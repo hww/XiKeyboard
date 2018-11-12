@@ -229,8 +229,8 @@ To select substring in the buffer use _SetSelection_ and to read selection _GetS
 Additoanal delegates _OnSequencePressed_ will be called when one of sequence bindings triggered.
 
 ```C#
-    OnSequencePressed.Add((Buffer buffer, KeyMapItem item) => 
-    {
-        Debug.LogFormat("The buffer {0} detected keys sequence with binding {1}", buffer.name, item.value);
-    });
+OnSequencePressed.Add((Buffer buffer, KeyMapItem item) => 
+{
+    Debug.LogFormat("The buffer {0} detected keys sequence with binding {1}", buffer.name, item.value);
+});
 ```
