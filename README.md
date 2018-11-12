@@ -346,11 +346,10 @@ var menu = new KeyMap("File", "File Menu" );
 // Define menu as member of MainMenu
 KeyMap.GlobalKeyMap.Define(new string[] { "MainMenu", "File" }, menu );
 // Create save menu item (shortcut will be only displayed and can be omitted)
-// Bind method Save to this menu item
+// The method Save of this class will be binded to this menu item
 var menuItem = MenuLineBaseSimple("Save", Save, "C-s", "Save current file") 
 // Define this item as member of File menu 
 KeyMap.GlobalKeyMap.Define(new string[] { "MainMenu", "File", "Save" }, menItemu );
-
 // Open file menu by Alt+F 
 KeyMap.GlobalKeymap.SetLocal("A-f", menu);                  
 // Save file by C+S 
