@@ -2,7 +2,7 @@
 
 The asset for Unity with keyboard manager similar to keyboard manager of Emacs. <sup>Work In Progress</sup> 
 
-# Key Modifyers
+## Key Modifyers
 
 Key modifyers encoded as most significant bits of integer value. The virutal key _Pseudo_ used to generate pseudo keys<sup>Read Below</sup>.
 
@@ -17,7 +17,7 @@ Key modifyers encoded as most significant bits of integer value. The virutal key
 | KeyModifyers.Alt         | 1 << 22     |
 | KeyModifyers.Pseudo      | 1 << 21     |
 
-# Event
+## Event
 
 The KeyEvent is container with KeyCode and key modfyers. The modifyers packed to most significant bits. Every key press will convert KeyCode to the KeyEvent and send to current input buffer<sup>Read Below</sup>. 
 
@@ -32,7 +32,7 @@ var keyCode = Event.GetKeyCode(event);                           // Return KeyCo
 var keyModf = Event.GetModifyers(event);                         // Return KeyModifyers.Shift
 ```
 
-# Pseudo Keys
+## Pseudo Keys
 
 The pseudocode looks like unique random key code (non existed in keyboard). For example: "pseudo-1", "pseudo-2",...,"pseudo-N"
 The pseudo code has large keycode and the key modifyer _Pseudo_ is in pressed state.
@@ -42,7 +42,7 @@ var pseudo = Event.GetPseudocodeOfName(); // Get random pseudo code
 var default = Event.DefaultPseudoCode;    // Get default pseudo code
 ```
 
-# Humanized Key Name
+## Humanized Key Name
 
 The key code can be convert to humanize name, or reversed. To declarate the name use method _SetName_
 
@@ -51,7 +51,7 @@ Event.SetName((int)KeyCode.RightCommand, "\\c-");
 var name = Event.GetName((int)KeyCode.RightCommand);  // Return "\\c-"
 ```
 
-# Key Sequence
+## Key Sequence
 
 The sequence can be defined as array of events. The example below defines the sequence "C-x C-f"
 
@@ -65,7 +65,91 @@ Alternative way is parsing the string expression.
 var sequence = ParseExpression("C-x C-f");
 ```
 
-# Mode
+## Key Map
+
+### Sequence Binding
+
+This is simple keysequence binding to any key. The pressing this key will invoke this sequence.
+
+| Field | Info |
+|-------|------|
+| string name | Binding's name |
+| string help | Binding's help |
+[ int[] sequence | The key sequence |
+
+The constructor for sequence requires two fields values.
+
+```C#
+SequenceBinding(string name, int[] sequence, string help = null)
+```
+
+### Key Map Item
+
+Any object wich can be binded to the keymap have to be based on this class.
+    
+| Field | Info |
+|-------|------|
+| int key | Key event |
+| object value | Binded value |
+
+The constructor requires those two fields as arguments.
+
+```C#
+KeyMapItem(int key, object value)
+```
+
+### Key Map
+
+There are two variants of constructor available. One for the ordinary keymap and another for child keymap. When called LockUp method of keymap, and in case if key binding not found, and default binding is not alowed, will be called LockUp method of parent key map. The default binding is the field of each key map, used only when allowed by dedicated argument.
+
+```C#
+KeyMap(string title = null, string help = null )
+KeyMap(KeyMap parent, string title = null, string help = null )
+```
+#### Define Local Binding
+
+To define and read local binding means does not look at parent key map.
+
+```C#
+var event = Event.MakeEvent((int)KeyCode.A, KeyModifyers.Shift); // Makes S-a event
+keyMap.SetLocal(event, "Foo");                                   // Bind to S-a event of this keymap the string "Foo"
+var binding = keyMap.GetLocal(event, false);                     // Second argument accept default binding.
+```
+#### Define Global Binding
+
+The define binding to the sequence use _Define_ method, use event sequence and object to bind as arguments.
+
+```C#
+Define(int[] sequence, object value)
+``` 
+
+Alternative version of this method dedicated for menu definition, and will buse pseudo codes for this bnding.
+
+```C#
+Define(string[] sequence, object value)
+```
+
+For example lets define menu _File_ and option _Save_ and bnd to it lambda function.
+
+```C#
+Define(new string[]{"File", "Save"}, () => { Debug.Log("Save"); })
+```
+
+
+#### Lock Up Binding
+
+To lockup biding in hierary use _LokupKey_ method.
+
+```C#
+KeyMapItem LokupKey(int[] sequence, bool acceptDefaults = false)
+```
+
+Additionaly there is version of this method with start and end index in the sequence aray.
+
+```
+KeyMapItem LokupKey(int[] sequence, int starts, int ends, bool acceptDefaults = false)
+```
+## Mode
 
 To create new mode use constructors.
 
@@ -94,7 +178,7 @@ mode.Disable(); // Print "Disabled"
 
 To get parrent mode use _parentMode_ field and to read keymap use _keyMap_ field. 
 
-# Buffer
+## Buffer
 
 Buffer is similar to text input line. There is only one current buffer is active for input. To create new bufffer.
 
