@@ -71,10 +71,10 @@ var sequence = ParseExpression("C-x C-f");
 
 This is simple keysequence binding to any key. The pressing this key will invoke this sequence.
 
-| Field | Info |
-|-------|------|
-| string name | Binding's name |
-| string help | Binding's help |
+| Field          | Info             |
+|----------------|------------------|
+| string name    | Binding's name   |
+| string help    | Binding's help   |
 [ int[] sequence | The key sequence |
 
 The constructor for sequence requires two fields values.
@@ -100,7 +100,7 @@ KeyMapItem(int key, object value)
 
 ### Key Map
 
-There are two variants of constructor available. One for the ordinary keymap and another for child keymap. When called LockUp method of keymap, and in case if key binding not found, and default binding is not alowed, will be called LockUp method of parent key map. The default binding is the field of each key map, used only when allowed by dedicated argument.
+There are two variants of constructor available. One for the ordinary keymap and another for child keymap. When called LookUp method of keymap, and in case if key binding not found, and default binding is not alowed, will be called LookUp method of parent key map. The default binding is the field of each key map, used only when allowed by dedicated argument.
 
 ```C#
 KeyMap(string title = null, string help = null )
@@ -135,8 +135,7 @@ For example lets define menu _File_ and option _Save_ and bnd to it a menu item.
 Define(new string[]{"File", "Save"}, menuItem )
 ```
 
-
-#### Lock Up Binding
+#### Look Up Binding
 
 To lockup biding in hierary use _LokupKey_ method.
 
@@ -153,7 +152,15 @@ KeyMapItem LokupKey(int[] sequence, int starts, int ends, bool acceptDefaults = 
 ## Full Keymap
 
 If an element of a keymap is a char-table, it counts as holding bindings for all character events with no modifier element n is the binding for the character with code n. This is a compact way to record lots of bindings. A keymap with such a char-table is called a full keymap. Other keymaps are called sparse keymaps.
-    
+
+## Global Keymap
+
+The default global keymap, can be used in most cases without creating additional keymaps.
+
+```C#
+var globalKeyMap = KeyMap.GlobalKeymap;
+```
+
 ## Mode
 
 To create new mode use constructors.
@@ -217,10 +224,10 @@ EnableMinorMode(mode)  // Enable minor mode
 DisableMinorMode(mode) // Disable minor mode
 ```
 
-To lockup keysequence in the buffer use method _Lockup_ with arguments: key sequence, start index of sequence, end index of sequence and accept or not default key binding<sup>read KeyMap chapter</sup>. The method returns the _KeyMapItem_ ofject in case of recognized sequence.
+To lockup keysequence in the buffer use method _Lookup_ with arguments: key sequence, start index of sequence, end index of sequence and accept or not default key binding<sup>read KeyMap chapter</sup>. The method returns the _KeyMapItem_ ofject in case of recognized sequence.
 
 ```C#
-  KeyMapItem Lockup([NotNull] int[] sequence, int starts, int ends, bool acceptDefaults)
+  KeyMapItem Lookup([NotNull] int[] sequence, int starts, int ends, bool acceptDefaults)
 ```
 
 To get current string in the buffer use _GetBufferString_ and _GetBufferSubString_ methods.
@@ -329,4 +336,13 @@ MenuLineBaseComplex(string text,
                     Precodition buttonState = null,
                     string shortcut = null,
                     string help = null)            
+```
+
+Lets make example of menu.
+
+```C#
+var menu = new KeyMap("File", "File Menu" );                // Create file menu
+KeyMap.GlobalKeymap.SetLocal("A-f", menu);                  // Open file menu by Alt F 
+var menuItem = MenuLineBaseSimple("Save", "C-s", "Save current file") // Create save menu item
+menu.
 ```
