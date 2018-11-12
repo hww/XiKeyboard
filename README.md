@@ -338,7 +338,11 @@ MenuLineBaseComplex(string text,
                     string help = null)            
 ```
 
-Lets make example of menu.
+Lets make example of menu definition. 
+- Define _File_ menu
+- Define _Save_ item at _File_ menu 
+- Append _File_ menu to _MainMenu_
+- Add keyboar shorcuts to _File_ menu and _Save_ menu item.
 
 ```C#
 // Create file menu
