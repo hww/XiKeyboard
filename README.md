@@ -25,10 +25,10 @@ To create new event there is  method _MakeEvent_.
 
 ```C#
 var event = Event.MakeEvent(KeyCode.A, KeyModifyers.Shift);      // Makes S-a event
-var name = event.Name;                                           // Return S-a
 event.IsModifyer(event, KeyModifyers.Shift);                     // Return true
 event.IsModifyer(event, KeyModifyers.Control);                   // Return false
-event.IsValid();                                                 // Return true
+var name = event.Name;                                           // Return S-a
+var valid = event.IsValid;                                       // Return true
 var keyCode = event.KeyCode;                                     // Return KeyCode.A as integer
 var keyModf = event.Modifyers;                                   // Return KeyModifyers.Shift
 ```
