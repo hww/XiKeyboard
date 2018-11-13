@@ -62,43 +62,10 @@ int[] sequence = new int[2] { Event.MakeEvent((int)KeyCode.X, KeyModifyers.Contr
 Alternative way is parsing the string expression.
 
 ```C#
-var sequence = ParseExpression("C-x C-f");
+var sequence = Kbd.ParseExpression("C-x C-f");
 ```
 
 ## Key Map
-
-### Sequence Binding
-
-This is simple keysequence binding to any key. The pressing this key will invoke this sequence.
-
-| Field          | Info             |
-|----------------|------------------|
-| string name    | Binding's name   |
-| string help    | Binding's help   |
-[ int[] sequence | The key sequence |
-
-The constructor for sequence requires two fields values.
-
-```C#
-SequenceBinding(string name, int[] sequence, string help = null)
-```
-
-### Key Map Item
-
-Any object wich can be binded to the key map have to be based on this class.
-    
-| Field | Info |
-|-------|------|
-| int key | Key event |
-| object value | Binded value |
-
-The constructor requires those two fields as arguments.
-
-```C#
-KeyMapItem(int key, object value)
-```
-
-### Key Map
 
 There are two variants of constructor available. One for the ordinary key-map and another for child key map. When called LookUp method of key-map, and in case if key binding not found, and default binding is not alowed, will be called LookUp method of parent key map. The default binding is the field of each key map, used only when allowed by dedicated argument.
 
@@ -106,6 +73,29 @@ There are two variants of constructor available. One for the ordinary key-map an
 KeyMap(string title = null, string help = null )
 KeyMap(KeyMap parent, string title = null, string help = null )
 ```
+#### Key Map Item
+
+This object link a key event with other item: 
+
+- other keymap
+- sequence binding
+- menu item
+- lambda function
+- anything else... 
+ 
+KeyMapItem contains the next fields.
+
+| Field         | Info         |
+|---------------|--------------|
+| int key       | Key event    |
+| object value  | Binded value |
+
+The constructor requires those two fields as arguments.
+
+```C#
+KeyMapItem(int key, object value)
+```
+
 #### Define Local Binding
 
 To define and read local binding means does not look at parent key map.
@@ -120,7 +110,8 @@ var binding = keyMap.GetLocal(event, false);                     // Second argum
 The define binding to the sequence use _Define_ method, use event sequence and object to bind as arguments.
 
 ```C#
-Define(int[] sequence, object value)
+Define(int[] sequence, object value);
+Define(string expression, object value);
 ``` 
 
 Alternative version of this method dedicated for menu definition, and will use pseudo codes for this binding.
@@ -135,7 +126,7 @@ For example lets define menu _File_ and option _Save_ and bind to it a menu item
 Define(new string[]{"File", "Save"}, menuItem )
 ```
 
-#### Look Up Binding
+#### Lookup Binding
 
 To lockup biding in hierarchy use _LokupKey_ method.
 
@@ -149,10 +140,6 @@ Additionaly there is version of this method with start and end index in the sequ
 KeyMapItem LokupKey(int[] sequence, int starts, int ends, bool acceptDefaults = false)
 ```
 
-## Full Keymap
-
-If an element of a key map is a char-table, it counts as holding bindings for all character events with no modifier element n is the binding for the character with code n. This is a compact way to record lots of bindings. A key map with such a char-table is called a full key-map. Other key-maps are called sparse key-maps.
-
 ## Global Key Map
 
 The default global key map, can be used in most cases without creating additional key-maps.
@@ -160,6 +147,27 @@ The default global key map, can be used in most cases without creating additiona
 ```C#
 var globalKeyMap = KeyMap.GlobalKeymap;
 ```
+
+## Full Keymap
+
+If an element of a key map is a char-table, it counts as holding bindings for all character events with no modifier element n is the binding for the character with code n. This is a compact way to record lots of bindings. A key map with such a char-table is called a full key-map. Other key-maps are called sparse key-maps.
+
+#### Sequence Binding
+
+This is simple keysequence binding to any key. The pressing this key will invoke this sequence.
+
+| Field          | Info             |
+|----------------|------------------|
+| string name    | Binding's name   |
+| string help    | Binding's help   |
+| int[] sequence | The key sequence |
+
+The constructor for sequence requires two fields values.
+
+```C#
+SequenceBinding(string name, int[] sequence, string help = null)
+```
+
 
 ## Mode
 
@@ -257,16 +265,10 @@ There are several variants of menu items available.
 
 ### MenuSeparator
 
-Has only one field with type of separator.
+Has only one field with type of separator: NoLine, Space, SingleLine, DashedLine.
 
 ```C#
-public enum Type
-{
-    NoLine,
-    Space,
-    SingleLine,
-    DashedLine
-}
+var menuLine = new MenuSeparator(MenuSeparator.Type.SingleLine);
 ```
 
 ### MenuLineBase
@@ -318,27 +320,39 @@ public readonly Precodition buttonState;    // Delegate to get button state
 The constructors for this menu item:
 
 ```C#
-MenuLineBaseComplex(string text, string shortcut = null, string help = null) 
-MenuLineBaseComplex(string text, object binding, string shortcut = null, string help = null) : this(text, shortcut, help)
-MenuLineBaseComplex(string text, 
-                    object binging,
-                    Precodition enable = null, 
-                    Precodition visible = null,
-                    Filter filter = null,
-                    string shortcut = null,
-                    string help = null)
-MenuLineBaseComplex(string text, 
-                    object binging,
-                    Precodition enable = null,
-                    Precodition visible = null,
-                    Filter filter = null,
-                    ButtonType buttonType = ButtonType.NoButton,
-                    Precodition buttonState = null,
-                    string shortcut = null,
-                    string help = null)            
+MenuLineBaseComplex(string text,                                  // Menu text
+                    string shortcut = null,                       // Menu shortcut only for screen
+                    string help = null)                           // Menu help 
+
+MenuLineBaseComplex(string text,                                  // Menu text
+                    object binding,                               // Binding to menu: other menu, function, etc
+                    string shortcut = null,                       // Menu shortcut only for screen
+                    string help = null)                           // Menu text
+
+MenuLineBaseComplex(string text,                                  // Menu text
+                    object binging,                               // Binding to menu: other menu, function, etc
+                    Precodition enable = null,                    // Predicate: is this menu active
+                    Precodition visible = null,                   // Predicate: is this menu visible
+                    Filter filter = null,                         // Filter: Method to compute actual menu item
+                    string shortcut = null,                       // Menu shortcut only for screen
+                    string help = null)                           // Menu help 
+
+MenuLineBaseComplex(string text,                                  // Menu text
+                    object binging,                               // Binding to menu: other menu, function, etc
+                    Precodition enable = null,                    // Predicate: is this menu active
+                    Precodition visible = null,                   // Predicate: is this menu visible
+                    Filter filter = null,                         // Filter: Method to compute actual menu item
+                    ButtonType buttonType = ButtonType.NoButton,  // Button Type
+                    Precodition buttonState = null,               // Predicate: is this button pressed
+                    string shortcut = null,                       // Menu shortcut only for screen
+                    string help = null)                           // Menu help     
 ```
 
-Lets make example of menu.
+Lets make example of menu definition. 
+- Define _File_ menu
+- Define _Save_ item at _File_ menu 
+- Append _File_ menu to _MainMenu_
+- Add keyboar shorcuts to _File_ menu and _Save_ menu item.
 
 ```C#
 // Create file menu
@@ -355,4 +369,8 @@ KeyMap.GlobalKeymap.SetLocal("A-f", menu);
 // Save file by C+S 
 KeyMap.GlobalKeymap.SetLocal("C-s", menuItem.binding);                  
 ```
+
+But this can be done by shorter way. 
+
+<sup>To Do ...</sup>
 
