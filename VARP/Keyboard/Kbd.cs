@@ -131,7 +131,7 @@ namespace VARP.Keyboard
             var idx = 0;
             var result = new Event[sequence.Length];
             foreach (var s in sequence)
-                result[idx++] = Event.GetPseudocodeOfName(s);
+                result[idx++] = Event.GetPseudocode(s);
             return result;
         }
     }

@@ -125,7 +125,7 @@ namespace VARP.Keyboard
             var s = "\"";
             for ( var i = 0 ; i < 16 ; i++ )
             {
-                s += buffer[ i ].GetName();
+                s += buffer[ i ].Name;
             }
     
             if (BufferSize > 20)

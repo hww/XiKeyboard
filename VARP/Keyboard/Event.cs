@@ -67,14 +67,10 @@ namespace VARP.Keyboard
         /// default binding in keymaps
         /// </summary>
         public static Event DefaultPseudoCode { get; private set; }
-        /// <summary>
-        /// Incremental value used for pseudocodes generator.
-        /// </summary>
+        /// <summary>Incremental value used for pseudocodes generator.</summary>
         private static int pseudoCodeIndex = 0;
-        /// <summary>
-        /// generate new pseudocode
-        /// </summary>
-        public static Event GetPseudocodeOfName(string name)
+        /// <summary>generate new pseudocode</summary>
+        public static Event GetPseudocode(string name)
         {
             Event code;
             if (NameToKeyCodeTable.TryGetValue(name, out code))
@@ -87,9 +83,7 @@ namespace VARP.Keyboard
         // Conversion Tables
         // Those tables alow to convert keycode to the name, and reversed.
         // ===============================================================================================
-        /// <summary>
-        /// Table to convert name to the key code 
-        /// </summary>
+        /// <summary>Table to convert name to the key code</summary>
         public static Dictionary<string, Event> NameToKeyCodeTable
         {
             get {
@@ -98,9 +92,7 @@ namespace VARP.Keyboard
                 return nameToKeyCodeTable;
             }
         }
-        /// <summary>
-        /// Table to convert key code to the code name 
-        /// </summary>
+        /// <summary>Table to convert key code to the code name</summary>
         public static Dictionary<Event, string> KeyCodeToNameTable
         {
             get {
@@ -151,9 +143,7 @@ namespace VARP.Keyboard
             else
                 throw new Exception(string.Format("Unexpected keycode '{0:X}'", evt));
         }
-        /// <summary>
-        /// Get keycode by name
-        /// </summary>
+        /// <summary>Get keycode by name</summary>
         private static Event GetKeyCodeInternal(string name)
         {
             Event code;
@@ -165,11 +155,7 @@ namespace VARP.Keyboard
         // EMACS keycode expressions parser
         // For convertion from expression like: "C-v" to convert to the keycode
         // ===============================================================================================
-        /// <summary>
-        /// Parse the expression without spaces
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
+        /// <summary>Parse the expression without spaces</summary>
         public static Event ParseExpression(string expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");
@@ -279,46 +265,38 @@ namespace VARP.Keyboard
         // ===============================================================================================
         // The initialization block
         // ===============================================================================================
-        /// <summary>
-        /// Initialize the class
-        /// <summary>
+        /// <summary>Initialize the class<summary>
         public static void Initialize ( )
         {
             nameToKeyCodeTable = new Dictionary<string, Event> ( );
             keyCodeToNameTable = new Dictionary<Event, string> ( );
 
-            foreach ( var keyCode in Enum.GetValues ( typeof ( KeyCode ) ) )
-                SetName ( (int)keyCode, keyCode.ToString ( ) );
-
-            for ( var i = (int)'a' ; i < (int)( 'z' ) ; i++ )
+            for ( var i = (int)' ' ; i < (int)( '0' ) ; i++ )
                 SetName ( i, ( (char)i ).ToString ( ) );
-
-            for ( var i = (int)'0' ; i < (int)( '9' ) ; i++ )
+            for ( var i = (int)'0' ; i <= (int)( '9' ) ; i++ )
+                SetName ( i, ( (char)i ).ToString ( ) );
+            for ( var i = (int)'a' ; i < (int)( 'z' ) ; i++ )
                 SetName ( i, ( (char)i ).ToString ( ) );
             
             SetName ( KeyModifyers.Shift, "S-" );
             SetName ( KeyModifyers.Control, "C-" );
             SetName ( KeyModifyers.Alt, "A-" );
-
+            SetName ( KeyModifyers.Pseudo, "P-" );
+            SetName ( KeyModifyers.Pseudo, "\\P-" );
             SetName ( UnityEngine.KeyCode.CapsLock, "\\_-" );
             SetName ( UnityEngine.KeyCode.Numlock, "\\N-" );
-
             SetName ( UnityEngine.KeyCode.LeftControl, "\\C-" );
             SetName ( UnityEngine.KeyCode.LeftAlt, "\\A-" );
             SetName ( UnityEngine.KeyCode.LeftShift, "\\S-" );
             SetName ( UnityEngine.KeyCode.LeftWindows, "\\W-" );
             SetName ( UnityEngine.KeyCode.LeftCommand, "\\c-" );
-
-
             SetName ( UnityEngine.KeyCode.RightControl, "\\C-" );
             SetName ( UnityEngine.KeyCode.RightAlt, "\\A-" );
             SetName ( UnityEngine.KeyCode.RightShift, "\\S-" );
             SetName ( UnityEngine.KeyCode.RightWindows, "\\W-" );
             SetName ( UnityEngine.KeyCode.RightCommand, "\\c-" );
             // pseudocode for default binding.
-            DefaultPseudoCode = GetPseudocodeOfName ( "default" );
-            SetName ( KeyModifyers.Pseudo, "P-" );
-            SetName ( KeyModifyers.Pseudo, "\\P-" );
+            DefaultPseudoCode = GetPseudocode ( "default" );
         }
         private static Dictionary<string, Event> nameToKeyCodeTable;
         private static Dictionary<Event, string> keyCodeToNameTable;
