@@ -21,15 +21,14 @@ namespace VARP.Keyboard
         /// <summary>Get name of key code code</summary>
         public string Name { get { return GetName(this); } }
 
+        /// <summary>Get modifyers of this event</summary>
+        public Event Modifyers { get { return Code & KeyModifyers.AllModifyers; } }
+
+        /// <summary>Get code of this event</summary>
+        public Event KeyCode { get { return Code & ~KeyModifyers.AllModifyers; } }
         /// <summary>Check if the given keycode is with the given modifyer mask</summary>
         public bool IsModifyer(int modifyers) { return (Code & modifyers) == modifyers; }
-        
-        /// <summary>Get modifyers of this event</summary>
-        public Event GetModifyers() { return Code & KeyModifyers.AllModifyers; }
-        
-        /// <summary>Get code of this event</summary>
-        public Event GetKeyCode() { return Code & ~KeyModifyers.AllModifyers; }
-        
+
     }
 
     public partial struct Event
@@ -116,8 +115,8 @@ namespace VARP.Keyboard
         /// </summary>
         public static void SetName(Event keyCode, string name)
         {
-            var modifyers = keyCode.GetModifyers();
-            var keyCodeOnly = keyCode.GetKeyCode();
+            var modifyers = keyCode.Modifyers;
+            var keyCodeOnly = keyCode.KeyCode;
             // The key code can be modifyer or the key
             // but it can't be bought
             UnityEngine.Debug.Assert(modifyers == 0 || keyCodeOnly == 0, keyCode);
@@ -127,8 +126,8 @@ namespace VARP.Keyboard
         /// <summary>Get name of key code code</summary>
         public static string GetName(Event evt)
         {
-            var keyModifyers = evt.GetModifyers();
-            var keyCodeOnly = evt.GetKeyCode();
+            var keyModifyers = evt.Modifyers;
+            var keyCodeOnly = evt.KeyCode;
             var modifyerName = string.Empty;
             if (keyModifyers != 0)
             {
@@ -301,21 +300,21 @@ namespace VARP.Keyboard
             SetName ( KeyModifyers.Control, "C-" );
             SetName ( KeyModifyers.Alt, "A-" );
 
-            SetName ( KeyCode.CapsLock, "\\_-" );
-            SetName ( KeyCode.Numlock, "\\N-" );
+            SetName ( UnityEngine.KeyCode.CapsLock, "\\_-" );
+            SetName ( UnityEngine.KeyCode.Numlock, "\\N-" );
 
-            SetName ( KeyCode.LeftControl, "\\C-" );
-            SetName ( KeyCode.LeftAlt, "\\A-" );
-            SetName ( KeyCode.LeftShift, "\\S-" );
-            SetName ( KeyCode.LeftWindows, "\\W-" );
-            SetName ( KeyCode.LeftCommand, "\\c-" );
+            SetName ( UnityEngine.KeyCode.LeftControl, "\\C-" );
+            SetName ( UnityEngine.KeyCode.LeftAlt, "\\A-" );
+            SetName ( UnityEngine.KeyCode.LeftShift, "\\S-" );
+            SetName ( UnityEngine.KeyCode.LeftWindows, "\\W-" );
+            SetName ( UnityEngine.KeyCode.LeftCommand, "\\c-" );
 
 
-            SetName ( KeyCode.RightControl, "\\C-" );
-            SetName ( KeyCode.RightAlt, "\\A-" );
-            SetName ( KeyCode.RightShift, "\\S-" );
-            SetName ( KeyCode.RightWindows, "\\W-" );
-            SetName ( KeyCode.RightCommand, "\\c-" );
+            SetName ( UnityEngine.KeyCode.RightControl, "\\C-" );
+            SetName ( UnityEngine.KeyCode.RightAlt, "\\A-" );
+            SetName ( UnityEngine.KeyCode.RightShift, "\\S-" );
+            SetName ( UnityEngine.KeyCode.RightWindows, "\\W-" );
+            SetName ( UnityEngine.KeyCode.RightCommand, "\\c-" );
             // pseudocode for default binding.
             DefaultPseudoCode = GetPseudocodeOfName ( "default" );
             SetName ( KeyModifyers.Pseudo, "P-" );
