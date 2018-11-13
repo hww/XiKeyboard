@@ -9,8 +9,8 @@ The example below shows how the API can be used to define key sequences. Each ke
 ```C#
 void Start ()
 {
-    KeyMap.GlobalKeymap.Define("S-1", "1");      // Define keystroke S-1 with text binding "1"
-    KeyMap.GlobalKeymap.Define("S-2 S-3", "2");  // Define keystroke S-2 S-3 with text binding "2"
+    KeyMap.GlobalKeymap.Define("S-1", "1");          // Define keystroke S-1 with text binding "1"
+    KeyMap.GlobalKeymap.Define("S-2 S-3", "2");      // Define keystroke S-2 S-3 with text binding "2"
     Buffer.OnSequencePressed.Add(OnSequencePressed); // On press sequence delagate
     Buffer.OnKeyPressed.Add(OnKeyPressed);           // On press key delegate
 }
