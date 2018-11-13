@@ -214,15 +214,15 @@ namespace VARP.Keyboard
         /// <summary>
         /// On enable buffer hook
         /// </summary>
-        public FastAction<Buffer> OnEnableListeners = new FastAction<Buffer>();
+        public readonly FastAction<Buffer> OnEnableListeners = new FastAction<Buffer>();
         /// <summary>
         /// On disable buffer hook
         /// </summary>
-        public FastAction<Buffer> OnDisableListeners = new FastAction<Buffer>();
+        public readonly FastAction<Buffer> OnDisableListeners = new FastAction<Buffer>();
         /// <summary>
         /// When some key sequence found
         /// </summary>
-        public FastAction<Buffer,KeyMapItem> OnSequencePressed = new FastAction<Buffer, KeyMapItem>();
+        public static readonly FastAction<Buffer,KeyMapItem> OnSequencePressed = new FastAction<Buffer, KeyMapItem>();
         #endregion
     }
 }

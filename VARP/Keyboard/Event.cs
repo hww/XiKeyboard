@@ -307,6 +307,9 @@ namespace VARP.Keyboard
             for ( var i = (int)'a' ; i < (int)( 'z' ) ; i++ )
                 SetName ( i, ( (char)i ).ToString ( ) );
 
+            for ( var i = (int)'0' ; i < (int)( '9' ) ; i++ )
+                SetName ( i, ( (char)i ).ToString ( ) );
+            
             SetName ( KeyModifyers.Shift, "S-" );
             SetName ( KeyModifyers.Control, "C-" );
             SetName ( KeyModifyers.Alt, "A-" );
