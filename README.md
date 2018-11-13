@@ -16,11 +16,11 @@ void Start ()
 }
 	
 void OnSequencePressed(Buffer buffer, KeyMapItem item) {
-    Debug.Log("Pressed Sequence: " + item.value);		  // Print "Pressed Sequence: N" 
+    Debug.Log("Pressed Sequence: " + item.value);    // Print "Pressed Sequence: N" 
 }
 
 void OnKeyPressed(Buffer buffer, Event evt) {
-	   Debug.Log(buffer.GetBufferHumanizedString());		  // Just display current bufer content
+    Debug.Log(buffer.GetBufferHumanizedString());    // Just display current bufer content
 }
  ```
 
