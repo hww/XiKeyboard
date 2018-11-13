@@ -82,7 +82,7 @@ namespace VARP.Keyboard
         /// <summary>
         /// Lockup sequence for this buffer.
         /// </summary>
-        public KeyMapItem Lookup ( int[] sequence, int starts, int ends, bool acceptDefaults )
+        public KeyMapItem Lookup ( Event [] sequence, int starts, int ends, bool acceptDefaults )
         {
             if ( sequence == null )
                 throw new ArgumentNullException ( "sequence" );
@@ -104,14 +104,10 @@ namespace VARP.Keyboard
             // Global bindings search
             return KeyMap.GlobalKeymap.LookupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
         }
-        /// <summary>
-        /// Get current buffer string
-        /// </summary>
-        /// <returns></returns>
-        public string GetBufferString()
-        {
-            return textBuffer.GetBufferString();
-        }
+        /// <summary>Get current buffer string</summary>
+        public string GetBufferString() { return textBuffer.GetBufferString(); }
+        /// <summary>Get current buffer humanized string</summary>
+        public string GetBufferHumanizedString() { return textBuffer.GetBufferHumanizedString(); }
         /// <summary>
         /// Get buffer substring
         /// </summary>
@@ -149,13 +145,15 @@ namespace VARP.Keyboard
         #endregion
 
         #region Lockup the keybinding recursively
+
         /// <summary>
         /// Main entry of all keys. Will find the binding for the curen mode
         /// end evaluate it
         /// </summary>
-        public bool OnKeyDown(int evt)
+        public bool OnKeyDown(Event evt)
         {
             textBuffer.InsertCharacter(evt);
+            OnKeyPressed.Call(this, evt);
             var result = Lookup(textBuffer.buffer, textBuffer.SequenceStarts, textBuffer.BufferSize, true);
             if (result == null)
             {
@@ -186,6 +184,7 @@ namespace VARP.Keyboard
         #endregion
 
         #region Object's members
+
         private readonly string name;
         private readonly string help;
         private Mode majorMode;
@@ -211,18 +210,14 @@ namespace VARP.Keyboard
         #endregion
 
         #region Enable/Disable Hooks
-        /// <summary>
-        /// On enable buffer hook
-        /// </summary>
+        /// <summary>On enable buffer hook</summary>
         public readonly FastAction<Buffer> OnEnableListeners = new FastAction<Buffer>();
-        /// <summary>
-        /// On disable buffer hook
-        /// </summary>
+        /// <summary>On disable buffer hook</summary>
         public readonly FastAction<Buffer> OnDisableListeners = new FastAction<Buffer>();
-        /// <summary>
-        /// When some key sequence found
-        /// </summary>
+        /// <summary>When some key sequence found</summary>
         public static readonly FastAction<Buffer,KeyMapItem> OnSequencePressed = new FastAction<Buffer, KeyMapItem>();
+        /// <summary>When key pressed</summary>
+        public static readonly FastAction<Buffer,Event> OnKeyPressed = new FastAction<Buffer,Event>();
         #endregion
     }
 }

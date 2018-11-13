@@ -90,12 +90,12 @@ namespace VARP.Keyboard
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static int[] Parse([NotNull] string expression)
+        public static Event [] Parse([NotNull] string expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");
             if (expression == string.Empty) throw new ArgumentException("expression");
 
-            var sequence = new List<int>();
+            var sequence = new List<Event>();
             var tags = expression.Split(' ');
 
             foreach (var s in tags)
@@ -126,10 +126,10 @@ namespace VARP.Keyboard
         /// </summary>
         /// <param name="sequence">Array of strings</param>
         /// <returns>Array of events</returns>
-        public static int[] ParsePseudo(string[] sequence)
+        public static Event[] ParsePseudo(string[] sequence)
         {
             var idx = 0;
-            var result = new int[sequence.Length];
+            var result = new Event[sequence.Length];
             foreach (var s in sequence)
                 result[idx++] = Event.GetPseudocodeOfName(s);
             return result;

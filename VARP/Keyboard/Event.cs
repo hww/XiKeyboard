@@ -7,33 +7,39 @@ using UnityEngine;
 
 namespace VARP.Keyboard
 {
-    public static partial class Event
+    public partial struct Event
     {
-        /// <summary>
-        /// Check if the given keycode is with the given modifyer mask
-        /// </summary>
-        /// <param name="evt"></param>
-        /// <param name="modifyers"></param>
-        /// <returns></returns>
-        public static bool IsModifyer(int evt, int modifyers)
-        {
-            return (evt & modifyers) == modifyers;
-        }
-        /// <summary>
-        /// Check if code is valid
-        /// </summary>
-        /// <param name="evt"></param>
-        /// <returns></returns>
-        public static bool IsValid(int evt)
-        {
-            return evt>= 0 && evt < KeyModifyers.MaxCode;
-        }
+        private int Code;
+        public Event(int code) { Code = code; }
+        public static implicit operator int(Event evt){ return evt.Code; }
+        public static implicit operator Event(int code) { return new Event(code); }
+        public static implicit operator Event(KeyCode code) { return new Event((int)code); }
+        
+        /// <summary>Check if code is valid</summary>
+        public bool IsValid => Code>= 0 && Code < KeyModifyers.MaxCode;
+
+        /// <summary>Get name of key code code</summary>
+        public string Name { get { return GetName(this); } }
+
+        /// <summary>Check if the given keycode is with the given modifyer mask</summary>
+        public bool IsModifyer(int modifyers) { return (Code & modifyers) == modifyers; }
+        
+        /// <summary>Get modifyers of this event</summary>
+        public Event GetModifyers() { return Code & KeyModifyers.AllModifyers; }
+        
+        /// <summary>Get code of this event</summary>
+        public Event GetKeyCode() { return Code & ~KeyModifyers.AllModifyers; }
+        
+    }
+
+    public partial struct Event
+    {    
         /// <summary>
         /// Create nev event from code and use new modifyers
         /// </summary>
         /// <param name="keyCode"></param>
         /// <param name="modifyers"></param>
-        public static int MakeEvent(int keyCode, int modifyers)
+        public static Event MakeEvent(int keyCode, int modifyers)
         {
             var code = keyCode & ~KeyModifyers.AllModifyers;
             if (code > 32 && code < 255)
@@ -49,24 +55,7 @@ namespace VARP.Keyboard
                 return code | modifyers;
             }
         }
-        
-        /// <summary>
-        /// Get modifyers of this event
-        /// </summary>
-        /// <returns></returns>
-        public static int GetModifyers(int evt)
-        {
-            return evt & KeyModifyers.AllModifyers;
-        }
-        /// <summary>
-        /// Get code of this event
-        /// </summary>
-        /// <param name="evt"></param>
-        /// <returns></returns>
-        public static int GetKeyCode(int evt)
-        {
-            return evt & ~KeyModifyers.AllModifyers;
-        }
+
         // ===============================================================================================
         // PseudoCode Generator 
         //
@@ -78,7 +67,7 @@ namespace VARP.Keyboard
         /// this pseudocode is reserved word "default" used for 
         /// default binding in keymaps
         /// </summary>
-        public static int DefaultPseudoCode { get; private set; }
+        public static Event DefaultPseudoCode { get; private set; }
         /// <summary>
         /// Incremental value used for pseudocodes generator.
         /// </summary>
@@ -86,9 +75,9 @@ namespace VARP.Keyboard
         /// <summary>
         /// generate new pseudocode
         /// </summary>
-        public static int GetPseudocodeOfName(string name)
+        public static Event GetPseudocodeOfName(string name)
         {
-            int code;
+            Event code;
             if (NameToKeyCodeTable.TryGetValue(name, out code))
                 return code;
             code = pseudoCodeIndex++ | KeyModifyers.Pseudo;
@@ -102,7 +91,7 @@ namespace VARP.Keyboard
         /// <summary>
         /// Table to convert name to the key code 
         /// </summary>
-        public static Dictionary<string, int> NameToKeyCodeTable
+        public static Dictionary<string, Event> NameToKeyCodeTable
         {
             get {
                 if (nameToKeyCodeTable == null)
@@ -113,7 +102,7 @@ namespace VARP.Keyboard
         /// <summary>
         /// Table to convert key code to the code name 
         /// </summary>
-        public static Dictionary<int, string> KeyCodeToNameTable
+        public static Dictionary<Event, string> KeyCodeToNameTable
         {
             get {
                 if (keyCodeToNameTable == null)
@@ -125,35 +114,33 @@ namespace VARP.Keyboard
         /// Declarate new key code name
         /// SetName((int)KeyCode.RightCommand, "\\c-");
         /// </summary>
-        public static void SetName(int keyCode, string name)
+        public static void SetName(Event keyCode, string name)
         {
-            var modifyers = keyCode & KeyModifyers.AllModifyers;
-            var keyCodeOnly = keyCode - modifyers;
+            var modifyers = keyCode.GetModifyers();
+            var keyCodeOnly = keyCode.GetKeyCode();
             // The key code can be modifyer or the key
             // but it can't be bought
             UnityEngine.Debug.Assert(modifyers == 0 || keyCodeOnly == 0, keyCode);
             NameToKeyCodeTable[name] = keyCode;
             KeyCodeToNameTable[keyCode] = name;
         }
-        /// <summary>
-        /// Get name of key code code 
-        /// </summary>
-        public static string GetName(int keyCode)
+        /// <summary>Get name of key code code</summary>
+        public static string GetName(Event evt)
         {
-            var keyModifyers = keyCode & KeyModifyers.AllModifyers;
-            var keyCodeOnly = keyCode - keyModifyers;
+            var keyModifyers = evt.GetModifyers();
+            var keyCodeOnly = evt.GetKeyCode();
             var modifyerName = string.Empty;
             if (keyModifyers != 0)
             {
                 foreach (var m in KeyModifyers.AllModifyersList)
                 {
-                    if (IsModifyer(keyModifyers, m))
+                    if (keyModifyers.IsModifyer(m))
                     {
                         string name;
                         if (KeyCodeToNameTable.TryGetValue(m, out name))
                             modifyerName += name;
                         else
-                            throw new Exception(string.Format("Unexpected modifyer in keycode '{0:X}'", keyCode));
+                            throw new Exception(string.Format("Unexpected modifyer in keycode '{0:X}'", evt));
                     }
                 }
             }
@@ -163,14 +150,14 @@ namespace VARP.Keyboard
             else if (keyCodeOnly < 32 && keyModifyers == 0)
                 return string.Format("^{0}", (char)(keyCodeOnly + 0x40));
             else
-                throw new Exception(string.Format("Unexpected keycode '{0:X}'", keyCode));
+                throw new Exception(string.Format("Unexpected keycode '{0:X}'", evt));
         }
         /// <summary>
         /// Get keycode by name
         /// </summary>
-        private static int GetKeyCodeInternal(string name)
+        private static Event GetKeyCodeInternal(string name)
         {
-            int code;
+            Event code;
             if (NameToKeyCodeTable.TryGetValue(name, out code))
                 return code;
             throw new Exception(string.Format("Expected key code name, found '{0}'", name));
@@ -184,7 +171,7 @@ namespace VARP.Keyboard
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static int ParseExpression(string expression)
+        public static Event ParseExpression(string expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");
             if (expression == string.Empty) throw new ArgumentException("expression");
@@ -209,7 +196,7 @@ namespace VARP.Keyboard
         /// Such as C- A- S- the function produce an exception
         /// it the expression is badly formate
         /// </summary>
-        private static int ParseWordWithModifyers(string expression)
+        private static Event ParseWordWithModifyers(string expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");
 
@@ -279,9 +266,9 @@ namespace VARP.Keyboard
                 if (tmp >= 0)
                 {
                     if (modifyers == KeyModifyers.Control && tmp < 256)
-                        return tmp & 0x1F;
+                        return tmp.Code & 0x1F;
                     else
-                        return MakeEvent(tmp, modifyers);
+                        return MakeEvent(tmp.Code, modifyers);
                 }
                 throw new Exception(string.Format("Expected character after C-,A-,S- found '{0}' in expression '{0:X}'", sufix, expression));
             }
@@ -298,8 +285,8 @@ namespace VARP.Keyboard
         /// <summary>
         public static void Initialize ( )
         {
-            nameToKeyCodeTable = new Dictionary<string, int> ( );
-            keyCodeToNameTable = new Dictionary<int, string> ( );
+            nameToKeyCodeTable = new Dictionary<string, Event> ( );
+            keyCodeToNameTable = new Dictionary<Event, string> ( );
 
             foreach ( var keyCode in Enum.GetValues ( typeof ( KeyCode ) ) )
                 SetName ( (int)keyCode, keyCode.ToString ( ) );
@@ -314,28 +301,28 @@ namespace VARP.Keyboard
             SetName ( KeyModifyers.Control, "C-" );
             SetName ( KeyModifyers.Alt, "A-" );
 
-            SetName ( (int)KeyCode.CapsLock, "\\_-" );
-            SetName ( (int)KeyCode.Numlock, "\\N-" );
+            SetName ( KeyCode.CapsLock, "\\_-" );
+            SetName ( KeyCode.Numlock, "\\N-" );
 
-            SetName ( (int)KeyCode.LeftControl, "\\C-" );
-            SetName ( (int)KeyCode.LeftAlt, "\\A-" );
-            SetName ( (int)KeyCode.LeftShift, "\\S-" );
-            SetName ( (int)KeyCode.LeftWindows, "\\W-" );
-            SetName ( (int)KeyCode.LeftCommand, "\\c-" );
+            SetName ( KeyCode.LeftControl, "\\C-" );
+            SetName ( KeyCode.LeftAlt, "\\A-" );
+            SetName ( KeyCode.LeftShift, "\\S-" );
+            SetName ( KeyCode.LeftWindows, "\\W-" );
+            SetName ( KeyCode.LeftCommand, "\\c-" );
 
 
-            SetName ( (int)KeyCode.RightControl, "\\C-" );
-            SetName ( (int)KeyCode.RightAlt, "\\A-" );
-            SetName ( (int)KeyCode.RightShift, "\\S-" );
-            SetName ( (int)KeyCode.RightWindows, "\\W-" );
-            SetName ( (int)KeyCode.RightCommand, "\\c-" );
+            SetName ( KeyCode.RightControl, "\\C-" );
+            SetName ( KeyCode.RightAlt, "\\A-" );
+            SetName ( KeyCode.RightShift, "\\S-" );
+            SetName ( KeyCode.RightWindows, "\\W-" );
+            SetName ( KeyCode.RightCommand, "\\c-" );
             // pseudocode for default binding.
             DefaultPseudoCode = GetPseudocodeOfName ( "default" );
             SetName ( KeyModifyers.Pseudo, "P-" );
             SetName ( KeyModifyers.Pseudo, "\\P-" );
         }
-        private static Dictionary<string, int> nameToKeyCodeTable;
-        private static Dictionary<int, string> keyCodeToNameTable;
+        private static Dictionary<string, Event> nameToKeyCodeTable;
+        private static Dictionary<Event, string> keyCodeToNameTable;
     }
 }
 

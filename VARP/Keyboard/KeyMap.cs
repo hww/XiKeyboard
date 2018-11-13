@@ -112,9 +112,9 @@ namespace VARP.Keyboard
         /// <summary>
         /// Set key value pair. Replace existing
         /// </summary>
-        public virtual void SetLocal(int evt, object value)
+        public virtual void SetLocal(Event evt, object value)
         {
-            if (!Event.IsValid(evt))
+            if (!evt.IsValid)
                 throw new ArgumentOutOfRangeException("evt");
             var binding = new KeyMapItem(evt, value);
             var index = GetIndexOf(evt);
@@ -129,9 +129,9 @@ namespace VARP.Keyboard
         /// <summary>
         ///  Get key binding of this keymap, returns: null or deffault binding (if allowed)
         /// </summary>
-        public virtual KeyMapItem GetLocal(int evt, bool acceptDefaults = false)
+        public virtual KeyMapItem GetLocal(Event evt, bool acceptDefaults = false)
         {
-            if (!Event.IsValid(evt))
+            if (!evt.IsValid)
                 throw new ArgumentOutOfRangeException("evt");
             var index = GetIndexOf(evt);
             if (index >= 0 && items[index].value != null)
@@ -157,7 +157,7 @@ namespace VARP.Keyboard
         /// <summary>
         /// Lockup keymap item by full sequence of keys
         /// </summary>
-        public virtual KeyMapItem LookupKey(int[] sequence, bool acceptDefaults = false)
+        public virtual KeyMapItem LookupKey(Event[] sequence, bool acceptDefaults = false)
         {
             return LookupKey(sequence, 0, sequence.Length - 1, acceptDefaults);
         }
@@ -169,7 +169,7 @@ namespace VARP.Keyboard
         /// <param name="ends">Last index in the sequence</param>
         /// <param name="acceptDefaults">Allow to return default binding</param>
         /// <returns>KeyMapItem or Null</returns>
-        public virtual KeyMapItem LookupKey(int[] sequence, int starts, int ends, bool acceptDefaults = false)
+        public virtual KeyMapItem LookupKey(Event [] sequence, int starts, int ends, bool acceptDefaults = false)
         {
             if (sequence == null) throw new ArgumentNullException("sequence");
             if (starts < 0 || starts >= sequence.Length) throw new ArgumentOutOfRangeException("starts");
@@ -195,18 +195,20 @@ namespace VARP.Keyboard
         // ===============================================================================================
         // Define the keybinding recursively
         // ===============================================================================================
-        /// <summary>
-        /// Define list of key-strings. This way used for defining menu
-        /// </summary>
+        /// <summary>Define list of key-strings. This way used for defining menu</summary>
         public bool Define(string[] sequence, object value)
         {
             var newsequence = Kbd.ParsePseudo(sequence);
             return Define(newsequence, value);
         }
-        /// <summary>
-        /// Define 
-        /// </summary>
-        public virtual bool Define(int[] sequence, object value)
+        /// <summary>Define by string expression</summary>
+        public bool Define(string sequence, object value)
+        {
+            var newsequence = Kbd.Parse(sequence);
+            return Define(newsequence, value);
+        }
+        /// <summary>Define sequence with given binding</summary>
+        public virtual bool Define(Event [] sequence, object value)
         {
             if (sequence == null) throw new ArgumentNullException("sequence");
 
@@ -287,9 +289,9 @@ namespace VARP.Keyboard
         /// </summary>
         /// <param name="evt"></param>
         /// <param name="value"></param>
-        public override void SetLocal(int evt, object value)
+        public override void SetLocal(Event evt, object value)
         {
-            if (!Event.IsValid(evt))
+            if (!evt.IsValid)
                 throw new ArgumentOutOfRangeException("evt");
 
             // do not support keys with modificators
@@ -318,9 +320,9 @@ namespace VARP.Keyboard
         /// <param name="evt"></param>
         /// <param name="acceptDefaults"></param>
         /// <returns></returns>
-        public override KeyMapItem GetLocal(int evt, bool acceptDefaults = false)
+        public override KeyMapItem GetLocal(Event evt, bool acceptDefaults = false)
         {
-            if (!Event.IsValid(evt))
+            if (!evt.IsValid)
                 throw new ArgumentOutOfRangeException("evt");
 
             // do not support keys with modificators

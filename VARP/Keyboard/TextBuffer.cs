@@ -16,7 +16,7 @@ namespace VARP.Keyboard
         /// </summary>
         public TextBuffer ( int capacity = 256 )
         {
-            buffer = new int[ capacity ];
+            buffer = new Event[ capacity ];
             BufferSize = 0;
         }
         // ===========================================================================================
@@ -26,7 +26,7 @@ namespace VARP.Keyboard
         /// On key down event will add the character to the buffer.
         /// In case if buffer is overflowed it will clear this buffer
         /// </summary>
-        public void InsertCharacter ( int evt )
+        public void InsertCharacter ( Event evt )
         {
             //TODO if there is selection
             // insert character
@@ -41,7 +41,7 @@ namespace VARP.Keyboard
         /// Set character at the point
         /// </summary>
         /// <param name="evt"></param>
-        public void OverrideCharacter(int evt)
+        public void OverrideCharacter(Event evt)
         {
             buffer[Point] = evt;
             isModifyed = true;
@@ -74,15 +74,13 @@ namespace VARP.Keyboard
         // ===========================================================================================
         // Required for scanning in keyboard map
         // ===========================================================================================
-        /// <summary>
-        /// Where are sequence similar to ""C-x C-f"" starts
-        /// </summary>
+        /// <summary>Where are sequence similar to ""C-x C-f"" starts</summary>
         public int SequenceStarts
         {
             get { return sequenceStarts; }
             set
             {
-                UnityEngine.Debug.Assert(value < BufferSize);
+                UnityEngine.Debug.Assert(value <= BufferSize);
                 sequenceStarts = value;
             }
         }
@@ -127,7 +125,7 @@ namespace VARP.Keyboard
             var s = "\"";
             for ( var i = 0 ; i < 16 ; i++ )
             {
-                s += Event.GetName ( buffer[ i ] );
+                s += buffer[ i ].GetName();
             }
     
             if (BufferSize > 20)
@@ -149,6 +147,15 @@ namespace VARP.Keyboard
             return s;
         }
         /// <summary>
+        /// Get current buffer string. The result lenght should be exactly same as source
+        /// </summary>
+        public string GetBufferHumanizedString    ()
+        {
+            var s = "";
+            for (var i = 0; i < BufferSize; i++)
+                s += Event.GetName(buffer[i]);
+            return s;
+        }
         /// Get buffer substring. The result lenght should be exactly same as source
         /// </summary>
         /// <param name="starts"></param>
@@ -188,7 +195,7 @@ namespace VARP.Keyboard
         // Members
         // ===========================================================================================
         // sequence of events inside of this buffer
-        public readonly int[] buffer;
+        public readonly Event[] buffer;
         // position of first character in the kbd-map's seuquencem as: "C-x C-f"
         private int sequenceStarts;
         // position of entry point
