@@ -24,12 +24,13 @@ The KeyEvent is container with KeyCode and key modelers. The modifiers packed to
 To create new event there is  method _MakeEvent_.
 
 ```C#
-var event = Event.MakeEvent((int)KeyCode.A, KeyModifyers.Shift); // Makes S-a event
-Event.IsModifyer(event, KeyModifyers.Shift);                     // Return true
-Event.IsModifyer(event, KeyModifyers.Control);                   // Return false
-Event.IsValie(event);                                            // Return true
-var keyCode = Event.GetKeyCode(event);                           // Return KeyCode.A as integer
-var keyModf = Event.GetModifyers(event);                         // Return KeyModifyers.Shift
+var event = Event.MakeEvent(KeyCode.A, KeyModifyers.Shift);      // Makes S-a event
+event.IsModifyer(event, KeyModifyers.Shift);                     // Return true
+event.IsModifyer(event, KeyModifyers.Control);                   // Return false
+var name = event.Name;                                           // Return S-a
+var valid = event.IsValid;                                       // Return true
+var keyCode = event.KeyCode;                                     // Return KeyCode.A as integer
+var keyModf = event.Modifyers;                                   // Return KeyModifyers.Shift
 ```
 
 ## Pseudo Keys
@@ -38,8 +39,8 @@ The pseudo code looks like unique random key code (non existed in keyboard). For
 The pseudo code has large key code and the key modifier _Pseudo_ is in pressed state.
 
 ```C#
-var pseudo = Event.GetPseudocodeOfName(); // Get random pseudo code
-var default = Event.DefaultPseudoCode;    // Get default pseudo code
+var pseudo = Event.GetPseudocode("Foo");       // Get random pseudo code
+var default = Event.DefaultPseudoCode;         // Get default pseudo code
 ```
 
 ## Humanized Key Name
