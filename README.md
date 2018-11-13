@@ -1,6 +1,6 @@
 # Keyboard Manager
 
-The asset for Unity with keyboard manager similar to keyboard manager of Emacs. <sup>Work In Progress</sup> 
+The asset for Unity 3D with keyboard manager similar to Emacs. <sup>Work In Progress</sup> 
 
 ## Introduction
 
@@ -43,33 +43,42 @@ Key modifiers encoded as most significant bits of integer value. The virtual key
 
 ## Event
 
-The KeyEvent is container with KeyCode and key modelers. The modifiers packed to most significant bits. Every key press will convert KeyCode to the KeyEvent and send to current input buffer<sup>Read Below</sup>. 
+The key Event is container with key code and key modifier. For every pressed key will the key code will be packed with modifier to Event and submit to current input buffer<sup>Read Below</sup>. 
 
-To create new event there is  method _MakeEvent_.
+To create new event there is _MakeEvent_ method.
 
 ```C#
 var event = Event.MakeEvent(KeyCode.A, KeyModifyers.Shift);      // Makes S-a event
+```
+
+To check event's modifiers there is _IsModifyer_ method.
+
+```C#
 event.IsModifyer(event, KeyModifyers.Shift);                     // Return true
 event.IsModifyer(event, KeyModifyers.Control);                   // Return false
+```
+
+Other methods of Event you can see below.
+
+```C#
 var name = event.Name;                                           // Return S-a
-var valid = event.IsValid;                                       // Return true
+var valid = event.IsValid;                                       // Return true if the keycode is valid
 var keyCode = event.KeyCode;                                     // Return KeyCode.A as integer
 var keyModf = event.Modifyers;                                   // Return KeyModifyers.Shift
 ```
 
 ## Pseudo Keys
 
-The pseudo code looks like unique random key code (non existed in keyboard). For example: "pseudo-1", "pseudo-2",...,"pseudo-N"
-The pseudo code has large key code and the key modifier _Pseudo_ is in pressed state.
+The pseudo codes are virtual keys with unique names. Each pseudocode has a key modifier _Pseudo_ is in pressed state. 
 
 ```C#
-var pseudo = Event.GetPseudocode("Foo");       // Get random pseudo code
-var default = Event.DefaultPseudoCode;         // Get default pseudo code
+var pseudo = Event.GetPseudocode("Foo");       // Get random pseudo code with unique name "Foo"
+var default = Event.DefaultPseudoCode;         // Get default pseudo code. It has name "default"
 ```
 
 ## Humanized Key Name
 
-The key code can be convert to humanize name, or reversed. To define the name use method _SetName_
+The key code can be converted to humanize name, or reversed. To define the name use method _SetName_
 
 ```C#
 Event.SetName((int)KeyCode.RightCommand, "\\c-");
@@ -81,10 +90,13 @@ var name = Event.GetName((int)KeyCode.RightCommand);  // Return "\\c-"
 The sequence can be defined as array of events. The example below defines the sequence "C-x C-f"
 
 ```C#
-int[] sequence = new int[2] { Event.MakeEvent((int)KeyCode.X, KeyModifyers.Control), Event.MakeEvent((int)KeyCode.F, KeyModifyers.Control) };
+Event[] sequence = new Event[2] { 
+    Event.MakeEvent((int)KeyCode.X, KeyModifyers.Control), 
+    Event.MakeEvent((int)KeyCode.F, KeyModifyers.Control) 
+    };
 ```
 
-Alternative way is parsing the string expression.
+Alternative way is parsing the expression <sup>similar to Emacs</sup>.
 
 ```C#
 var sequence = Kbd.ParseExpression("C-x C-f");
@@ -98,6 +110,7 @@ There are two variants of constructor available. One for the ordinary key-map an
 KeyMap(string title = null, string help = null )
 KeyMap(KeyMap parent, string title = null, string help = null )
 ```
+
 #### Key Map Item
 
 This object link a key event with other item: 
