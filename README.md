@@ -2,6 +2,30 @@
 
 The asset for Unity with keyboard manager similar to keyboard manager of Emacs. <sup>Work In Progress</sup> 
 
+## Introduction
+
+The example below shows how the API can be used to define key sequences. Each key press will print current buffer to log. And in case of two sequences will be printed "Pressed Sequence: N" text (where N is 1 or 2)
+
+```C#
+void Start ()
+{
+    KeyMap.GlobalKeymap.Define("S-1", "1");      // Define keystroke S-1 with text binding "1"
+    KeyMap.GlobalKeymap.Define("S-2 S-3", "2");  // Define keystroke S-2 S-3 with text binding "2"
+    Buffer.OnSequencePressed.Add(OnSequencePressed); // On press sequence delagate
+    Buffer.OnKeyPressed.Add(OnKeyPressed);           // On press key delegate
+}
+	
+void OnSequencePressed(Buffer buffer, KeyMapItem item) {
+    Debug.Log("Pressed Sequence: " + item.value);		  // Print "Pressed Sequence: N" 
+}
+
+void OnKeyPressed(Buffer buffer, Event evt) {
+	   Debug.Log(buffer.GetBufferHumanizedString());		  // Just display current bufer content
+}
+ ```
+
+Can be binded any value, for example: GameObject, lambda function or menu item.
+
 ## Key Modifiers
 
 Key modifiers encoded as most significant bits of integer value. The virtual key _Pseudo_ used to generate pseudo keys<sup>Read Below</sup>.
