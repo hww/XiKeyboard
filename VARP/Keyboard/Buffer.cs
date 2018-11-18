@@ -1,4 +1,26 @@
-﻿/* Copyright (c) 2016 Valery Alex P. All rights reserved. */
+﻿// =============================================================================
+// MIT License
+//
+// Copyright (c) [2018] [Valeriya Pudova]
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// =============================================================================
 
 using System;
 using System.Collections.Generic;
@@ -26,22 +48,19 @@ namespace VARP.Keyboard
         }
 
         #region IBuffer methods
-        /// <summary>
-        /// Enable this buffer and makes it current
-        /// </summary>
-        public void Enable ( ) { CurentBuffer = this;  }
-        /// <summary>
-        /// Get name of this buffer
-        /// </summary>
+        /// <summary>Enable this buffer and makes it current</summary>
+        public void SetActive(bool state)
+        {
+            (curentBuffer ?? Null).OnDisable ( );
+            curentBuffer = state ? this : Null;
+            curentBuffer.OnEnable ( );
+        }
+        /// <summary>Get name of this buffer</summary>
         public string Name { get { return name; } }
-        /// <summary>
-        /// Get help for this buffer
-        /// </summary>
+        /// <summary>Get help for this buffer</summary>
         public string Help { get { return help; } }
-        /// <summary>
-        /// Enable minor mode in this buffer
-        /// </summary>
-        /// <param name="mode"></param>
+
+        /// <summary>Enable minor mode in this buffer</summary>
         public void EnabeMinorMode ( Mode mode )
         {
             if ( minorModes.Contains ( mode ) )
@@ -49,10 +68,7 @@ namespace VARP.Keyboard
             mode.Enable ( );
             minorModes.Add ( mode );
         }
-        /// <summary>
-        /// Disable minor mode in this buffer
-        /// </summary>
-        /// <param name="mode"></param>
+        /// <summary>Disable minor mode in this buffer</summary>
         public void DisableMinorMode ( Mode mode )
         {
             if ( !minorModes.Contains ( mode ) )
@@ -60,18 +76,13 @@ namespace VARP.Keyboard
             mode.Disable ( );
             minorModes.Remove ( mode );
         }
-        /// <summary>
-        /// Enable major mode in this buffer
-        /// </summary>
-        /// <param name="mode"></param>
+        /// <summary>Enable major mode in this buffer</summary>
         public void EnabeMajorMode ( Mode mode )
         {
             mode.Enable ( );
             majorMode = mode;
         }
-        /// <summary>
-        /// Disable major mode in this buffer
-        /// </summary>
+        /// <summary>Disable major mode in this buffer</summary>
         public void DisableMajorMode ( )
         {
             if ( majorMode == null )
@@ -79,9 +90,7 @@ namespace VARP.Keyboard
             majorMode.Disable ( );
             majorMode = Mode.Null;
         }
-        /// <summary>
-        /// Lockup sequence for this buffer.
-        /// </summary>
+        /// <summary>Lockup sequence for this buffer./// </summary>
         public KeyMapItem Lookup ( Event [] sequence, int starts, int ends, bool acceptDefaults )
         {
             if ( sequence == null )
@@ -108,36 +117,23 @@ namespace VARP.Keyboard
         public string GetBufferString() { return textBuffer.GetBufferString(); }
         /// <summary>Get current buffer humanized string</summary>
         public string GetBufferHumanizedString() { return textBuffer.GetBufferHumanizedString(); }
-        /// <summary>
-        /// Get buffer substring
-        /// </summary>
-        /// <param name="starts"></param>
-        /// <param name="ends"></param>
+        /// <summary>Get buffer substring</summary>
         public string GetBufferSubString(int starts, int ends)
         {
             return textBuffer.GetBufferSubString(starts, ends);
         }
-        /// <summary>
-        /// Get curent cursor position
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>Get curent cursor position</summary>
         public int Point
         {
             get { return textBuffer.Point; }
             set { textBuffer.Point = value; }
         }
-        /// <summary>
-        /// Get current selection
-        /// </summary>
+        /// <summary>Get current selection</summary>
         public void GetSelection(out int begin, out int end)
         {
             textBuffer.GetSelection(out begin, out end);
         }
-        /// <summary>
-        ///  Set selection
-        /// </summary>
-        /// <param name="begin"></param>
-        /// <param name="end"></param>
+        /// <summary>Set selection</summary>
         public void SetSelection(int begin, int end)
         {
             textBuffer.SetSelection( begin, end);
@@ -146,10 +142,7 @@ namespace VARP.Keyboard
 
         #region Lockup the keybinding recursively
 
-        /// <summary>
-        /// Main entry of all keys. Will find the binding for the curen mode
-        /// end evaluate it
-        /// </summary>
+        /// <summary>Main entry of all keys. Will find the binding for the curen modeend evaluate it</summary>
         public bool OnKeyDown(Event evt)
         {
             textBuffer.InsertCharacter(evt);
@@ -199,11 +192,6 @@ namespace VARP.Keyboard
         public static Buffer CurentBuffer
         {
             get { return curentBuffer ?? Null; }
-            set {
-                CurentBuffer.OnDisable ( );
-                curentBuffer = value ?? Null;
-                curentBuffer.OnEnable ( );
-            }
         }
         private static Buffer curentBuffer;
         private static readonly Buffer Null = new Buffer ( "null", "Empty unused buffer" );
