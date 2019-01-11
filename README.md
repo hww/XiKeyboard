@@ -28,7 +28,7 @@ Can be binded any value, for example: GameObject, lambda function or menu item.
 
 ## Dependency
 
-This project uses (VARP/Delegates)[_https://github.com/hww/varp_delegates_] library.
+This project uses [VARP/Delegates](https://github.com/hww/varp_delegates) library.
 
 ## Key Modifiers
 
