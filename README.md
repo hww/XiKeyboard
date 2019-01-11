@@ -26,6 +26,10 @@ void OnKeyPressed(Buffer buffer, Event evt) {
 
 Can be binded any value, for example: GameObject, lambda function or menu item.
 
+## Dependency
+
+This project uses [VARP/Delegates](https://github.com/hww/varp_delegates) library.
+
 ## Key Modifiers
 
 Key modifiers encoded as most significant bits of integer value. The virtual key _Pseudo_ used to generate pseudo keys<sup>Read Below</sup>.
