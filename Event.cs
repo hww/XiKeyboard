@@ -24,10 +24,9 @@
 
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 
-namespace VARP.Keyboard
+namespace Plugins.VARP.Keyboard
 {
     public partial struct Event
     {

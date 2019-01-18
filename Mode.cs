@@ -22,10 +22,9 @@
 // SOFTWARE.
 // =============================================================================
 
-using System;
 using TMPro;
 
-namespace VARP.Keyboard
+namespace Plugins.VARP.Keyboard
 {
     public class Mode
     {

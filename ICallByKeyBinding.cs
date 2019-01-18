@@ -22,7 +22,7 @@
 // SOFTWARE.
 // =============================================================================
 
-namespace VARP.Keyboard
+namespace Plugins.VARP.Keyboard
 {
     public interface ICallByKeyBinding  {
 

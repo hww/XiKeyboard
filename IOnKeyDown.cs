@@ -22,7 +22,7 @@
 // SOFTWARE.
 // =============================================================================
 
-namespace VARP.Keyboard
+namespace Plugins.VARP.Keyboard
 {
     /// <summary>
     /// Any object which can receive the key event

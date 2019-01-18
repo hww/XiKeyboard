@@ -22,7 +22,7 @@
 // SOFTWARE.
 // =============================================================================
 
-namespace VARP.Keyboard
+namespace Plugins.VARP.Keyboard
 {
     /// <summary>
     /// The base class for all menu items

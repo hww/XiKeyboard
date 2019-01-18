@@ -23,9 +23,8 @@
 // =============================================================================
 
 using System;
-using UnityEngine.UI;
 
-namespace VARP.Keyboard
+namespace Plugins.VARP.Keyboard
 {
 
     /// <summary>

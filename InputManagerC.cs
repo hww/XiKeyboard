@@ -22,10 +22,9 @@
 // SOFTWARE.
 // =============================================================================
 
-using System;
 using UnityEngine;
 
-namespace VARP.Keyboard
+namespace Plugins.VARP.Keyboard
 {
     /// <summary>This component redirecting key events to current buffer</summary>
     public class InputManagerC : MonoBehaviour

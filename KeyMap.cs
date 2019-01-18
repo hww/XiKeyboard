@@ -25,7 +25,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VARP.Keyboard
+namespace Plugins.VARP.Keyboard
 {
     /// <summary>
     /// This is simple keysequence binding to any key.

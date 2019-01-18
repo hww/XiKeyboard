@@ -22,11 +22,9 @@
 // SOFTWARE.
 // =============================================================================
 
-using System.Collections;
-using System.Collections.Generic;
+using Plugins.VARP.Keyboard;
 using UnityEngine;
-using VARP.Keyboard;
-using Event = VARP.Keyboard.Event;
+using Event = Plugins.VARP.Keyboard.Event;
 
 public class KeyboardDemoC : MonoBehaviour {
 
