@@ -22,7 +22,7 @@
 // SOFTWARE.
 // =============================================================================
 
-namespace Plugins.VARP.Keyboard
+namespace VARP.Keyboard
 {
     /// <summary>
     /// Similar ro Enum class defines all key modifyers as bits in the integer word

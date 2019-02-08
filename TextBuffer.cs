@@ -24,7 +24,7 @@
 
 using System;
 
-namespace Plugins.VARP.Keyboard
+namespace VARP.Keyboard
 {
 
     /// <summary>

@@ -26,7 +26,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Plugins.VARP.Keyboard
+namespace VARP.Keyboard
 {
     public partial struct Event
     {

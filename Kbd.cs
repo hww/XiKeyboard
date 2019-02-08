@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
 
-namespace Plugins.VARP.Keyboard
+namespace VARP.Keyboard
 {
     /// <summary>
     /// This class alwo to convert string expression to the 

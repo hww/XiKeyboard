@@ -24,7 +24,7 @@
 
 using UnityEngine;
 
-namespace Plugins.VARP.Keyboard
+namespace VARP.Keyboard
 {
     /// <summary>This component redirecting key events to current buffer</summary>
     public class InputManagerC : MonoBehaviour
