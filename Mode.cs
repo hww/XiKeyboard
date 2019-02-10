@@ -52,14 +52,14 @@ namespace VARP.Keyboard
         /// </summary>
         public virtual void Enable()
         {
-            OnEnableListeners.Call(this);
+            onEnableListeners.Call(this);
         }
         /// <summary>
         /// Disable this mode
         /// </summary>
         public virtual void Disable()
         {
-            OnDisableListeners.Call(this);
+            onDisableListeners.Call(this);
         }
         // ===============================================================================================
         // Object's members
@@ -71,15 +71,15 @@ namespace VARP.Keyboard
         // ===============================================================================================
         // Hooks of mode
         // ===============================================================================================
-        private readonly FastAction<Mode> OnEnableListeners = new FastAction<Mode>();
-        private readonly FastAction<Mode> OnDisableListeners= new FastAction<Mode>();
+        private readonly FastAction<Mode> onEnableListeners = new FastAction<Mode>();
+        private readonly FastAction<Mode> onDisableListeners= new FastAction<Mode>();
         // ===============================================================================================
         // Statc members
         // ===============================================================================================
         /// <summary>
         /// Null mode. Returned instead of null
         /// </summary>
-        public static Mode Null = new Mode ( "null", "Empty unused mode", KeyMap.GlobalKeymap );
+        public static readonly Mode Null = new Mode ( "null", "Empty unused mode", KeyMap.GlobalKeymap );
     }
 
 }

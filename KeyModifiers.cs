@@ -25,9 +25,9 @@
 namespace VARP.Keyboard
 {
     /// <summary>
-    /// Similar ro Enum class defines all key modifyers as bits in the integer word
+    /// Similar ro Enum class defines all key Modifiers as bits in the integer word
     /// </summary>
-    public static class KeyModifyers
+    public static class KeyModifiers
     {
         public static readonly int MaxCode = 1 << 28 - 1;
         public static readonly int Meta = 1 << 27;
@@ -38,13 +38,13 @@ namespace VARP.Keyboard
         public static readonly int Alt = 1 << 22;
         public static readonly int Pseudo = 1 << 21;
         /// <summary>
-        /// Use for masking the modifyer bits
+        /// Use for masking the modifier bits
         /// </summary>
-        public static readonly int AllModifyers = Control | Shift | Alt | Hyper | Super | Meta;
+        public static readonly int AllModifiers = Control | Shift | Alt | Hyper | Super | Meta;
         /// <summary>
-        /// Used internaly for iteration over modyfier. It is replacement for System.Enum.Values(typeof(Modifyers)).
+        /// Used internally for iteration over modifier. It is replacement for System.Enum.Values(typeof(Modifiers)).
         /// <summary>
-        public static readonly int[] AllModifyersList = new int[] { Control, Alt, Shift };
+        public static readonly int[] AllModifiersList = { Control, Alt, Shift };
     }
 }
 

@@ -28,12 +28,12 @@ using System.Collections.Generic;
 namespace VARP.Keyboard
 {
     /// <summary>
-    /// This is simple keysequence binding to any key.
+    /// This is simple key sequence binding to any key.
     /// </summary>
     public class SequenceBinding 
     {
         public string name;              //< Menu name, or key binding name
-        public string help;              //< Help information for this bnding
+        public string help;              //< Help information for this binding
         public readonly int[] sequence;  //< Sequence of events required to invoke it 
 
         public SequenceBinding(string name, int[] sequence, string help = null)
@@ -44,14 +44,14 @@ namespace VARP.Keyboard
         }
     }
     /// <summary>
-    /// Any object wich can be binded to the keymap have to be based on this class
+    /// Any object which can be bind to the keymap have to be based on this class
     /// </summary>
     public class KeyMapItem
     {
         public static readonly KeyMapItem Empty = new KeyMapItem(0, null);
 
         public int key;             //< this is the fake key
-        public object value;        //< there can be any avaiable value
+        public object value;        //< there can be any available value
 
         public KeyMapItem(int key, object value)
         {
@@ -69,15 +69,15 @@ namespace VARP.Keyboard
         }
         public override string ToString()
         {
-            return string.Format("key: {0} value: {1}", key, value);
+            return $"key: {key} value: {value}";
         }
     }
 
     /// <summary>
-    /// This class have to alow to build the tree of the keymaps.
-    /// Each keymap contains List of KeyMapItem(s). Additionaly 
-    /// the keymap has title and help information as whell it 
-    /// reffers to parent keymap.
+    /// This class have to allow to build the tree of the keymaps.
+    /// Each keymap contains List of KeyMapItem(s). Additionally 
+    /// the keymap has title and help information as well it 
+    /// refers to parent keymap.
     /// </summary>
     public class KeyMap 
     {
@@ -95,8 +95,10 @@ namespace VARP.Keyboard
         /// <summary>
         /// Get title name of this keymap
         /// </summary>
-        public virtual string Title { get { return title; } }
-        public virtual string Help { get { return help; } }
+        public virtual string Title => title;
+
+        public virtual string Help => help;
+
         /// <summary>
         /// Create emty keymap
         /// </summary>
@@ -111,10 +113,9 @@ namespace VARP.Keyboard
         /// </summary>
         public KeyMap(KeyMap parent, string title = null, string help = null )
         {
-            if (parent == null) throw new ArgumentNullException("parent");
             this.title = title;
             this.help = help;
-            this.parent = parent;
+            this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
             items = new List<KeyMapItem>();
         }
         /// <summary>
@@ -137,7 +138,7 @@ namespace VARP.Keyboard
         public virtual void SetLocal(Event evt, object value)
         {
             if (!evt.IsValid)
-                throw new ArgumentOutOfRangeException("evt");
+                throw new ArgumentOutOfRangeException(nameof(evt));
             var binding = new KeyMapItem(evt, value);
             var index = GetIndexOf(evt);
             if (index >= 0)
@@ -145,16 +146,16 @@ namespace VARP.Keyboard
             else
                 items.Add(binding);
 
-            if (evt == Event.DefaultPseudocode)
+            if (evt == Event.DefaultPseudoCode)
                 defaultBinding = binding;
         }
         /// <summary>
-        ///  Get key binding of this keymap, returns: null or deffault binding (if allowed)
+        ///  Get key binding of this keymap, returns: null or default binding (if allowed)
         /// </summary>
         public virtual KeyMapItem GetLocal(Event evt, bool acceptDefaults = false)
         {
             if (!evt.IsValid)
-                throw new ArgumentOutOfRangeException("evt");
+                throw new ArgumentOutOfRangeException(nameof(evt));
             var index = GetIndexOf(evt);
             if (index >= 0 && items[index].value != null)
                 return items[index];
@@ -174,7 +175,7 @@ namespace VARP.Keyboard
             return -1;
         }
         // ===============================================================================================
-        // Lockup the keybinding recursively
+        // Lockup the key binding recursively
         // ===============================================================================================
         /// <summary>
         /// Lockup keymap item by full sequence of keys
@@ -193,9 +194,9 @@ namespace VARP.Keyboard
         /// <returns>KeyMapItem or Null</returns>
         public virtual KeyMapItem LookupKey(Event [] sequence, int starts, int ends, bool acceptDefaults = false)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (starts < 0 || starts >= sequence.Length) throw new ArgumentOutOfRangeException("starts");
-            if (ends < starts || ends >= sequence.Length) throw new ArgumentOutOfRangeException("ends");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (starts < 0 || starts >= sequence.Length) throw new ArgumentOutOfRangeException(nameof(starts));
+            if (ends < starts || ends >= sequence.Length) throw new ArgumentOutOfRangeException(nameof(ends));
 
             var curentMap = this;
             var tmp = null as KeyMapItem;
@@ -206,8 +207,7 @@ namespace VARP.Keyboard
                 if (tmp == null)
                     return curentMap.parent != null ? curentMap.parent.LookupKey(sequence, acceptDefaults) : null;
 
-                var map = tmp.value as KeyMap;
-                if (map != null)
+                if (tmp.value is KeyMap map)
                     curentMap = map;
                 else
                     return tmp; //< we found binding and it is not key map
@@ -232,7 +232,7 @@ namespace VARP.Keyboard
         /// <summary>Define sequence with given binding</summary>
         public virtual bool Define(Event [] sequence, object value)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
 
             var curentMap = this;
             var lastIndex = sequence.Length - 1;
@@ -314,15 +314,15 @@ namespace VARP.Keyboard
         public override void SetLocal(Event evt, object value)
         {
             if (!evt.IsValid)
-                throw new ArgumentOutOfRangeException("evt");
+                throw new ArgumentOutOfRangeException(nameof(evt));
 
             // do not support keys with modificators
-            if (evt >= KeyModifyers.Alt)
-                throw new ArgumentOutOfRangeException("evt");
+            if (evt >= KeyModifiers.Alt)
+                throw new ArgumentOutOfRangeException(nameof(evt));
 
             // limit by some "rational" number ;)
             if (evt >= MaxSize)
-                throw new ArgumentOutOfRangeException("evt");
+                throw new ArgumentOutOfRangeException(nameof(evt));
 
             if (evt >= items.Count)
             {
@@ -345,15 +345,15 @@ namespace VARP.Keyboard
         public override KeyMapItem GetLocal(Event evt, bool acceptDefaults = false)
         {
             if (!evt.IsValid)
-                throw new ArgumentOutOfRangeException("evt");
+                throw new ArgumentOutOfRangeException(nameof(evt));
 
             // do not support keys with modificators
-            if (evt >= KeyModifyers.Alt)
-                throw new ArgumentOutOfRangeException("evt");
+            if (evt >= KeyModifiers.Alt)
+                throw new ArgumentOutOfRangeException(nameof(evt));
 
             // limit by some "rational" number ;)
             if (evt >= MaxSize)
-                throw new ArgumentOutOfRangeException("evt");
+                throw new ArgumentOutOfRangeException(nameof(evt));
 
             if (evt < items.Count && items[evt] != null && items[evt].value != null)
                 return items[evt];

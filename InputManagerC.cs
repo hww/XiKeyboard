@@ -38,14 +38,14 @@ namespace VARP.Keyboard
                 if (evt.keyCode == KeyCode.None) return;
                 if (evt.keyCode >= KeyCode.RightShift && evt.keyCode <= KeyCode.RightWindows) return;
                 // read modifiers
-                int modifyers = 0;
-                if (evt.shift) modifyers |= KeyModifyers.Shift;
-                if (evt.control) modifyers |= KeyModifyers.Control;
-                if (evt.alt) modifyers |= KeyModifyers.Alt;
+                var modifiers = 0;
+                if (evt.shift) modifiers |= KeyModifiers.Shift;
+                if (evt.control) modifiers |= KeyModifiers.Control;
+                if (evt.alt) modifiers |= KeyModifiers.Alt;
                 // create the event
-                var keyevt = Event.MakeEvent((int)evt.keyCode, modifyers);
-                // send to curent buffer
-                if (Buffer.CurentBuffer.OnKeyDown(keyevt))
+                var keyEvt = Event.MakeEvent((int)evt.keyCode, modifiers);
+                // send to current buffer
+                if (Buffer.CurrentBuffer.OnKeyDown(keyEvt))
                     return;
             }
         }

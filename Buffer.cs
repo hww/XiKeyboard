@@ -33,15 +33,14 @@ namespace VARP.Keyboard
     /// Each buffer is like a recipient of events. And only one of them receive events in this moment.
     /// As every buffer has its own modes activated, to switch buffer means switch the modes too.
     /// </summary>
-    public partial class Buffer : IBuffer
+    public sealed class Buffer : IBuffer
     {
         /// <summary>
-        /// New buffer with name and optinaly help info
+        /// New buffer with name and optionally help info
         /// </summary>
         public Buffer(string name, string help = null)
         {
-            if (name == null) throw new ArgumentNullException("name");
-            this.name = name;
+            this.name = name ?? throw new ArgumentNullException(nameof(name));
             this.help = help;
             this.majorMode = Mode.Null;
         }
@@ -50,14 +49,15 @@ namespace VARP.Keyboard
         /// <summary>Enable this buffer and makes it current</summary>
         public void SetActive(bool state)
         {
-            (curentBuffer ?? Null).OnDisable ( );
-            curentBuffer = state ? this : Null;
-            curentBuffer.OnEnable ( );
+            (currentBuffer ?? Null).OnDisable ( );
+            currentBuffer = state ? this : Null;
+            currentBuffer.OnEnable ( );
         }
         /// <summary>Get name of this buffer</summary>
-        public string Name { get { return name; } }
+        public string Name => name;
+
         /// <summary>Get help for this buffer</summary>
-        public string Help { get { return help; } }
+        public string Help => help;
 
         /// <summary>Enable minor mode in this buffer</summary>
         public void EnabeMinorMode ( Mode mode )
@@ -93,11 +93,11 @@ namespace VARP.Keyboard
         public KeyMapItem Lookup ( Event [] sequence, int starts, int ends, bool acceptDefaults )
         {
             if ( sequence == null )
-                throw new ArgumentNullException ( "sequence" );
+                throw new ArgumentNullException ( nameof(sequence) );
             if ( starts < 0 || starts >= sequence.Length )
-                throw new ArgumentOutOfRangeException ( "starts" );
+                throw new ArgumentOutOfRangeException ( nameof(starts) );
             if ( ends < starts || ends >= sequence.Length )
-                throw new ArgumentOutOfRangeException ( "ends" );
+                throw new ArgumentOutOfRangeException ( nameof(ends) );
             // Minor modes searcg
             foreach ( var minorMode in minorModes )
             {
@@ -124,8 +124,8 @@ namespace VARP.Keyboard
         /// <summary>Get curent cursor position</summary>
         public int Point
         {
-            get { return textBuffer.Point; }
-            set { textBuffer.Point = value; }
+            get => textBuffer.Point;
+            set => textBuffer.Point = value;
         }
         /// <summary>Get current selection</summary>
         public void GetSelection(out int begin, out int end)
@@ -141,7 +141,7 @@ namespace VARP.Keyboard
 
         #region Lockup the keybinding recursively
 
-        /// <summary>Main entry of all keys. Will find the binding for the curen modeend evaluate it</summary>
+        /// <summary>Main entry of all keys. Will find the binding for the current mode and evaluate it</summary>
         public bool OnKeyDown(Event evt)
         {
             textBuffer.InsertCharacter(evt);
@@ -153,25 +153,25 @@ namespace VARP.Keyboard
                 textBuffer.SequenceStarts = textBuffer.BufferSize;
                 return true;
             }
-            else if (result.value == null)
+            if (result.value == null)
             {
                 // the binding found but it does not do anything, then undo last sequence
                 textBuffer.BufferSize = textBuffer.SequenceStarts;
-                Debug.Log("Found sequence without bindng " + result.ToString());
+                Debug.Log("Found sequence without binding " + result.ToString());
                 textBuffer.Clear(); // no reason to continue
             }
             OnSequencePressed.Call(this, result);
             return true;
         }
         // when buffer is enabling this method will be called
-        protected virtual void OnEnable()
+        private void OnEnable()
         {
-            OnEnableListeners.Call(this);
+            onEnableListeners.Call(this);
         }
         // when buffer is disabling this method will be called
-        protected virtual void OnDisable()
+        private void OnDisable()
         {
-            OnEnableListeners.Call(this);
+            onEnableListeners.Call(this);
         }
         #endregion
 
@@ -186,21 +186,19 @@ namespace VARP.Keyboard
 
         #region Static members
         /// <summary>
-        /// There is only one current buffer exists. This method returns or set curent buffer
+        /// There is only one current buffer exists. This method returns or set current buffer
         /// </summary>
-        public static Buffer CurentBuffer
-        {
-            get { return curentBuffer ?? Null; }
-        }
-        private static Buffer curentBuffer;
+        public static Buffer CurrentBuffer => currentBuffer ?? Null;
+
+        private static Buffer currentBuffer;
         private static readonly Buffer Null = new Buffer ( "null", "Empty unused buffer" );
         #endregion
 
         #region Enable/Disable Hooks
         /// <summary>On enable buffer hook</summary>
-        public readonly FastAction<Buffer> OnEnableListeners = new FastAction<Buffer>();
+        public readonly FastAction<Buffer> onEnableListeners = new FastAction<Buffer>();
         /// <summary>On disable buffer hook</summary>
-        public readonly FastAction<Buffer> OnDisableListeners = new FastAction<Buffer>();
+        public readonly FastAction<Buffer> onDisableListeners = new FastAction<Buffer>();
         /// <summary>When some key sequence found</summary>
         public static readonly FastAction<Buffer,KeyMapItem> OnSequencePressed = new FastAction<Buffer, KeyMapItem>();
         /// <summary>When key pressed</summary>

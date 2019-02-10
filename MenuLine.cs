@@ -29,10 +29,10 @@ namespace VARP.Keyboard
     /// </summary>
     public abstract class MenuLineBase
     {
-        public virtual string Text { get { return null; } }
-        public virtual string Help { get { return null; } }
-        public virtual string Shorcut { get { return null; } }
-        public virtual object Binding { get { return null; } }
+        public virtual string Text => null;
+        public virtual string Help => null;
+        public virtual string Shorcut => null;
+        public virtual object Binding => null;
     }
 
     public class MenuLineBaseSimple : MenuLineBase
@@ -66,17 +66,17 @@ namespace VARP.Keyboard
 
         #region IMenuLine
 
-        public override string Text { get { return text; } }
-        public override string Help { get { return help; } }
-        public override string Shorcut { get { return shortcut; } }
-        public override object Binding { get { return binding; } }
-    
+        public override string Text => text;
+        public override string Help => help;
+        public override string Shorcut => shortcut;
+        public override object Binding => binding;
+
         #endregion
     }
 
     public class MenuLineBaseComplex : MenuLineBase
     {
-        public delegate bool Precodition(MenuLineBaseComplex menuLineBase);
+        public delegate bool Precondition(MenuLineBaseComplex menuLineBase);
         public delegate MenuLineBaseComplex Filter(MenuLineBaseComplex menuLineBase);
 
         public enum ButtonType
@@ -92,23 +92,23 @@ namespace VARP.Keyboard
 
         public readonly object binding;
         public readonly Filter filter;
-        public readonly Precodition enable;
-        public readonly Precodition visible;            
+        public readonly Precondition enable;
+        public readonly Precondition visible;            
         public readonly ButtonType buttonType;
-        public readonly Precodition buttonState;
+        public readonly Precondition buttonState;
 
         #region IMenuLine
 
-        public override string Text { get { return text; } }
-        public override string Help { get { return help; } }
-        public override string Shorcut { get { return shortcut; } }
-        public override object Binding { get { return binding; } }
+        public override string Text => text;
+        public override string Help => help;
+        public override string Shorcut => shortcut;
+        public override object Binding => binding;
 
         #endregion
 
-        public bool IsEnabled { get { return enable == null || enable(this); } }
-        public bool IsVisible { get { return visible == null || visible(this); } }
-        public bool ButtonState { get { return buttonState == null || buttonState(this); } }
+        public bool IsEnabled => enable == null || enable(this);
+        public bool IsVisible => visible == null || visible(this);
+        public bool ButtonState => buttonState == null || buttonState(this);
 
         public MenuLineBaseComplex GetFiltered()
         {
@@ -151,8 +151,8 @@ namespace VARP.Keyboard
         /// <param name="help"></param>
         public MenuLineBaseComplex(string text, 
             object binging,
-            Precodition enable = null, 
-            Precodition visible = null,
+            Precondition enable = null, 
+            Precondition visible = null,
             Filter filter = null,
             string shortcut = null,
             string help = null) : this(text, binging, shortcut, help)
@@ -175,11 +175,11 @@ namespace VARP.Keyboard
         /// <param name="help"></param>
         public MenuLineBaseComplex(string text, 
             object binging,
-            Precodition enable = null,
-            Precodition visible = null,
+            Precondition enable = null,
+            Precondition visible = null,
             Filter filter = null,
             ButtonType buttonType = ButtonType.NoButton,
-            Precodition buttonState = null,
+            Precondition buttonState = null,
             string shortcut = null,
             string help = null) : this(text, binging, shortcut, help)
         {
@@ -199,7 +199,7 @@ namespace VARP.Keyboard
         public enum Type { NoLine, Space, SingleLine, DashedLine }
         /// <summary>The separator type</summary>
         public Type type;
-        /// <summary>The cosntructor of separator</summary>
+        /// <summary>The constructor of separator</summary>
         public MenuSeparator(Type separatorType) 
         {
             type = separatorType;

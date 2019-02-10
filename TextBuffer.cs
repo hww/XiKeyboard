@@ -56,7 +56,7 @@ namespace VARP.Keyboard
             buffer[ Point ] = evt;
             BufferSize++;
             Point++;
-            isModifyed = true;
+            isModified = true;
         }
         /// <summary>
         /// Set character at the point
@@ -65,7 +65,7 @@ namespace VARP.Keyboard
         public void OverrideCharacter(Event evt)
         {
             buffer[Point] = evt;
-            isModifyed = true;
+            isModified = true;
         }
         /// <summary>
         /// Clear buffer
@@ -77,14 +77,14 @@ namespace VARP.Keyboard
             bufferSize = 0;
             point = 0;
             sequenceStarts = 0;
-            isModifyed = true;
+            isModified = true;
         }
         /// <summary>
         /// Get buffer size. How many characters in the buffer
         /// </summary>
         public int BufferSize
         {
-            get { return bufferSize; }
+            get => bufferSize;
             set
             {
                 if (value >= buffer.Length)
@@ -98,7 +98,7 @@ namespace VARP.Keyboard
         /// <summary>Where are sequence similar to ""C-x C-f"" starts</summary>
         public int SequenceStarts
         {
-            get { return sequenceStarts; }
+            get => sequenceStarts;
             set
             {
                 UnityEngine.Debug.Assert(value <= BufferSize);
@@ -113,7 +113,7 @@ namespace VARP.Keyboard
         /// </summary>
         public int Point
         {
-            get { return point; }
+            get => point;
             set
             {
                 if (Point >= BufferSize)
@@ -155,7 +155,7 @@ namespace VARP.Keyboard
             return s;
         }
         /// <summary>
-        /// Get current buffer string. The result lenght should be exactly same as source
+        /// Get current buffer string. The result length should be exactly same as source
         /// </summary>
         public string GetBufferString()
         {
@@ -217,7 +217,7 @@ namespace VARP.Keyboard
         // ===========================================================================================
         // sequence of events inside of this buffer
         public readonly Event[] buffer;
-        // position of first character in the kbd-map's seuquencem as: "C-x C-f"
+        // position of first character in the kbd-map's sequence as: "C-x C-f"
         private int sequenceStarts;
         // position of entry point
         private int point;
@@ -227,8 +227,8 @@ namespace VARP.Keyboard
         private int selectionStart;
         // selection marker
         private int selectionEnd;
-        // modifyed or not
-        public bool isModifyed;
+        // modified or not
+        public bool isModified;
     }
 
 }

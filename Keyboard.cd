@@ -42,11 +42,11 @@
       <FileName>Assets\VARP\Keyboard\KeyMap.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="VARP.Keyboard.KeyModifyers" Collapsed="true">
+  <Class Name="VARP.Keyboard.KeyModifiers" Collapsed="true">
     <Position X="0.75" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEAAAAAEAAAIAAgEIgAAAAAAAAAAAIAAEIAAAAAAAAA=</HashCode>
-      <FileName>Assets\VARP\Keyboard\KeyModifyers.cs</FileName>
+      <FileName>Assets\VARP\Keyboard\KeyModifiers.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="VARP.Keyboard.MenuLineBase" Collapsed="true">

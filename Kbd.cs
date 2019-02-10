@@ -30,8 +30,8 @@ using JetBrains.Annotations;
 namespace VARP.Keyboard
 {
     /// <summary>
-    /// This class alwo to convert string expression to the 
-    /// keycode sequence. The sequence is the aray of integers.
+    /// This class allow to convert string expression to the 
+    /// keycode sequence. The sequence is the array of integers.
     /// Each character is the 32 bits word.
     /// </summary>
     public static class Kbd
@@ -114,8 +114,8 @@ namespace VARP.Keyboard
         /// <returns></returns>
         public static Event [] Parse([NotNull] string expression)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
-            if (expression == string.Empty) throw new ArgumentException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
+            if (expression == string.Empty) throw new ArgumentException(nameof(expression));
 
             var sequence = new List<Event>();
             var tags = expression.Split(' ');
@@ -153,7 +153,7 @@ namespace VARP.Keyboard
             var idx = 0;
             var result = new Event[sequence.Length];
             foreach (var s in sequence)
-                result[idx++] = Event.GetPseudocode(s);
+                result[idx++] = Event.GetPseudoCode(s);
             return result;
         }
     }
