@@ -7,24 +7,41 @@ The asset for Unity 3D with keyboard manager similar to Emacs. <sup>Work In Prog
 The example below shows how the API can be used to define key sequences. Each key press will print current buffer to log. And in case of two sequences will be printed "Pressed Sequence: N" text (where N is 1 or 2)
 
 ```C#
-void Start ()
-{
-    KeyMap.GlobalKeymap.Define("S-1", "1");          // Define keystroke S-1 with text binding "1"
-    KeyMap.GlobalKeymap.Define("S-2 S-3", "2");      // Define keystroke S-2 S-3 with text binding "2"
-    Buffer.OnSequencePressed.Add(OnSequencePressed); // On press sequence delagate
-    Buffer.OnKeyPressed.Add(OnKeyPressed);           // On press key delegate
-}
+	void Start ()
+	{
+		KeyMap.GlobalKeymap.Define("S-1", "Pressed: S-1");         // Define keystroke S-1 with text binding "1"
+		KeyMap.GlobalKeymap.Define("S-2 S-3", "Pressed: S-2 S-3"); // Define keystroke S-2 S-3 with text binding "2"
+		Buffer.OnSequencePressed.Add(OnSequencePressed);           // On press sequence delegate
+		Buffer.OnKeyPressed.Add(OnKeyPressed);                     // On press key delegate
+	}
 	
-void OnSequencePressed(Buffer buffer, KeyMapItem item) {
-    Debug.Log("Pressed Sequence: " + item.value);    // Print "Pressed Sequence: N" 
-}
-
-void OnKeyPressed(Buffer buffer, Event evt) {
-    Debug.Log(buffer.GetBufferHumanizedString());    // Just display current bufer content
-}
+	// Update is called once per frame
+	void OnSequencePressed(Buffer buffer, KeyMapItem item) {
+		Debug.Log("{" + item.value + "}");	  // Print "Pressed Sequence: N" 	
+	}
+	// Update is called once per frame
+	void OnKeyPressed(Buffer buffer, Event evt) {
+		Debug.Log(buffer.GetBufferHumanizedString()); // Just display current buffer content		
+	}
  ```
 
-Can be binded any value, for example: GameObject, lambda function or menu item.
+Can be binded any value, for example: GameObject, lambda function or menu item. The pressing the sequence: abcS-1defS-2S-3
+Will print to the log
+```
+a
+ab
+abc
+abcS-1
+{Pressed: S-1}
+abcS-1d
+abcS-1de
+abcS-1def
+abcS-1defS-2
+abcS-1defS-2S3
+{Pressed: S-2 S-3}
+```
+
+
 
 ## Dependency
 
