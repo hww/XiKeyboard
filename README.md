@@ -328,10 +328,10 @@ Has only one field with type of separator: NoLine, Space, SingleLine, DashedLine
 var menuLine = new MenuSeparator(MenuSeparator.Type.SingleLine);
 ```
 
-### MenuLineBase
+### MenuLine Class
 
 ```C#
-public abstract class MenuLineBase
+public abstract class MenuLine
 {
     public virtual string Text { get { return null; } }
     public virtual string Help { get { return null; } }
@@ -340,7 +340,7 @@ public abstract class MenuLineBase
 }
 ```
 
-### MenuLineBaseSimple
+### MenuLineSimple Class
 
 Has two constructors.
 
@@ -358,7 +358,7 @@ protected string shortcut;  // Menu Shortcut/Value Text
 public object binding;      // Menu Biding
 ```
 
-### MenuLineBaseComplex
+### MenuLineComplex Class
 
 The fields of complex menu item:
 
