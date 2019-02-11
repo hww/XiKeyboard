@@ -438,7 +438,7 @@ KeyMap.GlobalKeymap.DefineMenuLine("main-menu/file/-4", new MenuSeparator(MenuSe
 
 Will display:
 
-![menu-picture-1](Documentaton/menu-picture-1.png)
+![menu-picture-1](Documentation/menu-picture-1.png)
 
 But this can be done by shorter way. 
 
