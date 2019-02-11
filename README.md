@@ -22,8 +22,11 @@ void OnKeyPressed(Buffer buffer, Event evt) {
 }
  ```
 
-Can be binded any value, for example: GameObject, lambda function or menu item. The pressing the sequence: abcS-1defS-2S-3
-Will print to the log
+Can be binded any value, for example: GameObject, lambda function or menu item. 
+The pressing the sequence: abcS-1defS-2S-3
+  _Where are: S-1,S-2,S-3 are Shift+1,Shft+2,Shift+3_
+As result the demo app will print to the log:
+
 ```
 a
 ab
