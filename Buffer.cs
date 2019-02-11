@@ -101,16 +101,16 @@ namespace VARP.Keyboard
             // Minor modes searcg
             foreach ( var minorMode in minorModes )
             {
-                var minorItem = minorMode.keyMap.LookupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
+                var minorItem = minorMode.keyMap.LookupKey ( textBuffer.buffer, starts, textBuffer.BufferSize, acceptDefaults );
                 if ( minorItem != null )
                     return minorItem;
             }
             // Major mode search
-            var majorItem = majorMode.keyMap.LookupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
+            var majorItem = majorMode.keyMap.LookupKey ( textBuffer.buffer, starts, textBuffer.BufferSize, acceptDefaults );
             if ( majorItem != null )
                 return majorItem;
             // Global bindings search
-            return KeyMap.GlobalKeymap.LookupKey ( textBuffer.buffer, 0, textBuffer.BufferSize, acceptDefaults );
+            return KeyMap.GlobalKeymap.LookupKey ( textBuffer.buffer, starts, textBuffer.BufferSize, acceptDefaults );
         }
         /// <summary>Get current buffer string</summary>
         public string GetBufferString() { return textBuffer.GetBufferString(); }
@@ -156,10 +156,16 @@ namespace VARP.Keyboard
             if (result.value == null)
             {
                 // the binding found but it does not do anything, then undo last sequence
-                textBuffer.BufferSize = textBuffer.SequenceStarts;
-                Debug.Log("Found sequence without binding " + result.ToString());
+                Debug.Log("Found sequence without binding " + result);
                 textBuffer.Clear(); // no reason to continue
+                return true;
             }
+            if (result.value is KeyMap)
+            {
+                OnKeymapPressed.Call(this, result);
+                return true;
+            }
+            textBuffer.SequenceStarts = textBuffer.BufferSize;
             OnSequencePressed.Call(this, result);
             return true;
         }
@@ -201,6 +207,8 @@ namespace VARP.Keyboard
         public readonly FastAction<Buffer> onDisableListeners = new FastAction<Buffer>();
         /// <summary>When some key sequence found</summary>
         public static readonly FastAction<Buffer,KeyMapItem> OnSequencePressed = new FastAction<Buffer, KeyMapItem>();
+        /// <summary>When keymap found</summary>
+        public static readonly FastAction<Buffer,KeyMapItem> OnKeymapPressed = new FastAction<Buffer, KeyMapItem>();
         /// <summary>When key pressed</summary>
         public static readonly FastAction<Buffer,Event> OnKeyPressed = new FastAction<Buffer,Event>();
         #endregion

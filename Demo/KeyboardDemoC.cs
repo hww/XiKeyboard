@@ -39,7 +39,7 @@ public class KeyboardDemoC : MonoBehaviour {
 	
 	// Update is called once per frame
 	void OnSequencePressed(Buffer buffer, KeyMapItem item) {
-		Debug.Log(item.value);		
+		Debug.Log("{" + item.value + "}");		
 	}
 	// Update is called once per frame
 	void OnKeyPressed(Buffer buffer, Event evt) {

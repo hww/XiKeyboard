@@ -27,7 +27,7 @@ namespace VARP.Keyboard
     /// <summary>
     /// The base class for all menu items
     /// </summary>
-    public abstract class MenuLineBase
+    public abstract class MenuLine
     {
         public virtual string Text => null;
         public virtual string Help => null;
@@ -35,14 +35,14 @@ namespace VARP.Keyboard
         public virtual object Binding => null;
     }
 
-    public class MenuLineBaseSimple : MenuLineBase
+    public class MenuLineSimple : MenuLine
     { 
         protected string text;
         protected string help;
         protected string shortcut;
         public object binding;
 
-        public MenuLineBaseSimple(string text, string shortcut = null, string help = null)
+        public MenuLineSimple(string text, string shortcut = null, string help = null)
         {
             this.text = text;
             this.help = help;
@@ -56,7 +56,7 @@ namespace VARP.Keyboard
         /// <param name="binding"></param>
         /// <param name="shortcut"></param>
         /// <param name="help"></param>
-        public MenuLineBaseSimple(string text, object binding, string shortcut = null, string help = null) 
+        public MenuLineSimple(string text, object binding, string shortcut = null, string help = null) 
         {
             this.text = text;
             this.help = help;
@@ -74,10 +74,10 @@ namespace VARP.Keyboard
         #endregion
     }
 
-    public class MenuLineBaseComplex : MenuLineBase
+    public class MenuLineComplex : MenuLine
     {
-        public delegate bool Precondition(MenuLineBaseComplex menuLineBase);
-        public delegate MenuLineBaseComplex Filter(MenuLineBaseComplex menuLineBase);
+        public delegate bool Precondition(MenuLineComplex menuLine);
+        public delegate MenuLineComplex Filter(MenuLineComplex menuLine);
 
         public enum ButtonType
         {
@@ -110,7 +110,7 @@ namespace VARP.Keyboard
         public bool IsVisible => visible == null || visible(this);
         public bool ButtonState => buttonState == null || buttonState(this);
 
-        public MenuLineBaseComplex GetFiltered()
+        public MenuLineComplex GetFiltered()
         {
             return filter == null ? this : filter(this);
         }
@@ -121,7 +121,7 @@ namespace VARP.Keyboard
         /// <param name="text"></param>
         /// <param name="shortcut"></param>
         /// <param name="help"></param>
-        public MenuLineBaseComplex(string text, string shortcut = null, string help = null) 
+        public MenuLineComplex(string text, string shortcut = null, string help = null) 
         {
             this.text = text;
             this.help = help;
@@ -133,7 +133,7 @@ namespace VARP.Keyboard
         /// <param name="binding"></param>
         /// <param name="shortcut"></param>
         /// <param name="help"></param>
-        public MenuLineBaseComplex(string text, object binding, string shortcut = null, string help = null) : this(text, shortcut, help)
+        public MenuLineComplex(string text, object binding, string shortcut = null, string help = null) : this(text, shortcut, help)
         {
             this.binding = binding;
             this.enable = null;
@@ -149,7 +149,7 @@ namespace VARP.Keyboard
         /// <param name="filter"></param>
         /// <param name="shortcut"></param>
         /// <param name="help"></param>
-        public MenuLineBaseComplex(string text, 
+        public MenuLineComplex(string text, 
             object binging,
             Precondition enable = null, 
             Precondition visible = null,
@@ -173,7 +173,7 @@ namespace VARP.Keyboard
         /// <param name="buttonState"></param>
         /// <param name="shortcut"></param>
         /// <param name="help"></param>
-        public MenuLineBaseComplex(string text, 
+        public MenuLineComplex(string text, 
             object binging,
             Precondition enable = null,
             Precondition visible = null,
@@ -194,7 +194,7 @@ namespace VARP.Keyboard
     /// <summary>
     /// The menu separator class
     /// </summary>
-    public class MenuSeparator : MenuLineBase
+    public class MenuSeparator : MenuLine
     {
         public enum Type { NoLine, Space, SingleLine, DashedLine }
         /// <summary>The separator type</summary>

@@ -92,12 +92,27 @@ namespace VARP.Keyboard
         public List<KeyMapItem> items;      //< kay map items
         // This binding can be returned when the requested key binding is not found
         public KeyMapItem defaultBinding;   //< default binding or null. 
+        
         /// <summary>
         /// Get title name of this keymap
         /// </summary>
         public virtual string Title => title;
 
+        /// <summary>
+        /// Get the help for this keymap
+        /// </summary>
         public virtual string Help => help;
+
+        /// <summary>
+        /// Get binding's quantity 
+        /// </summary>
+        public int Count => items.Count;
+
+        /// <summary>
+        /// Get key binding with this index
+        /// </summary>
+        /// <param name="index"></param>
+        public KeyMapItem this[int index] => items[index];
 
         /// <summary>
         /// Create emty keymap
@@ -198,17 +213,17 @@ namespace VARP.Keyboard
             if (starts < 0 || starts >= sequence.Length) throw new ArgumentOutOfRangeException(nameof(starts));
             if (ends < starts || ends >= sequence.Length) throw new ArgumentOutOfRangeException(nameof(ends));
 
-            var curentMap = this;
+            var currentMap = this;
             var tmp = null as KeyMapItem;
 
             for (var i=starts; i < ends; i++)
             { 
-                tmp = curentMap.GetLocal(sequence[i], acceptDefaults);
+                tmp = currentMap.GetLocal(sequence[i], acceptDefaults);
                 if (tmp == null)
-                    return curentMap.parent != null ? curentMap.parent.LookupKey(sequence, acceptDefaults) : null;
+                    return currentMap.parent != null ? currentMap.parent.LookupKey(sequence, acceptDefaults) : null;
 
                 if (tmp.value is KeyMap map)
-                    curentMap = map;
+                    currentMap = map;
                 else
                     return tmp; //< we found binding and it is not key map
             }
@@ -220,43 +235,43 @@ namespace VARP.Keyboard
         /// <summary>Define list of key-strings. This way used for defining menu</summary>
         public bool Define(string[] sequence, object value)
         {
-            var newsequence = Kbd.ParsePseudo(sequence);
-            return Define(newsequence, value);
+            var newSequence = Kbd.ParsePseudo(sequence);
+            return Define(newSequence, value);
         }
         /// <summary>Define by string expression</summary>
         public bool Define(string sequence, object value)
         {
-            var newsequence = Kbd.Parse(sequence);
-            return Define(newsequence, value);
+            var newSequence = Kbd.Parse(sequence);
+            return Define(newSequence, value);
         }
         /// <summary>Define sequence with given binding</summary>
         public virtual bool Define(Event [] sequence, object value)
         {
             if (sequence == null) throw new ArgumentNullException(nameof(sequence));
 
-            var curentMap = this;
+            var currentMap = this;
             var lastIndex = sequence.Length - 1;
 
             for (var i = 0; i < sequence.Length; i++)
             {
                 var key = sequence[i];
-                var tmp = curentMap.GetLocal(key); // do not alow defaults
+                var tmp = currentMap.GetLocal(key); // do not alow defaults
                 if (tmp == null)
                 {
                     // there is no this binding
                     // N.B. Do not look at the parent one!
                     if (i == lastIndex)
                     {
-                        // the curentMap is the target map and it does not have definition 
-                        curentMap.SetLocal(key, value);
+                        // the currentMap is the target map and it does not have definition 
+                        currentMap.SetLocal(key, value);
                         return true;
                     }
                     else
                     {
                         // the curentMap is the map in the sequence and it does not have definition 
                         var newMap = new KeyMap();
-                        curentMap.SetLocal(key, newMap);
-                        curentMap = newMap;
+                        currentMap.SetLocal(key, newMap);
+                        currentMap = newMap;
                     }
                 }
                 else
@@ -264,15 +279,15 @@ namespace VARP.Keyboard
                     // we found binding in curentMap
                     if (i == lastIndex)
                     {
-                        // curentMap is target map, it has binding but we have to redefine it
-                        curentMap.SetLocal(key, value);
+                        // currentMap is target map, it has binding but we have to redefine it
+                        currentMap.SetLocal(key, value);
                     }
                     else
                     {
                         // the curentMap is the map in the sequence and it has definition 
                         var map = tmp.value as KeyMap;
                         if (map != null)
-                            curentMap = map;
+                            currentMap = map;
                         else
                             throw new Exception(string.Format("Expect KeyMap at '{0}' found: '{1}' in: '{2}'", sequence[i], tmp, sequence));
                     }
@@ -316,7 +331,7 @@ namespace VARP.Keyboard
             if (!evt.IsValid)
                 throw new ArgumentOutOfRangeException(nameof(evt));
 
-            // do not support keys with modificators
+            // do not support keys with modifiers
             if (evt >= KeyModifiers.Alt)
                 throw new ArgumentOutOfRangeException(nameof(evt));
 
@@ -347,7 +362,7 @@ namespace VARP.Keyboard
             if (!evt.IsValid)
                 throw new ArgumentOutOfRangeException(nameof(evt));
 
-            // do not support keys with modificators
+            // do not support keys with modifiers
             if (evt >= KeyModifiers.Alt)
                 throw new ArgumentOutOfRangeException(nameof(evt));
 
