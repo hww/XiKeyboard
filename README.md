@@ -9,22 +9,37 @@ The example below shows how the API can be used to define key sequences. Each ke
 ```C#
 void Start ()
 {
-    KeyMap.GlobalKeymap.Define("S-1", "1");          // Define keystroke S-1 with text binding "1"
-    KeyMap.GlobalKeymap.Define("S-2 S-3", "2");      // Define keystroke S-2 S-3 with text binding "2"
-    Buffer.OnSequencePressed.Add(OnSequencePressed); // On press sequence delagate
-    Buffer.OnKeyPressed.Add(OnKeyPressed);           // On press key delegate
+	KeyMap.GlobalKeymap.Define("S-1", "Pressed: S-1");         // Define keystroke S-1 with text binding "1"
+	KeyMap.GlobalKeymap.Define("S-2 S-3", "Pressed: S-2 S-3"); // Define keystroke S-2 S-3 with text binding "2"
+	Buffer.OnSequencePressed.Add(OnSequencePressed);           // On press sequence delegate
+	Buffer.OnKeyPressed.Add(OnKeyPressed);                     // On press key delegate
 }
-	
 void OnSequencePressed(Buffer buffer, KeyMapItem item) {
-    Debug.Log("Pressed Sequence: " + item.value);    // Print "Pressed Sequence: N" 
+	Debug.Log("{" + item.value + "}");	  // Print "Pressed Sequence: N" 	
 }
-
 void OnKeyPressed(Buffer buffer, Event evt) {
-    Debug.Log(buffer.GetBufferHumanizedString());    // Just display current bufer content
+	Debug.Log(buffer.GetBufferHumanizedString()); // Just display current buffer content		
 }
  ```
 
-Can be binded any value, for example: GameObject, lambda function or menu item.
+Can be binded any value, for example: GameObject, lambda function or menu item. 
+The pressing the sequence: "abcS-1defS-2S-3" will print log below. The S-1, S-2 and S-3 are Shift+1, Shift+2 and Shift+3.
+
+```
+a
+ab
+abc
+abcS-1
+{Pressed: S-1}
+abcS-1d
+abcS-1de
+abcS-1def
+abcS-1defS-2
+abcS-1defS-2S3
+{Pressed: S-2 S-3}
+```
+
+
 
 ## Dependency
 
@@ -300,9 +315,9 @@ There are several variants of menu items available.
 
 | Menu Item | Description |
 |-----------|-------------|
-|MenuLineBase| Abstract class for all menu items |
-|MenuLineBaseSimple| Very simple menu item. Has fields: text, help, shortcut and binding |
-|MenuLineBaseComplex| Advanced menu item has various of additional options and delegates |
+|MenuLine| Abstract class for all menu items |
+|MenuLineSimple| Very simple menu item. Has fields: text, help, shortcut and binding |
+|MenuLineComplex| Advanced menu item has various of additional options and delegates |
 |MenuSeparator| Just a line to separate menu items |
 
 ### MenuSeparator
@@ -313,10 +328,10 @@ Has only one field with type of separator: NoLine, Space, SingleLine, DashedLine
 var menuLine = new MenuSeparator(MenuSeparator.Type.SingleLine);
 ```
 
-### MenuLineBase
+### MenuLine Class
 
 ```C#
-public abstract class MenuLineBase
+public abstract class MenuLine
 {
     public virtual string Text { get { return null; } }
     public virtual string Help { get { return null; } }
@@ -325,13 +340,13 @@ public abstract class MenuLineBase
 }
 ```
 
-### MenuLineBaseSimple
+### MenuLineSimple Class
 
 Has two constructors.
 
 ```C#
-MenuLineBaseSimple(string text, string shortcut = null, string help = null)
-MenuLineBaseSimple(string text, object binding, string shortcut = null, string help = null) 
+MenuLineSimple(string text, string shortcut = null, string help = null)
+MenuLineSimple(string text, object binding, string shortcut = null, string help = null) 
 ```
 
 And this menu item has next fields:
@@ -343,7 +358,7 @@ protected string shortcut;  // Menu Shortcut/Value Text
 public object binding;      // Menu Biding
 ```
 
-### MenuLineBaseComplex
+### MenuLineComplex Class
 
 The fields of complex menu item:
 
@@ -362,16 +377,16 @@ public readonly Precodition buttonState;    // Delegate to get button state
 The constructors for this menu item:
 
 ```C#
-MenuLineBaseComplex(string text,                                  // Menu text
+MenuLineComplex(string text,                                  // Menu text
                     string shortcut = null,                       // Menu shortcut only for screen
                     string help = null)                           // Menu help 
 
-MenuLineBaseComplex(string text,                                  // Menu text
+MenuLineComplex(string text,                                  // Menu text
                     object binding,                               // Binding to menu: other menu, function, etc
                     string shortcut = null,                       // Menu shortcut only for screen
                     string help = null)                           // Menu text
 
-MenuLineBaseComplex(string text,                                  // Menu text
+MenuLineComplex(string text,                                  // Menu text
                     object binging,                               // Binding to menu: other menu, function, etc
                     Precodition enable = null,                    // Predicate: is this menu active
                     Precodition visible = null,                   // Predicate: is this menu visible
@@ -379,7 +394,7 @@ MenuLineBaseComplex(string text,                                  // Menu text
                     string shortcut = null,                       // Menu shortcut only for screen
                     string help = null)                           // Menu help 
 
-MenuLineBaseComplex(string text,                                  // Menu text
+MenuLineComplex(string text,                                  // Menu text
                     object binging,                               // Binding to menu: other menu, function, etc
                     Precodition enable = null,                    // Predicate: is this menu active
                     Precodition visible = null,                   // Predicate: is this menu visible
@@ -398,18 +413,17 @@ Lets make example of menu definition.
 
 ```C#
 // Create file menu
-var menu = new KeyMap("File", "File Menu" );
 // Define menu as member of MainMenu
-KeyMap.GlobalKeyMap.Define(new string[] { "MainMenu", "File" }, menu );
+var fileMenu = KeyMap.GlobalKeymap.DefineMenu("main-menu/file", "File", "Help for file menu" );
 // Create save menu item (shortcut will be only displayed and can be omitted)
-// The method Save of this class will be binded to this menu item
-var menuItem = MenuLineBaseSimple("Save", Save, "C-s", "Save current file") 
+// The method Save of this class will be bind to this menu item
+var menuItem = new MenuLineSimple("Save", (Method) Save, "C-s", "Save current file");
 // Define this item as member of File menu 
-KeyMap.GlobalKeyMap.Define(new string[] { "MainMenu", "File", "Save" }, menItemu );
+KeyMap.GlobalKeymap.DefineMenuLine("main-menu/file/save", menuItem );
 // Open file menu by Alt+F 
-KeyMap.GlobalKeymap.SetLocal("A-f", menu);                  
+KeyMap.GlobalKeymap.SetLocal("A-f", fileMenu);                  
 // Save file by C+S 
-KeyMap.GlobalKeymap.SetLocal("C-s", menuItem.binding);                  
+KeyMap.GlobalKeymap.SetLocal("C-s", menuItem.binding);                 
 ```
 
 But this can be done by shorter way. 
