@@ -415,16 +415,16 @@ Lets make example of menu definition.
 // Create file menu
 var menu = new KeyMap("File", "File Menu" );
 // Define menu as member of MainMenu
-KeyMap.GlobalKeyMap.Define(new string[] { "MainMenu", "File" }, menu );
+KeyMap.GlobalKeymap.Define(new [] { "MainMenu", "File" }, menu );
 // Create save menu item (shortcut will be only displayed and can be omitted)
-// The method Save of this class will be binded to this menu item
-var menuItem = MenuLineBaseSimple("Save", Save, "C-s", "Save current file") 
+// The method Save of this class will be bind to this menu item
+var menuItem = new MenuLineSimple("Save", (Method) Save, "C-s", "Save current file");
 // Define this item as member of File menu 
-KeyMap.GlobalKeyMap.Define(new string[] { "MainMenu", "File", "Save" }, menItemu );
+KeyMap.GlobalKeymap.Define(new [] { "MainMenu", "File", "Save" }, menuItem );
 // Open file menu by Alt+F 
-KeyMap.GlobalKeymap.SetLocal("A-f", menu);                  
+KeyMap.GlobalKeymap.SetLocal(Event.ParseExpression("A-f"), menu);                  
 // Save file by C+S 
-KeyMap.GlobalKeymap.SetLocal("C-s", menuItem.binding);                  
+KeyMap.GlobalKeymap.SetLocal(Event.ParseExpression("C-s"), menuItem.binding);                 
 ```
 
 But this can be done by shorter way. 
