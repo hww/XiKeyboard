@@ -35,6 +35,7 @@ namespace VARP.Keyboard
         public static implicit operator int(Event evt){ return evt.code; }
         public static implicit operator Event(int code) { return new Event(code); }
         public static implicit operator Event(KeyCode code) { return new Event((int)code); }
+        public static implicit operator Event(string expression){ return ParseExpression(expression); }
         
         /// <summary>Check if code is valid</summary>
         public bool IsValid => code>= 0 && code < KeyModifiers.MaxCode;

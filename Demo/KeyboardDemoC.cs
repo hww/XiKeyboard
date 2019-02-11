@@ -31,18 +31,16 @@ public class KeyboardDemoC : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		KeyMap.GlobalKeymap.Define("S-1", "Pressed: S-1");
-		KeyMap.GlobalKeymap.Define("S-2 S-3", "Pressed: S-2 S-3");
-		Buffer.OnSequencePressed.Add(OnSequencePressed);
-		Buffer.OnKeyPressed.Add(OnKeyPressed);
+		KeyMap.GlobalKeymap.Define("S-1", "Pressed: S-1");         	// Define keystroke S-1 with text binding "1"
+		KeyMap.GlobalKeymap.Define("S-2 S-3", "Pressed: S-2 S-3");	// Define keystroke S-2 S-3 with text binding "2"
+		Buffer.OnSequencePressed.Add(OnSequencePressed);                          	// On press sequence delegate
+		Buffer.OnKeyPressed.Add(OnKeyPressed);                                    	// On press key delegate
 	}
 	
-	// Update is called once per frame
 	void OnSequencePressed(Buffer buffer, KeyMapItem item) {
-		Debug.Log("{" + item.value + "}");		
+		Debug.Log("{" + item.value + "}");	  // Print "Pressed Sequence: N" 	
 	}
-	// Update is called once per frame
 	void OnKeyPressed(Buffer buffer, Event evt) {
-		Debug.Log(buffer.GetBufferHumanizedString());		
+		Debug.Log(buffer.GetBufferHumanizedString()); // Just display current buffer content		
 	}
 }

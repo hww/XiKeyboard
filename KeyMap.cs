@@ -53,6 +53,7 @@ namespace VARP.Keyboard
         public int key;             //< this is the fake key
         public object value;        //< there can be any available value
 
+        public bool IsPseudo => (key & KeyModifiers.Pseudo) > 0;
         public KeyMapItem(int key, object value)
         {
             this.key = key;
@@ -147,6 +148,7 @@ namespace VARP.Keyboard
         // ===============================================================================================
         // SET & GET bindings in this keymap only
         // ===============================================================================================
+
         /// <summary>
         /// Set key value pair. Replace existing
         /// </summary>
@@ -164,6 +166,7 @@ namespace VARP.Keyboard
             if (evt == Event.DefaultPseudoCode)
                 defaultBinding = binding;
         }
+        
         /// <summary>
         ///  Get key binding of this keymap, returns: null or default binding (if allowed)
         /// </summary>
@@ -230,7 +233,7 @@ namespace VARP.Keyboard
             return tmp;
         }
         // ===============================================================================================
-        // Define the keybinding recursively
+        // Define the key binding recursively
         // ===============================================================================================
         /// <summary>Define list of key-strings. This way used for defining menu</summary>
         public bool Define(string[] sequence, object value)
@@ -241,7 +244,7 @@ namespace VARP.Keyboard
         /// <summary>Define by string expression</summary>
         public bool Define(string sequence, object value)
         {
-            var newSequence = Kbd.Parse(sequence);
+            var newSequence = Kbd.ParseSequence(sequence);
             return Define(newSequence, value);
         }
         /// <summary>Define sequence with given binding</summary>
@@ -294,6 +297,39 @@ namespace VARP.Keyboard
                 }
             }
             throw new Exception("We can\'t be here");
+        }
+        // ===============================================================================================
+        // Define menu map
+        // ===============================================================================================
+        /// <summary>Define list of key-strings. This way used for defining menu</summary>
+        public KeyMap DefineMenu(string[] sequence, string title, string help)
+        {
+            var menu = new KeyMap(title, help );
+            var newSequence = Kbd.ParsePseudo(sequence);
+            Define(newSequence, menu);
+            return menu;
+        } 
+        /// <summary>Define list of key-strings. This way used for defining menu</summary>
+        public KeyMap DefineMenu(string path, string title, string help)
+        {
+            var menu = new KeyMap(title, help );
+            var sequence = path.Split('/');
+            var newSequence = Kbd.ParsePseudo(sequence);
+            Define(newSequence, menu);
+            return menu;
+        }
+        /// <summary>Define list of key-strings. This way used for defining menu</summary>
+        public bool DefineMenuLine(string[] sequence, MenuLine line)
+        {
+            var newSequence = Kbd.ParsePseudo(sequence);
+            return Define(newSequence, line);
+        }
+        /// <summary>Define by string expression</summary>
+        public bool DefineMenuLine(string path, MenuLine line)
+        {
+            var sequence = path.Split('/');
+            var newSequence = Kbd.ParsePseudo(sequence);
+            return Define(newSequence, line);
         }
     }
     /// <summary>

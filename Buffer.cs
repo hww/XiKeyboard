@@ -160,9 +160,9 @@ namespace VARP.Keyboard
                 textBuffer.Clear(); // no reason to continue
                 return true;
             }
-            if (result.value is KeyMap)
+            if (result.IsPseudo)
             {
-                OnKeymapPressed.Call(this, result);
+                OnPseudoPressed.Call(this, result);
                 return true;
             }
             textBuffer.SequenceStarts = textBuffer.BufferSize;
@@ -208,7 +208,7 @@ namespace VARP.Keyboard
         /// <summary>When some key sequence found</summary>
         public static readonly FastAction<Buffer,KeyMapItem> OnSequencePressed = new FastAction<Buffer, KeyMapItem>();
         /// <summary>When keymap found</summary>
-        public static readonly FastAction<Buffer,KeyMapItem> OnKeymapPressed = new FastAction<Buffer, KeyMapItem>();
+        public static readonly FastAction<Buffer,KeyMapItem> OnPseudoPressed = new FastAction<Buffer, KeyMapItem>();
         /// <summary>When key pressed</summary>
         public static readonly FastAction<Buffer,Event> OnKeyPressed = new FastAction<Buffer,Event>();
         #endregion

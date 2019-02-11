@@ -106,13 +106,14 @@ namespace VARP.Keyboard
                 result[i++] = Event.GetName(code);
             return result;
         }
+
         /// <summary>
         /// Supports multiple or single tokens
         /// When multiple tokens each one separated with ' ' space
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static Event [] Parse([NotNull] string expression)
+        public static Event [] ParseSequence([NotNull] string expression)
         {
             if (expression == null) throw new ArgumentNullException(nameof(expression));
             if (expression == string.Empty) throw new ArgumentException(nameof(expression));

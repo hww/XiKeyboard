@@ -7,64 +7,74 @@ namespace VARP.Keyboard
 {
     public class MenuTextRenderer
     {
-        public static readonly MenuOptions DefaultOptions = new MenuOptions();
-        private const int SPACE_BETWEEN_COLUMNS = 1;
-        private const int SPACE_BETWEEN_EDGES = 1;
+        private const string SUFFIX = " ";
+        private const string PREFIX = " ";
+        private const string PREFIX_SELECTED = ">";
+        private const string SPACE = "  ";
+        private const char CHAR_SQUARE_DOT = '▪';
+        private const char CHAR_DASHED_LINE = '-';
+        private const char CHAR_LIGHT_HORIZONTAL = '─';
+            
+        private const  string upperLineFormat  = "┌{0}┐";
+        private const  string middleLineFormat = "├{0}┤";
+        private const  string bottomLineFormat = "└{0}┘";
+        private const  string menuLineFormat   = "│{0}│";
+        
+        
+        private static readonly BetterStringBuilder stringBuilder = new BetterStringBuilder(80*40);
 
-        public class MenuOptions
+        public enum MenuOptions
         {
-            public int textWidth = 20;
-            public int valueWidth = 10;
-            public int Width => textWidth + valueWidth;
+            Default
         }
         
-        public string RenderMenu(KeyMap menu, int selected, MenuOptions options = null)
+        public static string RenderMenu(KeyMap menu, int selected, MenuOptions options = MenuOptions.Default)
         {
-            var sb = new StringBuilder();
+            stringBuilder.Clear();
             var count = menu.Count;
             var txtItems = new string[count];
             var valItems = new string[count];
             var txtWidth = 0;
             var valWidth = 0;
+            var txt = string.Empty;
+            var val = string.Empty;
             for (var i = 0; i < count; i++)
             {
                 var line = menu[i].value;
-                if (line is MenuLineSimple)
+                if (line is MenuLine)
                 {
-                    var item = line as MenuLineSimple;
-                    txtItems[i] = item.Text;
-                    valItems[i] = item.Shorcut;
-                    txtWidth = Math.Max(txtWidth, txtItems[i].Length);
-                    valWidth = Math.Max(valWidth, valItems[i].Length);
+                    var item = line as MenuLine;
+                    txt = item.Text;
+                    val = item.Shorcut;
                 }
-                else if (line is MenuLineComplex)
-                {
-                    var item = line as MenuLineComplex;
-                    txtItems[i] = item.Text;
-                    valItems[i] = item.Shorcut;
-                    txtWidth = Math.Max(txtWidth, txtItems[i].Length);
-                    valWidth = Math.Max(valWidth, valItems[i].Length);
-                }
-            }
-            var itemWidth = txtWidth + valWidth + SPACE_BETWEEN_COLUMNS;
-            var lineWidth = itemWidth + SPACE_BETWEEN_EDGES * 2;
+                
+                if (txt != null)
+                    txtWidth = Math.Max(txtWidth, txt.Length);
+                if (val != null)
+                    valWidth = Math.Max(valWidth, val.Length);
 
-            string itemFormat2 =
-                $"|{{0,{SPACE_BETWEEN_EDGES}}}{{1,{txtWidth}}}{{2,{SPACE_BETWEEN_COLUMNS}}}{{3,{valWidth}}}{{4,{SPACE_BETWEEN_EDGES}}}|";
-            string itemFormat1 =
-                $"|{{0,{SPACE_BETWEEN_EDGES}}}{{1,{itemWidth}}}{{2,{SPACE_BETWEEN_EDGES}}}|";
-            
-            string lineFormat = "|{0}|";
+                txtItems[i] = txt;
+                valItems[i] = val;
+            }
+            var itemWidth = txtWidth + valWidth + SPACE.Length;
+            var lineWidth = itemWidth + SUFFIX.Length + PREFIX.Length;
+
             string spaceLine = null;
-            string singleLine = null;
             string dashedLine = null;
+            string singleLine = null;
+            string justLine = new string(CHAR_LIGHT_HORIZONTAL, lineWidth);
+            
+            stringBuilder.AppendLine(string.Format( upperLineFormat, justLine));
+            
+            string itemFormat1 = $"{{0}}{{1,-{itemWidth}}}{{2}}";
+            string itemFormat2 = $"{{0}}{{1,-{txtWidth}}}{SPACE}{{2,-{valWidth}}}{{3}}";
+
             
             for (var i = 0; i < count; i++)
             {
                 var line = menu[i].value;
                 var isSelected = i == selected;
-                var prefix = isSelected ? '>' : ' ';
-                var suffix = isSelected ? '<' : ' ';
+
                 
                 if (line is MenuSeparator)
                 {
@@ -74,29 +84,39 @@ namespace VARP.Keyboard
                         case MenuSeparator.Type.NoLine:
                             break;
                         case MenuSeparator.Type.Space:
-                            if (spaceLine == null) spaceLine = string.Format(lineFormat, new string(' ', lineWidth));
-                            sb.AppendLine(spaceLine);
+                            if (spaceLine == null) 
+                                spaceLine = string.Format(menuLineFormat, new string(' ', lineWidth));
+                            stringBuilder.AppendLine(spaceLine);
                             break;
                         case MenuSeparator.Type.SingleLine:
-                            if (singleLine == null) singleLine = string.Format(lineFormat, new string('-', lineWidth));
-                            sb.AppendLine(singleLine);
+                            if (singleLine == null) 
+                                singleLine = string.Format(middleLineFormat,justLine);
+                            stringBuilder.AppendLine(singleLine);
                             break;
                         case MenuSeparator.Type.DashedLine:
-                            if (dashedLine == null) dashedLine = string.Format(lineFormat, new string('~', lineWidth));
-                            sb.AppendLine(singleLine);
+                            if (dashedLine == null) 
+                                dashedLine = string.Format(middleLineFormat, new string(CHAR_DASHED_LINE, lineWidth));
+                            stringBuilder.AppendLine(dashedLine);
                             break;
                         default:
-                            if (valItems[i] == null)
-                                sb.AppendLine(string.Format(itemFormat2, prefix, txtItems[i], ' ', valItems[i], suffix));
-                            else if (txtItems[i] != null)
-                                sb.AppendLine(string.Format(itemFormat1, prefix, txtItems[i], suffix));                            
-                            else
-                                throw new ArgumentOutOfRangeException();
-                            break;
+                            throw new Exception();
                     }
                 }
+                else
+                {
+                    var prefix = isSelected ? PREFIX_SELECTED : PREFIX;
+                    string item;
+                    if (valItems[i] == null)
+                        item = string.Format(itemFormat1, prefix, txtItems[i], SUFFIX);
+                    else if (txtItems[i] != null)
+                        item = string.Format(itemFormat2, prefix, txtItems[i], valItems[i], SUFFIX);                            
+                    else
+                        throw new ArgumentOutOfRangeException();
+                    stringBuilder.AppendLine(string.Format(menuLineFormat, item));
+                }
             }
-            return sb.ToString();
+            stringBuilder.AppendLine(string.Format( bottomLineFormat, justLine));
+            return stringBuilder.ToString();
         }
         
     }
