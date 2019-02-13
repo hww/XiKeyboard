@@ -414,31 +414,35 @@ Lets make example of menu definition.
 ```C#
 // Define menu as member of MainMenu
 var fileMenu = KeyMap.GlobalKeymap.DefineMenu("main-menu/file", "File", "Help for file menu" );
-// Open file menu by C+F 
-KeyMap.GlobalKeymap.SetLocal("C-f", fileMenu);                  
+
 // Create save menu item (shortcut will be only displayed and can be omitted)
 // The method Save of this class will be bind to this menu item
-var menuItem = new MenuLineSimple("Save", (Method) Save, "C-s", "Save current file");
+var menuItem1 = new MenuLineSimple("Save", (Method) Save, "C-s", "Save current file");
 // Define this item as member of File menu 
-KeyMap.GlobalKeymap.DefineMenuLine("main-menu/file/save", menuItem );
-// Save file by C+S 
-KeyMap.GlobalKeymap.SetLocal(menuItem.Shorcut, menuItem.binding);                  
+fileMenu.AddMenuLine("save", menuItem1 );
 // Save As menu line
-var menuItem1 = new MenuLineSimple("Save As", (Method) Save, null, "Save current file as *");
-KeyMap.GlobalKeymap.DefineMenuLine("main-menu/file/save-as", menuItem1 );
+var menuItem2 = new MenuLineSimple("Save As", (Method) SaveAs, null, "Save current file as *");
+fileMenu.AddMenuLine("save-as", menuItem2 );
 // Export menu line
-var menuItem2 = new MenuLineSimple("Export", (Method) Save, null, "Export current file as *");
-KeyMap.GlobalKeymap.DefineMenuLine("main-menu/file/export", menuItem2 );
+var menuItem3 = new MenuLineSimple("Export", (Method) Export, null, "Export current file as *");
+fileMenu.AddMenuLine("export", menuItem3 );
+
 // Line separators
-KeyMap.GlobalKeymap.DefineMenuLine("main-menu/file/-1", new MenuSeparator(MenuSeparator.Type.Space) );
-KeyMap.GlobalKeymap.DefineMenuLine("main-menu/file/-2", new MenuSeparator(MenuSeparator.Type.NoLine) );
-KeyMap.GlobalKeymap.DefineMenuLine("main-menu/file/-3", new MenuSeparator(MenuSeparator.Type.DashedLine) );
-KeyMap.GlobalKeymap.DefineMenuLine("main-menu/file/-4", new MenuSeparator(MenuSeparator.Type.SingleLine) );                
+fileMenu.AddMenuLine("-1", new MenuSeparator(MenuSeparator.Type.Space) );
+fileMenu.AddMenuLine("-2", new MenuSeparator(MenuSeparator.Type.NoLine) );
+fileMenu.AddMenuLine("-3", new MenuSeparator(MenuSeparator.Type.DashedLine) );
+fileMenu.AddMenuLine("-4", new MenuSeparator(MenuSeparator.Type.SingleLine) );
+
+// Now make shortcuts for menu options
+// Open file menu by C+F 
+KeyMap.GlobalKeymap.SetLocal("C-f", fileMenu);                  
+// Save file by C+S 
+KeyMap.GlobalKeymap.SetLocal(menuItem1.Shorcut, menuItem1.binding);                 
 ```
 
 Will display:
 
-![menu-picture-1](Documentatons/menu-picture-1.png)
+![menu-picture-1](Documentation/menu-picture-1.png)
 
 But this can be done by shorter way. 
 
