@@ -33,6 +33,9 @@ namespace VARP.Keyboard
         public virtual string Help => null;
         public virtual string Shorcut => null;
         public virtual object Binding => null;
+        
+        
+        
     }
 
     public class MenuLineSimple : MenuLine

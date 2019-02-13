@@ -236,7 +236,7 @@ namespace VARP.Keyboard
         // Define the key binding recursively
         // ===============================================================================================
         /// <summary>Define list of key-strings. This way used for defining menu</summary>
-        public bool Define(string[] sequence, object value)
+        public bool DefinePseudo(string[] sequence, object value)
         {
             var newSequence = Kbd.ParsePseudo(sequence);
             return Define(newSequence, value);
@@ -258,7 +258,7 @@ namespace VARP.Keyboard
             for (var i = 0; i < sequence.Length; i++)
             {
                 var key = sequence[i];
-                var tmp = currentMap.GetLocal(key); // do not alow defaults
+                var tmp = currentMap.GetLocal(key); // do not allow defaults
                 if (tmp == null)
                 {
                     // there is no this binding
@@ -271,7 +271,7 @@ namespace VARP.Keyboard
                     }
                     else
                     {
-                        // the curentMap is the map in the sequence and it does not have definition 
+                        // the currentMap is the map in the sequence and it does not have definition 
                         var newMap = new KeyMap();
                         currentMap.SetLocal(key, newMap);
                         currentMap = newMap;
@@ -279,7 +279,7 @@ namespace VARP.Keyboard
                 }
                 else
                 {
-                    // we found binding in curentMap
+                    // we found binding in currentMap
                     if (i == lastIndex)
                     {
                         // currentMap is target map, it has binding but we have to redefine it
@@ -287,12 +287,12 @@ namespace VARP.Keyboard
                     }
                     else
                     {
-                        // the curentMap is the map in the sequence and it has definition 
+                        // the currentMap is the map in the sequence and it has definition 
                         var map = tmp.value as KeyMap;
                         if (map != null)
                             currentMap = map;
                         else
-                            throw new Exception(string.Format("Expect KeyMap at '{0}' found: '{1}' in: '{2}'", sequence[i], tmp, sequence));
+                            throw new Exception($"Expect KeyMap at '{sequence[i]}' found: '{tmp}' in: '{sequence}'");
                     }
                 }
             }
@@ -302,15 +302,7 @@ namespace VARP.Keyboard
         // Define menu map
         // ===============================================================================================
         /// <summary>Define list of key-strings. This way used for defining menu</summary>
-        public KeyMap DefineMenu(string[] sequence, string title, string help)
-        {
-            var menu = new KeyMap(title, help );
-            var newSequence = Kbd.ParsePseudo(sequence);
-            Define(newSequence, menu);
-            return menu;
-        } 
-        /// <summary>Define list of key-strings. This way used for defining menu</summary>
-        public KeyMap DefineMenu(string path, string title, string help)
+        public KeyMap CreateMenu(string path, string title, string help)
         {
             var menu = new KeyMap(title, help );
             var sequence = path.Split('/');
@@ -318,18 +310,22 @@ namespace VARP.Keyboard
             Define(newSequence, menu);
             return menu;
         }
-        /// <summary>Define list of key-strings. This way used for defining menu</summary>
-        public bool DefineMenuLine(string[] sequence, MenuLine line)
+        
+        /// <summary>Define by string expression with '/' separator</summary>
+        public MenuLine DefineMenuLine(string path, MenuLine line)
         {
+            var sequence = path.Split('/');
             var newSequence = Kbd.ParsePseudo(sequence);
-            return Define(newSequence, line);
+            Define(newSequence, line);
+            return line;
         }
+        
         /// <summary>Define by string expression</summary>
-        public bool DefineMenuLine(string path, MenuLine line)
+        public MenuLine AddMenuLine(string name, MenuLine line)
         {
-            var sequence = path.Split('/');
-            var newSequence = Kbd.ParsePseudo(sequence);
-            return Define(newSequence, line);
+            var code = Event.GetPseudoCode(name);
+            SetLocal(code, line);
+            return line;
         }
     }
     /// <summary>
@@ -388,7 +384,7 @@ namespace VARP.Keyboard
             items[evt] = new KeyMapItem(evt, value);
         }
         /// <summary>
-        /// Get key binding localy
+        /// Get key binding locally
         /// </summary>
         /// <param name="evt"></param>
         /// <param name="acceptDefaults"></param>

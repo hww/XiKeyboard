@@ -3,9 +3,9 @@
  !"#$%&'()*+,-./
 0123456789:;<=>?
 @ABCDEFGHIJKLMNO
-PQRSTUVWXYZ[\]^
+PQRSTUVWXYZ[\]^_
 `abcdefghijklmno
-pqrstuvwxyz{|}~
+pqrstuvwxyz{|}~⌂
 ⌂АБВГДЕЖЗИЙКЛМНОП
 РСТУФХЦЧШЩЪЫЬЭЮЯ
 абвгдежзийклмноп
@@ -14,3 +14,4 @@ pqrstuvwxyz{|}~
 ╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀
 рстуфхцчшщъыьэюя
 ЁёЄєЇїЎў°∙·√№¤■
+ <-Character 0xA0
