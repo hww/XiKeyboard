@@ -1,6 +1,16 @@
-# Keyboard Manager
+# XiKeyboard Manager for Unity 3D
 
-The asset for Unity 3D with keyboard manager similar to Emacs. <sup>Work In Progress</sup> 
+The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](https://github.com/hww)
+
+![](https://img.shields.io/badge/unity-2018.3%20or%20later-green.svg)
+[![⚙ Build and Release](https://github.com/hww/XiKeyboard/actions/workflows/ci.yml/badge.svg)](https://github.com/hww/XiKeyboard/actions/workflows/ci.yml)
+[![openupm](https://img.shields.io/npm/v/com.hww.xikeyboard?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.hww.xikeyboard/)
+[![](https://img.shields.io/github/license/hww/XiKeyboard.svg)](https://github.com/hww/XiKeyboard/blob/master/LICENSE)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
+## Status
+
+<sup>Work In Progress</sup> 
 
 ## Introduction
 
@@ -40,10 +50,18 @@ abcS-1defS-2S3
 ```
 
 
+## Install
 
-## Dependency
+The package is available on the openupm registry. You can install it via openupm-cli.
 
-This project uses [VARP/Delegates](https://github.com/hww/varp_delegates) library.
+```bash
+openupm add com.hww.xikeyboard
+```
+You can also install via git url by adding this entry in your manifest.json
+
+```bash
+"com.hww.xikeyboard": "https://github.com/hww/XiKeyboard.git#upm"
+```
 
 ## Key Modifiers
 
