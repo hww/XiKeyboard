@@ -15,7 +15,20 @@ The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](
 ## Introduction
 
 This package provides a handy API which allows you to easily create handlers for keyboard sequences. For example the sequence <control>+<c> followed by <control>+<x> can be specified by the string "C-c C-x". The main purpose of the package is as a debugging tool for game developers. After all, it is desirable for a game developer to have a dozen or more different functions quickly available -- on the keyboard. For the target platform the library can be used but probably only on a platform with a keyboard.
-	
+
+## Installing
+
+The package is available on the openupm registry. You can install it via openupm-cli.
+
+```bash
+openupm add com.hww.xikeyboard
+```
+You can also install via git url by adding this entry in your manifest.json
+
+```bash
+"com.hww.xikeyboard": "https://github.com/hww/XiKeyboard.git#upm"
+```
+
 ## Usage
 	
 The example below shows how the API can be used to define key sequences. Each key press will print current buffer to log. And in case of two sequences will be printed "Pressed Sequence: N" text (where N is 1 or 2)
@@ -53,19 +66,6 @@ abcS-1defS-2S3
 {Pressed: S-2 S-3}
 ```
 
-
-## Install
-
-The package is available on the openupm registry. You can install it via openupm-cli.
-
-```bash
-openupm add com.hww.xikeyboard
-```
-You can also install via git url by adding this entry in your manifest.json
-
-```bash
-"com.hww.xikeyboard": "https://github.com/hww/XiKeyboard.git#upm"
-```
 
 ## Key Modifiers
 
