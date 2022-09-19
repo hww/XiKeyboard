@@ -1,0 +1,60 @@
+name: ⚙ Build and Release
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  release:
+    name: ⚙ Release
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_NAME: XiKeyboard
+      PROJECT_ASSETS: README.md:CHANGELOG.md:LICENSE
+    steps:
+    - uses: actions/checkout@v2
+    - name: Semantic Release
+      id: semantic
+      uses: cycjimmy/semantic-release-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        branch: master
+        extra_plugins: |
+          @semantic-release/changelog 
+          @semantic-release/git
+          @iam1337/create-unitypackage
+    - name: Push UPM update
+      run: |
+        IFS=: read -r -a PROJECT_ASSETS_ARRAY <<< "$PROJECT_ASSETS"
+
+        mkdir Temp
+        for asset in "${PROJECT_ASSETS_ARRAY[@]}"; do
+          cp ${asset} Temp/${asset}
+        done
+
+        git log -1
+        git subtree split -P "Assets/$PROJECT_NAME" -b upm
+        git checkout upm
+
+        for asset in "${PROJECT_ASSETS_ARRAY[@]}"; do
+          cp Temp/${asset} ${asset}
+          git add ${asset}
+        done
+
+        if [[ -d "Examples" ]]; then
+          git mv Examples Examples~
+          rm -f Examples.meta
+        fi
+
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git commit -am "chore(release): update upm branch [skip ci]"
+        git push -f -u origin upm
+    - name: Push UPM tag
+      if: steps.semantic.outputs.new_release_published == 'true'
+      env: 
+        UPM_TAG: upm/v${{ steps.semantic.outputs.new_release_version }}
+      run: |
+        git tag $UPM_TAG upm
+        git push origin --tags
