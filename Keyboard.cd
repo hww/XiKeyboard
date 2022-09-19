@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="XiKeyboard.Kbd">
+    <Position X="4.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAgAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\Kbd.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.Event" Collapsed="true">
+    <Position X="2.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgQAAAALAAAAAQAAAEgAAAApAAAAIACAAAgAQAAIBAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\Event.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.SequenceBinding" Collapsed="true">
+    <Position X="8" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAEAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\KeyMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.KeyMapItem" Collapsed="true">
+    <Position X="4.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAIEAAAAAAAAACAAAABAAAAAAAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\KeyMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.KeyMap" Collapsed="true">
+    <Position X="3" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAwAQAAIAEBAAAgAAQAAAAEAAEAAAAAAAAAAJAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\KeyMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.FullKeymap" Collapsed="true">
+    <Position X="3" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\KeyMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.KeyModifiers" Collapsed="true">
+    <Position X="0.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAEAAAIAAgEIgAAAAAAAAAAAIAAEIAAAAAAAAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\KeyModifiers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.MenuLineBase" Collapsed="true">
+    <Position X="8" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAEAAAAAACAAAACA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\MenuLineBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.MenuLineBaseSimple" Collapsed="true">
+    <Position X="8.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAIAAAAAAAEAAAAAAAAAEAIAAAAKAAAACA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\MenuLineBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.MenuLineBaseComplex" Collapsed="true">
+    <Position X="6.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAkAAAQIEAAsAgEEEAAAAAAAAEAIAAAAKAAAACA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\MenuLineBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.MenuSeparator" Collapsed="true">
+    <Position X="10" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\MenuLineBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.Mode" Collapsed="true">
+    <Position X="1.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAEAAgAAAAAAAAIAIAACAAAAAAEAAABIAIgAAAAAAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\Mode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XiKeyboard.ReadLineMode" Collapsed="true">
+    <Position X="1.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACRggAAAAAAAAAAAAAABAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\ReadLineMode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VARP.NativeAPI.NativeFunctions" Collapsed="true">
+    <Position X="10.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\VARP\NativeAPI\NativeFunction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VARP.NativeAPI.NativeFunction">
+    <Position X="12.25" Y="1.5" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="VARP.NativeAPI.NativeFunction.Function" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\VARP\NativeAPI\NativeFunctions.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAQAgAAAAAAAAAAgAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\VARP\NativeAPI\NativeFunctions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="XiKeyboard.IBuffer">
+    <Position X="13.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAIgAAAAEQAKAQAAAAAAEAIAABAAAAARAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\IBuffer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="XiKeyboard.IOnKeyDown">
+    <Position X="12" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\VARP\Keyboard\IOnKeyDown.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
