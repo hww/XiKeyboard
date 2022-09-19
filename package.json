@@ -1,7 +1,7 @@
 {
   "name": "com.hww.xikeyboard",
   "displayName": "XiKeyboard",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "unity": "2021.1",
   "description": "XiKeyboard is tiny keyboard shortcuts system for Unity 3D.",
   "license": "MIT",
@@ -16,7 +16,9 @@
     "com.hww.xicore": "https://github.com/hww/XiCore.git#upm",
     "com.dbrizov.naughtyattributes": "https://github.com/dbrizov/NaughtyAttributes.git#upm"
   },
-  "category": [ "Sound" ],
+  "category": [
+    "Sound"
+  ],
   "samples": [],
   "repository": {
     "type": "git",
