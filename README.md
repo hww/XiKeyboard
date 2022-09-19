@@ -90,7 +90,7 @@ var event = Event.MakeEvent(KeyCode.A, KeyModifyers.Shift);      // Makes S-a ev
 
 To check event's modifiers there is _IsModifyer_ method.
 
-```C#
+```C# 
 event.IsModifyer(event, KeyModifyers.Shift);                     // Return true
 event.IsModifyer(event, KeyModifyers.Control);                   // Return false
 ```
