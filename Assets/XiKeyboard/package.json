@@ -3,7 +3,7 @@
   "displayName": "XiKeyboard",
   "version": "1.0.3",
   "unity": "2021.1",
-  "description": XiKeyboard is tiny keyboard shortcuts system for Unity 3D.",
+  "description": "XiKeyboard is tiny keyboard shortcuts system for Unity 3D.",
   "license": "MIT",
   "author": "hww <valery.hww@gmail.com> (https://github.com/hww)",
   "keywords": [
