@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8bdd9d901a551b9458df24e0c37ee753
+guid: accd6f41e52f57648b735c77376e1be8
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,10 +9,8 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Envy Code R
-  fallbackFontReferences:
-  - {fileID: 12800000, guid: 432f67af00c32ef4cbc3ee45a1c33ea4, type: 3}
-  - {fileID: 12800000, guid: 38fb3b675697cd647bc2852163f98587, type: 3}
+  - Liberation Mono
+  fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
