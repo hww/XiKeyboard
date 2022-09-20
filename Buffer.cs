@@ -157,15 +157,21 @@ namespace XiKeyboard
             {
                 // the binding found but it does not do anything, then undo last sequence
                 Debug.Log("Found sequence without binding " + result);
-                textBuffer.Clear(); // no reason to continue
+                textBuffer.ClearSequence();
+                return true;
+            }
+            if (result.value is KeyMap)
+            {
                 return true;
             }
             if (result.IsPseudo)
             {
                 OnPseudoPressed.Call(this, result);
+                // no reason to continue
+                textBuffer.ClearSequence();
                 return true;
             }
-            textBuffer.SequenceStarts = textBuffer.BufferSize;
+            textBuffer.ClearSequence();
             OnSequencePressed.Call(this, result);
             return true;
         }

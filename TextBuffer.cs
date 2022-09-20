@@ -79,6 +79,12 @@ namespace XiKeyboard
             sequenceStarts = 0;
             isModified = true;
         }
+
+        public void ClearSequence()
+        {
+            bufferSize = point = sequenceStarts;
+        }
+
         /// <summary>
         /// Get buffer size. How many characters in the buffer
         /// </summary>
@@ -92,6 +98,7 @@ namespace XiKeyboard
                 bufferSize = value;
             }
         }
+
         // ===========================================================================================
         // Required for scanning in keyboard map
         // ===========================================================================================
