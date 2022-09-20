@@ -14,13 +14,18 @@ namespace XiKeyboard
         private const char CHAR_SQUARE_DOT = '▪';
         private const char CHAR_DASHED_LINE = '-';
         private const char CHAR_LIGHT_HORIZONTAL = '─';
-            
+#if DEBUG_MENU_WITH_FRAME            
         private const  string upperLineFormat  = "┌{0}┐";
         private const  string middleLineFormat = "├{0}┤";
         private const  string bottomLineFormat = "└{0}┘";
         private const  string menuLineFormat   = "│{0}│";
-        
-        
+#else
+        private const string upperLineFormat  = null;
+        private const string middleLineFormat = "{0}";
+        private const string bottomLineFormat = null;
+        private const string menuLineFormat = "{0}";
+#endif
+
         private static readonly BetterStringBuilder stringBuilder = new BetterStringBuilder(80*40);
 
         public enum MenuOptions
@@ -63,8 +68,9 @@ namespace XiKeyboard
             string dashedLine = null;
             string singleLine = null;
             string justLine = new string(CHAR_LIGHT_HORIZONTAL, lineWidth);
-            
-            stringBuilder.AppendLine(string.Format( upperLineFormat, justLine));
+    
+            if (upperLineFormat != null)
+                stringBuilder.AppendLine(string.Format( upperLineFormat, justLine));
             
             string itemFormat1 = $"{{0}}{{1,-{itemWidth}}}{{2}}";
             string itemFormat2 = $"{{0}}{{1,-{txtWidth}}}{SPACE}{{2,-{valWidth}}}{{3}}";
@@ -115,7 +121,8 @@ namespace XiKeyboard
                     stringBuilder.AppendLine(string.Format(menuLineFormat, item));
                 }
             }
-            stringBuilder.AppendLine(string.Format( bottomLineFormat, justLine));
+            if (bottomLineFormat != null)
+                stringBuilder.AppendLine(string.Format( bottomLineFormat, justLine));
             return stringBuilder.ToString();
         }
         

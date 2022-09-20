@@ -22,7 +22,7 @@
 // SOFTWARE.
 // =============================================================================
 
-using TMPro;
+
 using XiKeyboard;
 using UnityEngine;
 using Event = XiKeyboard.Event;
@@ -30,13 +30,22 @@ using Type = System.Type;
 
 public class MenuDemoC : MonoBehaviour
 {
+	#region Static Private Vars
+
+	private static GUISkin _skin;
+
+	#endregion
 
 	public delegate void Method();
 
-	public TextMeshProUGUI textMeshPro;
-	
-	// Use this for initialization
-	void Start ()
+	string _text;
+
+    private void OnEnable()
+    {
+		_skin = Resources.Load<GUISkin>("XiKeyboard/Skins/Default Skin");
+	}
+    // Use this for initialization
+    void Start ()
 	{
 		Buffer.OnSequencePressed.Add(OnSequencePressed);  // On press sequence delegate
 		Buffer.OnKeyPressed.Add(OnKeyPressed);            // On press key delegate
@@ -67,8 +76,8 @@ public class MenuDemoC : MonoBehaviour
 		// Open file menu by C+F 
 		KeyMap.GlobalKeymap.SetLocal("C-f", fileMenu);                  
 		// Save file by C+S 
-		KeyMap.GlobalKeymap.SetLocal(menuItem1.Shorcut, menuItem1.binding);                  
-
+		KeyMap.GlobalKeymap.SetLocal(menuItem1.Shorcut, menuItem1.binding);
+		_text = MenuTextRenderer.RenderMenu(fileMenu, 0);
 	}
 
 	void OnSequencePressed(Buffer buffer, KeyMapItem item) {
@@ -87,7 +96,7 @@ public class MenuDemoC : MonoBehaviour
 	void OnPseudoPressed(Buffer buffer, KeyMapItem item)
 	{
 		Debug.Log("{menu:" + item.value + "}");
-		textMeshPro.text = MenuTextRenderer.RenderMenu(item.value as KeyMap, 0);
+		_text = MenuTextRenderer.RenderMenu(item.value as KeyMap, 0);
 	}
 	
 	void Save()
@@ -103,5 +112,32 @@ public class MenuDemoC : MonoBehaviour
 	void Export()
 	{
 		Debug.Log("File Exported");
+	}
+	void OnGUI()
+	{
+		InputManager.OnGUI();
+		OnGUI_Render(true);
+	}
+
+
+	void OnGUI_Render(bool isVisible)
+	{
+		if (!isVisible)
+			return;
+
+		GUI.skin = _skin;
+
+		var textSize = GUI.skin.label.CalcSize(new GUIContent(_text)) + new Vector2(10, 10);
+		var position = new Vector2(20, 20);
+		var rect = new Rect(position, textSize);
+
+		GUI.Box(rect, GUIContent.none);
+
+		rect.x += 5f;
+		rect.width -= 5f * 2f;
+		rect.y += 5f;
+		rect.height -= 5f * 2f;
+
+		GUI.Label(rect, _text);
 	}
 }
