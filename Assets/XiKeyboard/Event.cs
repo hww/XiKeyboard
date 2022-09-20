@@ -301,7 +301,12 @@ namespace XiKeyboard
             for ( var i = (int)'a' ; i < (int)( 'z' ) ; i++ )
                 SetName ( i, ( (char)i ).ToString ( ) );
             
-            SetName ( KeyModifiers.Shift, "S-" );
+            SetName(UnityEngine.KeyCode.RightArrow, "right");
+            SetName(UnityEngine.KeyCode.LeftArrow, "left");
+            SetName(UnityEngine.KeyCode.UpArrow, "up");
+            SetName(UnityEngine.KeyCode.DownArrow, "down");
+
+            SetName( KeyModifiers.Shift, "S-" );
             SetName ( KeyModifiers.Control, "C-" );
             SetName ( KeyModifiers.Alt, "A-" );
             SetName ( KeyModifiers.Pseudo, "P-" );
