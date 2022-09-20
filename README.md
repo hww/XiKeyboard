@@ -23,10 +23,13 @@ There are sevaral terms you should know before undertand this document
 - *Pseudo key* The single bit, modifier which is signaling the virtual key. Used for the menu system
 - *Event* The data container. Holds the keycode and key modifier
 - *Key sequence* Is the sequance of events
-- *Key map* The table which convert the event to the binding -- a delegate or an other key map
+- *Key map* The table which convert the event to the binding -- a delegate or an other key map. The maps organized as three and there is a global map at the top.
 - *Mode* The data containter with name and a key map
-- *Buffer* The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes
-
+- *Buffer* The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes. 
+	
+Could be created multiple buffers, but only one buffer receiving inputs -- current buffer.  
+	
+![Understanding Emacs keyboard](https://raw.githubusercontent.com/hww/XiKeyboard/master/Documentation/XiKeyboard.drawio.png)
 
 ## Installing
 
