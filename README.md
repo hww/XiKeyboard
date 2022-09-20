@@ -10,7 +10,7 @@ The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](
 
 ## Status
 
-<sup>Work In Progress</sup> 
+<sup>Basic functionality works but still there are things todo</sup> 
 
 ## Introduction
 
