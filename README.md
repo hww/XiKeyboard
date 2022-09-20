@@ -18,14 +18,14 @@ This package provides a handy API which allows you to easily create handlers for
 
 There are sevaral terms you should know before undertand this document
 
-- Keyboard vs Menu _The big thing is: the keyboard and menu systems are combined in the Emacs_ 
-- Key modifier _The bitfield with keep the state of special keys: shift, control, alt, etc_
-- Pseudo key _The single bit, modifier which is signaling the virtual key. Used for the menu system_
-- Event _The data container. Holds the keycode and key modifier_
-- Key sequence _Is the sequance of events_
-- Key map _The table which convert the event to the binding -- a delegate or an other key map_
-- Mode _The data containter with name and a key map_
-- Buffer _The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes_
+- *Keyboard vs Menu* The big thing is: the keyboard and menu systems are combined in the Emacs
+- *Key modifier* The bitfield with keep the state of special keys: shift, control, alt, etc
+- *Pseudo key* The single bit, modifier which is signaling the virtual key. Used for the menu system
+- *Event* The data container. Holds the keycode and key modifier
+- *Key sequence* Is the sequance of events
+- *Key map* The table which convert the event to the binding -- a delegate or an other key map
+- *Mode* The data containter with name and a key map
+- *Buffer* The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes
 
 
 ## Installing
