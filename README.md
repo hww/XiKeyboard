@@ -27,7 +27,7 @@ There are sevaral terms you should know before undertand this document
 - *Mode* The data containter with name and a key map
 - *Buffer* The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes. 
 	
-Could be created multiple buffers, but only one buffer receiving inputs -- current buffer.  
+Could be created multiple buffers, but only one buffer receiving inputs -- current buffer. The image below has a _buffer2_ as current buffer and _mode1_ as the major mode.
 	
 ![Understanding Emacs keyboard](https://raw.githubusercontent.com/hww/XiKeyboard/master/Documentation/XiKeyboard.drawio.png)
 
