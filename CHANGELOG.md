@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/hww/XiKeyboard/compare/v1.0.1...v1.0.2) (2022-09-20)
+
+
+### Bug Fixes
+
+* **dependency:** Removed the textMeshPro dependency ([7e17245](https://github.com/hww/XiKeyboard/commit/7e17245e65d0903eff192fc1b54d456de7661132))
+
 ## [1.0.1](https://github.com/hww/XiKeyboard/compare/v1.0.0...v1.0.1) (2022-09-20)
 
 
