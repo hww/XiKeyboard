@@ -33,8 +33,8 @@ public class KeyboardDemoC : MonoBehaviour {
 	{
 		KeyMap.GlobalKeymap.Define("S-1", "Pressed: S-1");         	// Define keystroke S-1 with text binding "1"
 		KeyMap.GlobalKeymap.Define("S-2 S-3", "Pressed: S-2 S-3");	// Define keystroke S-2 S-3 with text binding "2"
-		Buffer.OnSequencePressed.Add(OnSequencePressed);                          	// On press sequence delegate
-		Buffer.OnKeyPressed.Add(OnKeyPressed);                                    	// On press key delegate
+		Buffer.OnSequencePressed.Add(OnSequencePressed);            // On press sequence delegate
+		Buffer.OnKeyPressed.Add(OnKeyPressed);                      // On press key delegate
 	}
 	
 	void OnSequencePressed(Buffer buffer, KeyMapItem item) {
@@ -43,4 +43,9 @@ public class KeyboardDemoC : MonoBehaviour {
 	void OnKeyPressed(Buffer buffer, Event evt) {
 		Debug.Log(buffer.GetBufferHumanizedString()); // Just display current buffer content		
 	}
+
+	void OnGUI()
+    {
+		InputManager.OnGUI();
+    }
 }

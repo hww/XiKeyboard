@@ -27,10 +27,10 @@ using UnityEngine;
 namespace XiKeyboard
 {
     /// <summary>This component redirecting key events to current buffer</summary>
-    public class InputManagerC : MonoBehaviour
+    public class InputManager
     {
         /// <summary>Unity will call it to deliver message</summary>
-        private void OnGUI()
+        public static void OnGUI()
         {
             var evt = UnityEngine.Event.current;
             if (evt.type == EventType.KeyDown)
