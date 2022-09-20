@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/hww/XiKeyboard/compare/v1.0.2...v1.0.3) (2022-09-20)
+
+
+### Bug Fixes
+
+* **code:** Added arrow keys names ([b96c0b7](https://github.com/hww/XiKeyboard/commit/b96c0b7b21f0752a19ce954e0b55482a5a90879a))
+
 ## [1.0.2](https://github.com/hww/XiKeyboard/compare/v1.0.1...v1.0.2) (2022-09-20)
 
 
