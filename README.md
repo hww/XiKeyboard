@@ -18,12 +18,12 @@ This package provides a handy API which allows you to easily create handlers for
 
 ## Alternative
 
-That system has designed for functionality and better keyboard support. It is better to use for complex projects with hundreeds of shortcuts.  
+This keyboard and menu system has designed for functionality and better keyboard support. It is better to use for complex projects with hundreds of shortcuts.
 
-The other alternative is my advanced menu [XiDebugMenu](https://github.com/hww/XiDebugMenu). This project designed for simplicity, for example it has limited amout of types for menu items. 
- 
-If you need more than XiDebugMenu but less than XiKeyboard then consider to use the advanced version [extDebug](https://github.com/Iam1337/extDebug). It has much more features and I believe you will have a professional support from autor [Iam1337](https://github.com/Iam1337).
+The other alternative is my simple menu _XiDebugMenu_. This project designed for simplicity and low memory footprint.
 
+If you need more than _XiDebugMenu_ but less than _XiKeyboard_ then consider to use the advanced version [extDebug](https://github.com/Iam1337/extDebug). It has much more features and I believe you will have a professional support from autor [Iam1337](https://github.com/Iam1337).
+	
 ## Terms
 
 There are sevaral terms you should know before undertand this document
