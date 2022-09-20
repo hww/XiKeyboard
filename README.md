@@ -16,6 +16,18 @@ The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](
 
 This package provides a handy API which allows you to easily create handlers for keyboard sequences. For example the sequence <control>+<c> followed by <control>+<x> can be specified by the string "C-c C-x". The main purpose of the package is as a debugging tool for game developers. After all, it is desirable for a game developer to have a dozen or more different functions quickly available -- on the keyboard. For the target platform the library can be used but probably only on a platform with a keyboard.
 
+There are sevaral terms you should know before undertand this document
+
+- Keyboard vs Menu _The big thing is: the keyboard and menu systems are combined in the Emacs_ 
+- Key modifier _The bitfield with keep the state of special keys: shift, control, alt, etc_
+- Pseudo key _The single bit, modifier which is signaling the virtual key. Used for the menu system_
+- Event _The data container. Holds the keycode and key modifier_
+- Key sequence _Is the sequance of events_
+- Key map _The table which convert the event to the binding -- a delegate or an other key map_
+- Mode _The data containter with name and a key map_
+- Buffer _The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes_
+
+
 ## Installing
 
 The package is available on the openupm registry. You can install it via openupm-cli.
@@ -42,10 +54,14 @@ void Start ()
 	Buffer.OnKeyPressed.Add(OnKeyPressed);                     // On press key delegate
 }
 void OnSequencePressed(Buffer buffer, KeyMapItem item) {
-	Debug.Log("{" + item.value + "}");	  // Print "Pressed Sequence: N" 	
+	Debug.Log("{" + item.value + "}");	      // Print "Pressed Sequence: N" 	
 }
 void OnKeyPressed(Buffer buffer, Event evt) {
 	Debug.Log(buffer.GetBufferHumanizedString()); // Just display current buffer content		
+}
+void OnGUI()
+{
+        InputManager.OnGUI(); // Execute the input manager will send key press to the XiKeyboard
 }
  ```
 
