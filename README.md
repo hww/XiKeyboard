@@ -10,11 +10,21 @@ The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](
 
 ## Status
 
-<sup>Work In Progress</sup> 
+<sup>Basic functionality works but still there are things todo</sup> 
 
 ## Introduction
 
 This package provides a handy API which allows you to easily create handlers for keyboard sequences. For example the sequence <control>+<c> followed by <control>+<x> can be specified by the string "C-c C-x". The main purpose of the package is as a debugging tool for game developers. After all, it is desirable for a game developer to have a dozen or more different functions quickly available -- on the keyboard. For the target platform the library can be used but probably only on a platform with a keyboard.
+
+## Alternative
+
+This keyboard and menu system has designed for functionality and better keyboard support. It is better to use for complex projects with hundreds of shortcuts.
+
+The other alternative is my simple menu [XiDebugMenu](https://github.com/hww/XiDebugMenu) designed for simplicity and low memory footprint.
+
+If you need more than _XiDebugMenu_ but less than _XiKeyboard_ then consider to use the advanced version [extDebug](https://github.com/Iam1337/extDebug). It has much ballanced number of features and I believe you will have a professional support from autor [Iam1337](https://github.com/Iam1337).
+	
+## Terms
 
 There are sevaral terms you should know before undertand this document
 
