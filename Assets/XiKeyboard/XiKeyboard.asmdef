@@ -1,10 +1,9 @@
 {
     "name": "XiKeyboard",
-    "rootNamespace": "",
+    "rootNamespace": "XiKeyboard",
     "references": [
         "GUID:20b5fb66216b0de408c034afdc4f3a99",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:6546d7765b4165b40850b3667f981c26"
+        "GUID:343deaaf83e0cee4ca978e7df0b80d21"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
