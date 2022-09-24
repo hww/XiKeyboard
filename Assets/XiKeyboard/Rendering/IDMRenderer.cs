@@ -1,3 +1,5 @@
+/* Copyright (c) 2021 dr. ext (Vladimir Sigalkin) */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +16,7 @@ namespace XiKeyboard
 		#region Methods
 
 		// Debug Menu Hooks
-		void RenderMenu(DMRenderItem menu, DMMenuOptions options = DMMenuOptions.Default);
+		void RenderMenu(DMMenuPanelRepresentation menu, DMMenuOptions options = DMMenuOptions.Default);
 
 		#endregion
 	}

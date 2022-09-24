@@ -4,7 +4,7 @@ using System;
 
 namespace XiKeyboard
 {
-	public class DMEnum<T> : DMValue<T> where T : struct, Enum
+	public class DMEnum<T> : TDMMenuValue<T> where T : struct, Enum
 	{
 		#region Static Private Methods
 
@@ -75,9 +75,9 @@ namespace XiKeyboard
 
 		#region Protected Methods
 
-		protected override void OnEvent(EventTag evt, bool shift)
+		public override void OnEvent(DMEvent evt, bool shift)
 		{
-			//if (eventArgs.Tag == EventTag.Input)
+			//if (eventArgs.Tag == DMEvent.Input)
 			//{
 			//	if (_flagBranch != null)
 			//	{
@@ -104,14 +104,14 @@ namespace XiKeyboard
 
 		protected override string ValueToString(T value)
 		{
-			if (_flagBranch != null)
-			{
-				var intValue = (int)(object)value;
-				if (intValue == 0)
-				{
-					return "None";
-				}
-			}
+			//if (_flagBranch != null)
+			//{
+			//	var intValue = (int)(object)value;
+			//	if (intValue == 0)
+			//	{
+			//		return "None";
+			//	}
+			//}
 
 			return value.ToString();
 		}

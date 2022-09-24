@@ -4,7 +4,7 @@ using System;
 
 namespace XiKeyboard
 {
-	public class DMBool : DMValue<bool>
+	public class DMBool : TDMMenuValue<bool>
 	{
 		#region Public Methods
 
@@ -12,11 +12,14 @@ namespace XiKeyboard
 			: base(text, getter, setter, shortcut, help)
 		{ }
 
+		public override bool ButtonState => _getter();
+		public override DMButtonType ButtonType => DMButtonType.Toggle;
+
 		#endregion
 
 		#region Protected Methods
 
-		protected override string ValueToString(bool value) => value ? "True" : "False";
+		protected override string ValueToString(bool value) => String.Empty;
 
 		protected override bool ValueIncrement(bool value, bool isShift) => !value;
 
