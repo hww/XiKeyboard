@@ -60,6 +60,7 @@ namespace XiKeyboard
             var header = string.Format(itemFormat1, DMColors.MenuHeader, panel.title, DMConfig.SuffixNormal);
 
             stringBuilder.AppendLine(header);
+            stringBuilder.AppendLine(singleLine);
 
             var menuItems = panel.items;
             var count = panel.Count;

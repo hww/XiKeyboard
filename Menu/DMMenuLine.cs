@@ -74,9 +74,9 @@ namespace XiKeyboard
 
         #region IMenuLine
 
-        public override string Text => text==null ? text : string.Empty;
-        public override string Help => help == null ? help : string.Empty;
-        public override string Shorcut => shortcut == null ? shortcut : string.Empty;
+        public override string Text => text==null ? string.Empty : text;
+        public override string Help => help == null ? string.Empty : help;
+        public override string Shorcut => shortcut == null ? string.Empty : shortcut ;
         public override object Binding => binding;
 
         public override void OnEvent(DMEvent evt, bool shift)

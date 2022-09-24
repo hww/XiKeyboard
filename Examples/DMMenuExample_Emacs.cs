@@ -10,18 +10,13 @@ namespace XiKeyboard.Examples.Menu
 	{
 		public delegate void Method();
 
-		// To initialize the renderer
-		private void OnEnable()
-		{
-			DM.Initialize();
-		}
 
 		// Use this for initialization the menu system
-		void Start()
+		private void Start()
 		{
 
 			// Define menu as member of MainMenu
-			var fileMenu = KeyMap.GlobalKeymap.CreateMenu("main-menu/file", "File", "Help for file menu");
+			var fileMenu = KeyMap.GlobalKeymap.CreateMenu("file", "File", "Help for file menu");
 
 			// Create save menu item (shortcut will be only displayed and can be omitted)
 			// The method Save of this class will be bind to this menu item

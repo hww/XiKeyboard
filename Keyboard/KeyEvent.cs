@@ -176,8 +176,10 @@ namespace XiKeyboard
         /// <summary>Parse the expression without spaces</summary>
         public static KeyEvent ParseExpression(string expression)
         {
-            if (expression == null) throw new ArgumentNullException(nameof(expression));
-            if (expression == string.Empty) throw new ArgumentException(nameof(expression));
+            if (expression == null) 
+                throw new ArgumentNullException(nameof(expression));
+            if (expression == string.Empty) 
+                throw new ArgumentException(nameof(expression));
 
             // There is the testing for the modifier C- A- S-
             var m = expression[0];

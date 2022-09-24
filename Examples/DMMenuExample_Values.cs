@@ -123,14 +123,7 @@ namespace XiKeyboard.Examples.Menu
 			simpleMenu.AddMenuLine("-6", new DMMenuSeparator(DMMenuSeparator.Type.DashedLine));
 			DM.Add("simple/Bool", () => _bool, v => _bool = v);
 
-			//DM.Add("simple/Vector 2", () => _vector2, v => _vector2 = v).SetPrecision(2);
 			//DM.Add("simple/Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2);
-			//DM.Add("simple/Vector 4", () => _vector4, v => _vector4 = v).SetPrecision(2);
-			//DM.Add("simple/Quaternion", () => _quaternion, v => _quaternion = v).SetPrecision(2);
-			//DM.Add("simple/Color", () => _color, v => _color = v).SetPrecision(2);
-			//DM.Add("simple/Vector 2 Int", () => _vector2Int, v => _vector2Int = v);
-			//DM.Add("simple/Vector 3 Int", () => _vector3Int, v => _vector3Int = v);
-
 			DM.Open(simpleMenu);
 		}
 		private void Update()
