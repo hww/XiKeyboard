@@ -16,10 +16,10 @@ namespace XiKeyboard
         public ReadLineMode () : base("readline")
         {
            // keyMap = new KeyMap();
-           // keyMap.Define(KeyParse.ParseSequence("Tab"), new NativeFunction("AutoComplete", AutoComplete));
-           // keyMap.Define(KeyParse.ParseSequence("UpArrow"), new NativeFunction("HistoryUp", HistoryUp));
-           // keyMap.Define(KeyParse.ParseSequence("DownArrow"), new NativeFunction("HistoryUp", HistoryDown));
-           // keyMap.Define(KeyParse.ParseSequence("C-c"), new NativeFunction("ControlC", ControlC));
+           // keyMap.Define(KBD.ParseSequence("Tab"), new NativeFunction("AutoComplete", AutoComplete));
+           // keyMap.Define(KBD.ParseSequence("UpArrow"), new NativeFunction("HistoryUp", HistoryUp));
+           // keyMap.Define(KBD.ParseSequence("DownArrow"), new NativeFunction("HistoryUp", HistoryDown));
+           // keyMap.Define(KBD.ParseSequence("C-c"), new NativeFunction("ControlC", ControlC));
         }     /*
         // ===============================================================================================
         // Delegates

@@ -73,12 +73,47 @@ namespace XiKeyboard
 			Global.DefineMenuLine(path, val);
 			return val;
 		}
+		public static DMBool AddBool(string path, Func<bool> getter, Action<bool> setter = null, string shortcut = null, string help = null) =>
+			Add(path, getter, setter, shortcut, help);
+
 
 		public static DMEnum<T> Add<T>(string path, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) where T : struct, Enum
 		{
 			var val = new DMEnum<T>(GetName(path), getter, setter, shortcut, help);
 			Global.DefineMenuLine(path, val);
 			return val;
+		}
+
+		public static void AddRadio<T>(string path, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) where T : struct, Enum
+		{
+			var type = typeof(T);
+			if (type.IsDefined(typeof(FlagsAttribute), false))
+			{
+				var values = (T[])Enum.GetValues(type);
+				for (var i = 0; i < values.Length; i++)
+				{
+					var value = values[i];
+
+					AddBool(path + " " + value.ToString(),
+						() =>
+						{
+							var intGetter = (int)(object)getter.Invoke();
+							var intValue = (int)(object)value;
+							return (intGetter & intValue) != 0;
+						},
+						v =>
+						{
+							var intGetter = (int)(object)getter.Invoke();
+							var intValue = (int)(object)value;
+							setter.Invoke((T)(object)(intGetter ^ intValue));
+						},
+						shortcut,
+						help);
+				}
+			} else
+            {
+				Debug.LogError("The AddRadio expects a Flags enum");
+            }
 		}
 
 		public static DMUInt8 Add(string path, Func<byte> getter, Action<byte> setter = null, string shortcut = null, string help = null)

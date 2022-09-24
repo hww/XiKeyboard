@@ -38,37 +38,10 @@ namespace XiKeyboard
 		public DMEnum(string text, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null)
 			: base(text, getter, setter, shortcut, help)
 		{
-			//if (setter != null)
-			//{
-			//	var type = typeof(T);
-			//	if (type.IsDefined(typeof(FlagsAttribute), false))
-			//	{
-			//		_flagBranch = new DMBranch(null, GetPathName(path));
-			//		_flagBranch.Container = Container;
-			//
-			//		var values = (T[])Enum.GetValues(type);
-			//		for (var i = 0; i < values.Length; i++)
-			//		{
-			//			var value = values[i];
-			//
-			//			_flagBranch.Add(value.ToString(), () =>
-			//			{
-			//				var intGetter = (int)(object)getter.Invoke();
-			//				var intValue = (int)(object)value;
-			//
-			//				return (intGetter & intValue) != 0;
-			//			}, v =>
-			//			{
-			//				var intGetter = (int)(object)getter.Invoke();
-			//				var intValue = (int)(object)value;
-			//
-			//				setter.Invoke((T)(object)(intGetter ^ intValue));
-			//			}, i);
-			//		}
-			//
-			//		_flagBranch.Add("Back", BackAction, string.Empty, int.MaxValue);
-			//	}
-			//}
+
+			var type = typeof(T);
+			if (type.IsDefined(typeof(FlagsAttribute), false))
+				UnityEngine.Debug.LogError("Do not use DMEnum for flags enum");
 		}
 
 		#endregion
@@ -77,42 +50,11 @@ namespace XiKeyboard
 
 		public override void OnEvent(DMEvent evt, bool shift)
 		{
-			//if (eventArgs.Tag == DMEvent.Input)
-			//{
-			//	if (_flagBranch != null)
-			//	{
-			//		if (eventArgs.Key == EventKey.Left)
-			//		{
-			//			if (Container.IsVisible)
-			//				Container.Back();
-			//
-			//			return;
-			//		}
-			//
-			//		if (eventArgs.Key == EventKey.Right)
-			//		{
-			//			if (Container.IsVisible && IsEnabled())
-			//				Container.Open(_flagBranch);
-			//
-			//			return;
-			//		}
-			//	}
-			//}
-			//
-			//base.OnEvent(eventArgs);
+			base.OnEvent(evt, shift);
 		}
 
 		protected override string ValueToString(T value)
 		{
-			//if (_flagBranch != null)
-			//{
-			//	var intValue = (int)(object)value;
-			//	if (intValue == 0)
-			//	{
-			//		return "None";
-			//	}
-			//}
-
 			return value.ToString();
 		}
 
