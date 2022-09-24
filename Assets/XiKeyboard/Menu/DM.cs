@@ -29,11 +29,6 @@ namespace XiKeyboard
 
 		}
 
-		public static void Initialize()
-		{
-
-		}
-
 		public static void Open() => controller.Open();
 
 		public static void Open(KeyMap branch) => controller.Open(branch);
@@ -178,37 +173,6 @@ namespace XiKeyboard
 			return val;
 		}
 
-
-		//public static DMVector2 Add(string path, Func<Vector2> getter, Action<Vector2> setter = null, int order = 0) =>
-		//	Container.Add(GetName(path), getter, setter, shortcut, help);
-		//
-		//// Vector 3
-		//public static DMVector3 Add(string path, Func<Vector3> getter, Action<Vector3> setter = null, int order = 0) =>
-		//	Container.Add(GetName(path), getter, setter, shortcut, help);
-		//
-		//// Vector 4
-		//public static DMVector4 Add(string path, Func<Vector4> getter, Action<Vector4> setter = null, int order = 0) =>
-		//	Container.Add(GetName(path), getter, setter, shortcut, help);
-		//
-		//// Quaternion
-		//public static DMQuaternion Add(string path, Func<Quaternion> getter, Action<Quaternion> setter = null, int order = 0) =>
-		//	Container.Add(GetName(path), getter, setter, shortcut, help);
-		//
-		//// Color
-		//public static DMColor Add(string path, Func<Color> getter, Action<Color> setter = null, int order = 0) =>
-		//	Container.Add(GetName(path), getter, setter, shortcut, help);
-
-		// Vector 2 Int
-		//public static DMVector2Int Add(string path, Func<Vector2Int> getter, Action<Vector2Int> setter = null, int order = 0) =>
-		//	Container.Add(GetName(path), getter, setter, shortcut, help);
-		//
-		//// Vector 3 Int
-		//public static DMVector3Int Add(string path, Func<Vector3Int> getter, Action<Vector3Int> setter = null, int order = 0) =>
-		//	Container.Add(GetName(path), getter, setter, shortcut, help);
-
-		// Dynamic
-		//public static DMBranch Add<T>(string path, Func<IEnumerable<T>> getter, Action<DMBranch, T> buildCallback = null, Func<T, string> nameCallback = null, string description = "", int order = 0) =>
-		//	Container.Add(GetName(path), getter, buildCallback, nameCallback, description, order);
 
 		// Produce the sequence which can  be binded to a key
 		public static DMSequenceBinding MakeSequenceBinding(string name, int[] sequence, string help = null) =>
