@@ -507,7 +507,9 @@ Will display:
 
 ![menu-picture-1](Documentation/menu-picture-1.png)
 
-But this can be done by shorter way. 
+Press C-s will print the text _File Saved_
+	
+But this can be done by shorter way to define menu abowe.
 
 <sup>To Do ...</sup>
 
