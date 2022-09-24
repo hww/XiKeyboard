@@ -13,6 +13,6 @@ namespace XiKeyboard
     {
         public string title;
         public string value;
-        public DMMenuLine line;
+        public object line;
     }
 }

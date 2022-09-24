@@ -100,10 +100,11 @@ namespace XiKeyboard.Examples.Menu
 		private void Start()
 		{
 			// Simple Menus
-			var simpleMenu = KeyMap.GlobalKeymap.CreateMenu("simple", "Simple Menu", "Help for file menu");
+			var simpleMenu = KeyMap.GlobalKeymap.CreateMenu("simple", "Simple Menu", "Help for simpe menu");
+			simpleMenu.AddMenuLine("-4", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
+			var subMenu = KeyMap.GlobalKeymap.CreateMenu("simple/sub", "Sub Menu", "Help for sub menu menu");
 
 			//DM.Add("Simple Menus/Action", action => Debug.Log("Hello, Action!"), "Simple Action");
-			simpleMenu.AddMenuLine("-4", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
 
 			DM.Add("simple/String", () => _string);
 			DM.Add("simple/UInt8", () => _uint8, v => _uint8 = v);
@@ -115,11 +116,12 @@ namespace XiKeyboard.Examples.Menu
 			DM.Add("simple/Int32", () => _int32, v => _int32 = v);
 			DM.Add("simple/Int64", () => _int64, v => _int64 = v);
 			DM.Add("simple/Float", () => _float, v => _float = v).SetPrecision(2);
-			DM.Add("simple/Bool", () => _bool, v => _bool = v);
-			DM.Add("simple/Enum", () => _enum, v => _enum = v);
 			simpleMenu.AddMenuLine("-5", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
-			DM.AddRadio("simple/Flags", () => _flags, v => _flags = v);
+			DM.AddEnumFlags("simple/Flags", () => _flags, v => _flags = v);
 			simpleMenu.AddMenuLine("-6", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
+			DM.Add("simple/Enum", () => _enum, v => _enum = v);
+			simpleMenu.AddMenuLine("-6", new DMMenuSeparator(DMMenuSeparator.Type.DashedLine));
+			DM.Add("simple/Bool", () => _bool, v => _bool = v);
 
 			//DM.Add("simple/Vector 2", () => _vector2, v => _vector2 = v).SetPrecision(2);
 			//DM.Add("simple/Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2);
@@ -128,26 +130,6 @@ namespace XiKeyboard.Examples.Menu
 			//DM.Add("simple/Color", () => _color, v => _color = v).SetPrecision(2);
 			//DM.Add("simple/Vector 2 Int", () => _vector2Int, v => _vector2Int = v);
 			//DM.Add("simple/Vector 3 Int", () => _vector3Int, v => _vector3Int = v);
-
-			// Storage
-			//DM.Add("simple/UInt8", () => _uint8Storage, v => _uint8Storage = v, order: 1).SetStorage(storage);
-			//DM.Add("simple/UInt16", () => _uint16Storage, v => _uint16Storage = v, order: 2).SetStorage(storage);
-			//DM.Add("simple/UInt32", () => _uint32Storage, v => _uint32Storage = v, order: 3).SetStorage(storage);
-			//DM.Add("simple/UInt64", () => _uint64Storage, v => _uint64Storage = v, order: 4).SetStorage(storage);
-			//DM.Add("simple/Int8", () => _int8Storage, v => _int8Storage = v, order: 5).SetStorage(storage);
-			//DM.Add("simple/Int16", () => _int16Storage, v => _int16Storage = v, order: 6).SetStorage(storage);
-			//DM.Add("simple/Int32", () => _int32Storage, v => _int32Storage = v, order: 7).SetStorage(storage);
-			//DM.Add("simple/Int64", () => _int64Storage, v => _int64Storage = v, order: 8).SetStorage(storage);
-			//DM.Add("simple/Float", () => _floatStorage, v => _floatStorage = v, order: 9).SetPrecision(2).SetStorage(storage);
-			//DM.Add("simple/Bool", () => _boolStorage, v => _boolStorage = v, order: 10).SetStorage(storage);
-			//DM.Add("simple/Enum", () => _enumStorage, v => _enumStorage = v, order: 11).SetStorage(storage);
-			//DM.Add("simple/Flags", () => _flagsStorage, v => _flagsStorage = v, order: 12).SetStorage(storage);
-
-			// Dynamic
-			//DM.Add("Dynamic Transforms", FindObjectsOfType<Transform>, (branch, transform) =>
-			//{
-			//	branch.Add("Name", a => { Debug.Log(transform); });
-			//});
 
 			DM.Open(simpleMenu);
 		}

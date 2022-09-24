@@ -57,7 +57,7 @@ namespace XiKeyboard
             string dashedLine = null;
 
             // Render a panel header with separator
-            var header = string.Format(itemFormat1, DMColors.Header, panel.title, DMConfig.SuffixNormal);
+            var header = string.Format(itemFormat1, DMColors.MenuHeader, panel.title, DMConfig.SuffixNormal);
 
             stringBuilder.AppendLine(header);
 
@@ -67,74 +67,92 @@ namespace XiKeyboard
             for (var i = 0; i < count; i++)
             {
                 var panelItem = menuItems[i];
-                var keyItem = panelItem.line;
-               
-                if (keyItem is DMMenuSeparator)
+                
+
+                if (panelItem.line is DMMenuLine)
                 {
-                    string lineText = string.Empty;
-                    switch ((keyItem as DMMenuSeparator).type)
+                    var keyItem = panelItem.line as DMMenuLine;
+                    if (keyItem is DMMenuSeparator)
                     {
-                        case DMMenuSeparator.Type.NoLine:
-                            break;
-                        case DMMenuSeparator.Type.Space:
-                            if (spaceLine == null)
-                                spaceLine = string.Format(itemFormat1, DMColors.HorizontalLine, new string(' ', separatorWidth));
-                            lineText = spaceLine;
-                            break;
-                        case DMMenuSeparator.Type.SingleLine:
-                            lineText = singleLine;
-                            break;
-                        case DMMenuSeparator.Type.DashedLine:
-                            if (dashedLine == null)
-                                dashedLine = string.Format(itemFormat1, DMColors.HorizontalLine, new string(DMConfig.DashedLineChar, separatorWidth));
-                            lineText = dashedLine;
-                            break;
-                        default:
-                            throw new Exception();
+                        string lineText = string.Empty;
+                        switch ((keyItem as DMMenuSeparator).type)
+                        {
+                            case DMMenuSeparator.Type.NoLine:
+                                break;
+                            case DMMenuSeparator.Type.Space:
+                                if (spaceLine == null)
+                                    spaceLine = string.Format(itemFormat1, DMColors.HorizontalLine, new string(' ', separatorWidth));
+                                lineText = spaceLine;
+                                break;
+                            case DMMenuSeparator.Type.SingleLine:
+                                lineText = singleLine;
+                                break;
+                            case DMMenuSeparator.Type.DashedLine:
+                                if (dashedLine == null)
+                                    dashedLine = string.Format(itemFormat1, DMColors.HorizontalLine, new string(DMConfig.DashedLineChar, separatorWidth));
+                                lineText = dashedLine;
+                                break;
+                            default:
+                                throw new Exception();
+                        }
+                        if (i == (count - 1))
+                            stringBuilder.Append(lineText);
+                        else
+                            stringBuilder.AppendLine(lineText);
                     }
+                    else
+                    {
+                        if (keyItem.IsVisible)
+                        {
+                            var prefix = i == panel.selectedLine ? DMConfig.PrefixCursor : DMConfig.PrefixNormal;
+                            var suffix = keyItem.IsDefault ? DMConfig.SuffixNormal : DMConfig.SuffixModified;
+
+                            var titleColor = DMColors.TitleDisabled;
+                            var valueColor = DMColors.ValueDisabled;
+
+                            if (keyItem.IsEnabled)
+                            {
+                                if (keyItem.ButtonType != DMMenuLine.DMButtonType.NoButton)
+                                {
+                                    titleColor = keyItem.ButtonState ? DMColors.ToggleTitleActive : DMColors.ToggleTitleInactive;
+                                    valueColor = DMColors.ValueNormal;
+                                }
+                                else
+                                {
+                                    titleColor = DMColors.TitleNormal;
+                                    valueColor = DMColors.ValueNormal;
+                                }
+                            }
+
+                            string lineText = string.Format(itemFormat2,
+                                prefix,
+                                titleColor, panelItem.title,
+                                valueColor, panelItem.value,
+                                suffix);
+
+                            if (i == (count - 1))
+                                stringBuilder.Append(lineText);
+                            else
+                                stringBuilder.AppendLine(lineText);
+
+                        }
+                    }
+                } 
+                else if (panelItem.line is KeyMap)
+                {
+                    var prefix = i == panel.selectedLine ? DMConfig.PrefixCursor : DMConfig.PrefixNormal;
+                    string lineText = string.Format(itemFormat2,
+                               prefix,
+                               DMColors.TitleNormal, panelItem.title,
+                               DMColors.ValueNormal, panelItem.value,
+                               DMConfig.SuffixNormal);
+
                     if (i == (count - 1))
                         stringBuilder.Append(lineText);
                     else
                         stringBuilder.AppendLine(lineText);
-                } 
-                else
-                {
-
-                    if (keyItem.IsVisible)
-                    {
-                        var prefix = i == panel.selectedLine ? DMConfig.PrefixCursor : DMConfig.PrefixNormal;
-                        var suffix = keyItem.IsDefault ? DMConfig.SuffixNormal : DMConfig.SuffixModified;
-
-                        var titleColor = DMColors.TitleDisabled;
-                        var valueColor = DMColors.ValueDisabled;
-
-                        if (keyItem.IsEnabled)
-                        {
-                            if (keyItem.ButtonType != DMMenuLine.DMButtonType.NoButton)
-                            {
-                                titleColor = keyItem.ButtonState ? DMColors.ToggleTitleActive : DMColors.ToggleTitleInactive;
-                                valueColor = DMColors.ValueNormal;
-                            }
-                            else
-                            {
-                                titleColor = DMColors.TitleNormal;
-                                valueColor = DMColors.ValueNormal;
-                            }
-                        }
-
-                        string lineText = string.Format(itemFormat2,
-                            prefix, 
-                            titleColor, panelItem.title,
-                            valueColor, panelItem.value,
-                            suffix);
-
-                        if (i == (count-1))
-                            stringBuilder.Append(lineText);
-                        else
-                            stringBuilder.AppendLine(lineText);
-
-                    }
                 }
+
             }
 
             menuText = stringBuilder.ToString();

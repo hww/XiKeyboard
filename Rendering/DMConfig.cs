@@ -20,7 +20,7 @@ namespace XiKeyboard
 	/// </summary>
 	public static class DMColors
 	{
-		public const string Header = "#eeffff";
+		public const string MenuHeader = "#eeffff";
 		public const string TitleNormal = "#9BB7D4";
 		public const string TitleDisabled = "#566573";
 		// Checkbox and radio button
