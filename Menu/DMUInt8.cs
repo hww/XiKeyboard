@@ -4,7 +4,7 @@ using System;
 
 namespace XiKeyboard
 {
-	public class DMUInt8 : DMValue<byte>
+	public class DMUInt8 : TDMMenuValue<byte>
 	{
 		#region Public Vars
 

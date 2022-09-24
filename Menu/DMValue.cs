@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 
 namespace XiKeyboard
 {
 
-	public abstract class DMValue<T> : DMMenuLine
+	public abstract class TDMMenuValue<T> : DMMenuLine
 	{
 		#region Protected Methods
 
@@ -18,13 +19,14 @@ namespace XiKeyboard
 		protected string text;
 		protected string help;
 		protected string shortcut;
+		protected bool _isDefault;
 		private T _defaultValue;
 
 		#endregion
 
 		#region Public Methods
 
-		protected DMValue(string text, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) 
+		protected TDMMenuValue(string text, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) 
 		{
 			this.text = text;
 			this.help = help;
@@ -32,27 +34,37 @@ namespace XiKeyboard
 			_getter = getter;
 			_setter = setter;
 			_defaultValue = getter.Invoke();
+			_isDefault = true;
 		}
 
 		#endregion
 
 		#region Protected Methods
 
-		protected override void OnEvent(EventTag evt, bool shift)
+
+		public override string Text => text;
+		public override string Help => help;
+		public override string Shorcut => ValueToString(_getter());
+		public override object Binding => _getter;
+		public override bool IsDefault => _isDefault;
+		public override bool IsVisible => true;
+		public override bool IsEnabled => true;
+
+		public override void OnEvent(DMEvent evt, bool shift)
 		{
-			if (evt == EventTag.Left && _setter != null)
+			if (evt == DMEvent.Left && _setter != null)
 			{
 				var value = ValueDecrement(_getter.Invoke(), shift);
 
 				ChangeValue(value, false);
 			}
-			else if (evt == EventTag.Right && _setter != null)
+			else if (evt == DMEvent.Right && _setter != null)
 			{
 				var value = ValueIncrement(_getter.Invoke(), shift);
 
 				ChangeValue(value, false);
 			}
-			else if (evt == EventTag.Reset && _setter != null)
+			else if (evt == DMEvent.Reset && _setter != null)
 			{
 				ChangeValue(_defaultValue, true);
 			}
@@ -72,6 +84,7 @@ namespace XiKeyboard
 		{
 			// Change value.
 			_setter.Invoke(value);
+			_isDefault = Comparer<T>.Default.Compare(value, _defaultValue) == 0;
 		}
 
 		#endregion

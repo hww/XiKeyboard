@@ -1,26 +1,4 @@
-﻿// =============================================================================
-// MIT License
-//
-// Copyright (c) [2018] [Valeriya Pudova]
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
+﻿/* Copyright (c) 2021 Valerya Pudova (hww) */
 
 namespace XiKeyboard
 {
@@ -29,13 +7,24 @@ namespace XiKeyboard
     /// </summary>
     public class DMMenuLine
     {
+        public enum DMButtonType
+        {
+            NoButton,
+            Toggle,
+            Radio
+        }
+
         public virtual string Text => null;
         public virtual string Help => null;
         public virtual string Shorcut => null;
         public virtual object Binding => null;
-        public virtual string Value => null;
+        public virtual bool IsDefault => true;
+        public virtual bool IsVisible => true;
+        public virtual bool IsEnabled => true;
+        public virtual bool ButtonState => false;
+        public virtual DMButtonType ButtonType => DMButtonType.NoButton;
 
-        public enum EventTag
+        public enum DMEvent
         {
             None,           
             Up,             
@@ -49,7 +38,7 @@ namespace XiKeyboard
             Toggle
         }
 
-        protected virtual void OnEvent(EventTag evt, bool shift) { }
+        public virtual void OnEvent(DMEvent evt, bool shift) { }
     }
     /// <summary>
     /// The very simple menu item
@@ -75,7 +64,7 @@ namespace XiKeyboard
         /// <param name="binding"></param>
         /// <param name="shortcut"></param>
         /// <param name="help"></param>
-        protected DMMenuLineSimple(string text, object binding, string shortcut = null, string help = null) 
+        public DMMenuLineSimple(string text, object binding, string shortcut = null, string help = null) 
         {
             this.text = text;
             this.help = help;
@@ -89,11 +78,10 @@ namespace XiKeyboard
         public override string Help => help == null ? help : string.Empty;
         public override string Shorcut => shortcut == null ? shortcut : string.Empty;
         public override object Binding => binding;
-        public override string Value => string.Empty;
 
-        protected override void OnEvent(EventTag evt, bool shift)
+        public override void OnEvent(DMEvent evt, bool shift)
         {
-            if (evt == EventTag.Right && binding is System.Action)
+            if (evt == DMEvent.Right && binding is System.Action)
                 (binding as System.Action).Invoke();
         }
 
@@ -107,13 +95,6 @@ namespace XiKeyboard
         public delegate bool Precondition(DMMenuLineComplex menuLine);
         public delegate DMMenuLineComplex Filter(DMMenuLineComplex menuLine);
 
-        public enum ButtonType
-        {
-            NoButton,
-            Toggle,
-            Radio
-        }
-
         protected string text;
         protected string help;
         protected string shortcut;
@@ -122,7 +103,7 @@ namespace XiKeyboard
         public readonly Filter filter;
         public readonly Precondition enable;
         public readonly Precondition visible;            
-        public readonly ButtonType buttonType;
+        public readonly DMButtonType buttonType;
         public readonly Precondition buttonState;
 
         #region IMenuLine
@@ -131,28 +112,13 @@ namespace XiKeyboard
         public override string Help => help == null ? help : string.Empty;
         public override string Shorcut => shortcut == null ? shortcut : string.Empty;
         public override object Binding => binding;
-        public override string Value
-        {
-             get
-             {
-                switch (buttonType)
-                {
-                    case ButtonType.Toggle:
-                        return buttonState.Invoke(this) ? "☑" : "☐";
-                    case ButtonType.Radio:
-                        return buttonState.Invoke(this) ? "🔘" : "⚪";
-                }
-                if (binding is KeyMap)
-                    return "⯈";
-                return string.Empty;
-            }
-        } 
 
         #endregion
 
-        public bool IsEnabled => enable == null || enable(this);
-        public bool IsVisible => visible == null || visible(this);
-        public bool ButtonState => buttonState == null || buttonState(this);
+        public override bool IsEnabled => enable == null || enable(this);
+        public override bool IsVisible => visible == null || visible(this);
+        public override bool ButtonState => buttonState == null ? false : buttonState(this);
+        public override DMButtonType ButtonType => buttonType;
 
         public DMMenuLineComplex GetFiltered()
         {
@@ -231,7 +197,7 @@ namespace XiKeyboard
             Precondition enable = null,
             Precondition visible = null,
             Filter filter = null,
-            ButtonType buttonType = ButtonType.NoButton,
+            DMButtonType buttonType = DMButtonType.NoButton,
             Precondition buttonState = null,
             string shortcut = null,
             string help = null) : this(text, binging, shortcut, help)
@@ -243,9 +209,9 @@ namespace XiKeyboard
             this.buttonState = buttonState;
         }
 
-        protected override void OnEvent(EventTag evt, bool shift)
+        public override void OnEvent(DMEvent evt, bool shift)
         {
-            if (evt == EventTag.Right && binding is System.Action)
+            if (evt == DMEvent.Right && binding is System.Action)
                 (binding as System.Action).Invoke();
         }
     }

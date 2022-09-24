@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace XiKeyboard
 {
-	public class DMFloat : DMValue<float>
+	public class DMFloat : TDMMenuValue<float>
 	{
 		#region Public Vars
 
