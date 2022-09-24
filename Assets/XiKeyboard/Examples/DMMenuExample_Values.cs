@@ -100,7 +100,7 @@ namespace XiKeyboard.Examples.Menu
 		private void Start()
 		{
 			// Simple Menus
-			var simpleMenu = KeyMap.GlobalKeymap.CreateMenu("simple", "Simle", "Help for file menu");
+			var simpleMenu = KeyMap.GlobalKeymap.CreateMenu("simple", "Simple Menu", "Help for file menu");
 
 			//DM.Add("Simple Menus/Action", action => Debug.Log("Hello, Action!"), "Simple Action");
 			simpleMenu.AddMenuLine("-4", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
@@ -117,7 +117,10 @@ namespace XiKeyboard.Examples.Menu
 			DM.Add("simple/Float", () => _float, v => _float = v).SetPrecision(2);
 			DM.Add("simple/Bool", () => _bool, v => _bool = v);
 			DM.Add("simple/Enum", () => _enum, v => _enum = v);
-			DM.Add("simple/Flags", () => _flags, v => _flags = v);
+			simpleMenu.AddMenuLine("-5", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
+			DM.AddRadio("simple/Flags", () => _flags, v => _flags = v);
+			simpleMenu.AddMenuLine("-6", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
+
 			//DM.Add("simple/Vector 2", () => _vector2, v => _vector2 = v).SetPrecision(2);
 			//DM.Add("simple/Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2);
 			//DM.Add("simple/Vector 4", () => _vector4, v => _vector4 = v).SetPrecision(2);

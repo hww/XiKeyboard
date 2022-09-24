@@ -12,7 +12,7 @@ namespace XiKeyboard
     /// keycode sequence. The sequence is the array of integers.
     /// Each character is the 32 bits word.
     /// </summary>
-    public static class KeyParse
+    public static class KBD
     {
         /// <summary>
         /// Convert the keycode sequence to the string

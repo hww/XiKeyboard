@@ -45,14 +45,14 @@ namespace XiKeyboard
             stringBuilder.Clear();
 
             // Calculate te width and read all texts from
-            panel.Update(DMConfig.Space.Length, DMConfig.SuffixModified.Length);
-            var lineWidth = panel.widthOfLine + DMConfig.PrefixNormal.Length + DMConfig.SuffixNormal.Length;
+            panel.Update(DMConfig.Space.Length);
+            var separatorWidth = panel.widthOfLine + DMConfig.PrefixNormal.Length + DMConfig.SuffixNormal.Length;
 
             // Prepair a formatting lines
-            string itemFormat1 = $"<color={0}>{{1,-{panel.widthOfLine}}}</color>";
+            string itemFormat1 = $"<color={0}>{{1,-{separatorWidth}}}</color>";
             string itemFormat2 = $"<color={DMColors.Cursor}>{{0}}</color><color={{1}}>{{2,-{panel.widthOfName}}}</color>{DMConfig.Space}<color={{3}}>{{4,{panel.widthOfValue}}}</color><color={DMColors.SuffixModified}>{{5}}</color>";
 
-            string singleLine = string.Format(itemFormat1, DMColors.HorizontalLine, new string(DMConfig.NormalLineChar, lineWidth));
+            string singleLine = string.Format(itemFormat1, DMColors.HorizontalLine, new string(DMConfig.NormalLineChar, separatorWidth));
             string spaceLine = null;
             string dashedLine = null;
 
@@ -71,26 +71,31 @@ namespace XiKeyboard
                
                 if (keyItem is DMMenuSeparator)
                 {
+                    string lineText = string.Empty;
                     switch ((keyItem as DMMenuSeparator).type)
                     {
                         case DMMenuSeparator.Type.NoLine:
                             break;
                         case DMMenuSeparator.Type.Space:
                             if (spaceLine == null)
-                                spaceLine = string.Format(itemFormat1, DMColors.HorizontalLine, new string(' ', lineWidth));
-                            stringBuilder.AppendLine(spaceLine);
+                                spaceLine = string.Format(itemFormat1, DMColors.HorizontalLine, new string(' ', separatorWidth));
+                            lineText = spaceLine;
                             break;
                         case DMMenuSeparator.Type.SingleLine:
-                            stringBuilder.AppendLine(singleLine);
+                            lineText = singleLine;
                             break;
                         case DMMenuSeparator.Type.DashedLine:
                             if (dashedLine == null)
-                                dashedLine = string.Format(itemFormat1, DMColors.HorizontalLine, new string(DMConfig.DashedLineChar, lineWidth));
-                            stringBuilder.AppendLine(dashedLine);
+                                dashedLine = string.Format(itemFormat1, DMColors.HorizontalLine, new string(DMConfig.DashedLineChar, separatorWidth));
+                            lineText = dashedLine;
                             break;
                         default:
                             throw new Exception();
                     }
+                    if (i == (count - 1))
+                        stringBuilder.Append(lineText);
+                    else
+                        stringBuilder.AppendLine(lineText);
                 } 
                 else
                 {
@@ -122,7 +127,11 @@ namespace XiKeyboard
                             titleColor, panelItem.title,
                             valueColor, panelItem.value,
                             suffix);
-                        stringBuilder.AppendLine(lineText);
+
+                        if (i == (count-1))
+                            stringBuilder.Append(lineText);
+                        else
+                            stringBuilder.AppendLine(lineText);
 
                     }
                 }

@@ -219,13 +219,13 @@ namespace XiKeyboard
         /// <summary>Define list of key-strings. This way used for defining menu</summary>
         public bool DefinePseudo(string[] sequence, object value)
         {
-            var newSequence = KeyParse.ParsePseudo(sequence);
+            var newSequence = KBD.ParsePseudo(sequence);
             return Define(newSequence, value);
         }
         /// <summary>Define by string expression</summary>
         public bool Define(string sequence, object value)
         {
-            var newSequence = KeyParse.ParseSequence(sequence);
+            var newSequence = KBD.ParseSequence(sequence);
             return Define(newSequence, value);
         }
         /// <summary>Define sequence with given binding</summary>
@@ -287,7 +287,7 @@ namespace XiKeyboard
         {
             var menu = new KeyMap(title, help );
             var sequence = path.Split('/');
-            var newSequence = KeyParse.ParsePseudo(sequence);
+            var newSequence = KBD.ParsePseudo(sequence);
             Define(newSequence, menu);
             return menu;
         }
@@ -296,7 +296,7 @@ namespace XiKeyboard
         public DMMenuLine DefineMenuLine(string path, DMMenuLine line)
         {
             var sequence = path.Split('/');
-            var newSequence = KeyParse.ParsePseudo(sequence);
+            var newSequence = KBD.ParsePseudo(sequence);
             Define(newSequence, line);
             return line;
         }

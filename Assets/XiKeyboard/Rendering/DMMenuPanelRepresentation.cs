@@ -38,12 +38,16 @@ namespace XiKeyboard
         /// <summary>
         /// Calculate menu, name, value columns width
         /// </summary>
-        public void Update(int spaceSize, int suffixSize)
+        public void Update(int spaceSize)
         {
             title = keyMap.Title;
             widthOfName = title.Length;
             widthOfValue = 0;
             widthOfLine = 0;
+
+            for (var i = 0; i < Count; i++)
+                items[i] = new DMMenuLineRepresentation();
+
             Count = 0;
 
             for (var i = 0; i < keyMap.Count; i++)
@@ -70,7 +74,7 @@ namespace XiKeyboard
                     };
                 }
             }
-            widthOfLine = System.Math.Max(widthOfLine, widthOfName + widthOfValue + spaceSize + suffixSize);
+            widthOfLine = System.Math.Max(widthOfLine, widthOfName + widthOfValue + spaceSize);
             selectedLine = GetSelectedLineIndex(selectedLine, true);
         }
 
@@ -93,22 +97,26 @@ namespace XiKeyboard
             }
             if (forward)
             {
-                for (var i = index; i < Count; i++)
+                for (; index < Count; index++)
                 {
-                    var line = items[i].line;
+                    var line = items[index].line;
+                    if (line == null)
+                        continue;
                     if (line is DMMenuSeparator)
                         continue;
                     if (line.IsEnabled)
-                        return i;
+                        return index;
                 }
             }
-            for (var i = selectedLine; i >= 0; i++)
+            for (; index >= 0; index--)
             {
-                var line = items[i].line;
+                var line = items[index].line;
+                if (line == null)
+                    continue;
                 if (line is DMMenuSeparator)
                     continue;
                 if (line.IsEnabled)
-                    return i;
+                    return index;
             }
             return -1; // There is nothing to select
         }
