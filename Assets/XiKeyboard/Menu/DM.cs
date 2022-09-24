@@ -16,7 +16,6 @@ namespace XiKeyboard
 		#region Static Public Vars
 
 		public static KeyMap Global => KeyMap.GlobalKeymap;
-		public static DMMenuPanelRepresentation Root => controller.Root;
 		public static DMMenuPanelRepresentation Current => controller.Current;
 
 		public static bool IsVisible => controller.IsVisible;
@@ -84,7 +83,7 @@ namespace XiKeyboard
 			return val;
 		}
 
-		public static void AddRadio<T>(string path, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) where T : struct, Enum
+		public static void AddEnumFlags<T>(string path, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) where T : struct, Enum
 		{
 			var type = typeof(T);
 			if (type.IsDefined(typeof(FlagsAttribute), false))
@@ -112,7 +111,7 @@ namespace XiKeyboard
 				}
 			} else
             {
-				Debug.LogError("The AddRadio expects a Flags enum");
+				Debug.LogError("The AddEnumFlags expects a Flags enum");
             }
 		}
 
@@ -225,8 +224,7 @@ namespace XiKeyboard
 
 		public static void OnGUI()
         {
-			if (IsVisible)
-				(controller as IDMRender_OnGUI).OnGUI();
+			(controller as IDMRender_OnGUI).OnGUI();
 		}
 
 

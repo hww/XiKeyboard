@@ -56,11 +56,24 @@ namespace XiKeyboard
                 if (line is DMMenuLine)
                 {
                     var item = line as DMMenuLine;
-
-                    bool isVisble = item.IsVisible;
                     var txt = item.Text;
                     var val = item.Shorcut;
-                    var isVisible = (line as DMMenuLineComplex)?.IsVisible;
+                    if (txt != null)
+                        widthOfName = System.Math.Max(widthOfName, txt.Length);
+                    if (val != null)
+                        widthOfValue = System.Math.Max(widthOfValue, val.Length);
+                    items[Count++] = new DMMenuLineRepresentation()
+                    {
+                        title = txt,
+                        value = val,
+                        line = item
+                    };
+                }
+                else if (line is KeyMap)
+                {
+                    var item = line as KeyMap;
+                    var txt = item.Title + "...";
+                    var val = string.Empty; // TODO Make shortcut
                     if (txt != null)
                         widthOfName = System.Math.Max(widthOfName, txt.Length);
                     if (val != null)
@@ -104,7 +117,9 @@ namespace XiKeyboard
                         continue;
                     if (line is DMMenuSeparator)
                         continue;
-                    if (line.IsEnabled)
+                    if (line is KeyMap)
+                        return index;
+                    if (line is DMMenuLine && (line as DMMenuLine).IsEnabled)
                         return index;
                 }
             }
@@ -115,7 +130,9 @@ namespace XiKeyboard
                     continue;
                 if (line is DMMenuSeparator)
                     continue;
-                if (line.IsEnabled)
+                if (line is KeyMap)
+                    return index;
+                if (line is DMMenuLine && (line as DMMenuLine).IsEnabled)
                     return index;
             }
             return -1; // There is nothing to select
@@ -128,20 +145,43 @@ namespace XiKeyboard
                 case DMMenuLine.DMEvent.Up:
                     selectedLine--;
                     selectedLine = GetSelectedLineIndex(selectedLine, false);
-                    break;
+                    return;
 
                 case DMMenuLine.DMEvent.Down:
                     selectedLine++;
                     selectedLine = GetSelectedLineIndex(selectedLine, true);
-                    break;
+                    return;
+            }
 
-                case DMMenuLine.DMEvent.Left:
-                    (items[selectedLine].line as DMMenuLine)?.OnEvent(evt, shift);
-                    break;
+            if (selectedLine < 0)
+                return;
 
-                case DMMenuLine.DMEvent.Right:
-                    (items[selectedLine].line as DMMenuLine)?.OnEvent(evt, shift);
-                    break;
+            if (items[selectedLine].line is KeyMap)
+            {
+                switch (evt)
+                {
+                    case DMMenuLine.DMEvent.Right:
+                        DM.Open(items[selectedLine].line as KeyMap);
+                        return;
+                }
+
+            }
+            else if (items[selectedLine].line is DMMenuLine)
+            {
+                switch (evt)
+                {
+                    case DMMenuLine.DMEvent.Left:
+                        (items[selectedLine].line as DMMenuLine)?.OnEvent(evt, shift);
+                        break;
+
+                    case DMMenuLine.DMEvent.Right:
+                        (items[selectedLine].line as DMMenuLine)?.OnEvent(evt, shift);
+                        break;
+
+                    case DMMenuLine.DMEvent.Reset:
+                        (items[selectedLine].line as DMMenuLine)?.OnEvent(evt, shift);
+                        break;
+                }
             }
         }
     }

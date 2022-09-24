@@ -16,16 +16,14 @@ namespace XiKeyboard
         private KeyBuffer menuBuffer;
         private KeyMode menuMode;
         private KeyMap menuMap;
-        private DMMenuPanelRepresentation globalMenu;
         private DMMenuRender menuRenderer;
         private DMMenuPanelRepresentation currentMenu;
-        private DMMenuPanelRepresentation rootMenu;
+
 
         private bool isVisible;
 
         public DMController()
         {
-            globalMenu = new DMMenuPanelRepresentation(null, KeyMap.GlobalKeymap);
             menuRenderer = new DMMenuRender();
             menuMap = new KeyMap("menu-map", "The menu key map");
             menuMode = new KeyMode("menu-mode", "The menu main mode", menuMap);
@@ -55,8 +53,7 @@ namespace XiKeyboard
             menuMap = null;
             menuBuffer = null;
             menuMode = null;
-            globalMenu = null;
-            currentMenu = rootMenu = null;
+            currentMenu = null;
             KeyBuffer.OnSequencePressed.Remove(OnSequencePressed);  // On press sequence delegate
             KeyBuffer.OnKeyPressed.Remove(OnKeyPressed);            // On press key delegate
             KeyBuffer.OnPseudoPressed.Remove(OnPseudoPressed);      // On keymap was selecte
@@ -64,7 +61,6 @@ namespace XiKeyboard
 
         public bool IsVisible => isVisible;
 
-        public DMMenuPanelRepresentation Root => rootMenu;
         public DMMenuPanelRepresentation Current => currentMenu;
 
         // Just render current menu if it is defined 
@@ -77,16 +73,10 @@ namespace XiKeyboard
 
         void SetVisibility(bool vis)
         {
-            if (currentMenu == null)
-            {
-                isVisible = false;
-                menuBuffer.SetActive(isVisible);
-            }
-            else
-            {
-                isVisible = !isVisible;
-                menuBuffer.SetActive(isVisible);
-            }
+            if (vis && currentMenu == null)
+                currentMenu = new DMMenuPanelRepresentation(null, KeyMap.GlobalKeymap);
+            isVisible = vis;
+            menuBuffer.SetActive(isVisible);
         }
 
         public void ToggleVisibility()
@@ -97,14 +87,12 @@ namespace XiKeyboard
         public void Open(KeyMap menu = null)
         {
             if (menu == null)
-            {
-                if (currentMenu == null)
-                    currentMenu = rootMenu = globalMenu;
-            }
-            else
-            {
+                menu = KeyMap.GlobalKeymap;
+
+            if (ContainsMenu(menu))
                 CloseAllMenusUpTo(menu);
-            }
+            else
+                currentMenu = new DMMenuPanelRepresentation(Current, menu);
             SetVisibility(true);
             (menuRenderer as IDMRender).RenderMenu(currentMenu);
         }
@@ -112,12 +100,12 @@ namespace XiKeyboard
         /// Unwind all menu items to the selected menu
         /// </summary>
         /// <param name="menu"></param>
-        public void CloseAllMenusUpTo(KeyMap menu)
+        private void CloseAllMenusUpTo(KeyMap menu)
         {
             if (currentMenu != null)
             {
                 var current = currentMenu;
-                while (currentMenu != null)
+                while (current != null)
                 {
                     if (current.keyMap == menu)
                         return;
@@ -126,22 +114,35 @@ namespace XiKeyboard
                     current = parent;
                 }
             }
-            currentMenu = rootMenu = new DMMenuPanelRepresentation(null, menu);
+            currentMenu = new DMMenuPanelRepresentation(null, menu);
+        }
+
+        private bool ContainsMenu(KeyMap menu)
+        {
+            var current = currentMenu;
+            while (current != null)
+            {
+                if (current.keyMap == menu)
+                    return true;
+                current = current.parent;
+            }
+            return false;
         }
 
         public void Close()
         {
+            if (currentMenu == null)
+                return;
             var parent = currentMenu.parent;
             currentMenu.parent = null;
             currentMenu = parent;
             if (currentMenu != null)
             {
                 SetVisibility(true);
-                (menuRenderer as IDMRender).RenderMenu(globalMenu);
+                (menuRenderer as IDMRender).RenderMenu(currentMenu);
             }
             else
             {
-                rootMenu = null;
                 SetVisibility(false);
             }
         }
@@ -149,7 +150,8 @@ namespace XiKeyboard
         void IDMRender_OnGUI.OnGUI()
         {
             KeyInputManager.OnGUI();
-            (menuRenderer as IDMRender_OnGUI).OnGUI();
+            if (isVisible)
+                (menuRenderer as IDMRender_OnGUI).OnGUI();
         }
 
         float readrawAt = 0;
