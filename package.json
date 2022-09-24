@@ -1,7 +1,7 @@
 {
   "name": "com.hww.xikeyboard",
   "displayName": "XiKeyboard",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "unity": "2021.1",
   "description": "XiKeyboard is tiny keyboard shortcuts system for Unity 3D.",
   "license": "MIT",
