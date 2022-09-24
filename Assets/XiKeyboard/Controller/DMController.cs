@@ -179,6 +179,8 @@ namespace XiKeyboard
             }
             else if (item.value is KeyMap)
                 OnPseudoPressed(buffer, item);
+            else if (item.value is System.Action)
+                (item.value as System.Action).Invoke();
             else
                 Debug.Log("{" + item.value + "}");  // Print "Pressed Sequence: N" 	
         }

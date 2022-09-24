@@ -10,7 +10,6 @@ namespace XiKeyboard.Examples.Menu
 	{
 		public delegate void Method();
 
-
 		// Use this for initialization the menu system
 		private void Start()
 		{
@@ -20,14 +19,14 @@ namespace XiKeyboard.Examples.Menu
 
 			// Create save menu item (shortcut will be only displayed and can be omitted)
 			// The method Save of this class will be bind to this menu item
-			var menuItem1 = new DMMenuLineSimple("Save", (Method)Save, "C-s", "Save current file");
+			var menuItem1 = new DMMenuLineSimple("Save", (System.Action)Save, "S-s", "Save current file");
 			// Define this item as member of File menu 
 			fileMenu.AddMenuLine("save", menuItem1);
 			// Save As menu line
-			var menuItem2 = new DMMenuLineSimple("Save As", (Method)SaveAs, null, "Save current file as *");
+			var menuItem2 = new DMMenuLineSimple("Save As", (System.Action)SaveAs, null, "Save current file as *");
 			fileMenu.AddMenuLine("save-as", menuItem2);
 			// Export menu line
-			var menuItem3 = new DMMenuLineSimple("Export", (Method)Export, null, "Export current file as *");
+			var menuItem3 = new DMMenuLineSimple("Export", (System.Action)Export, null, "Export current file as *");
 			fileMenu.AddMenuLine("export", menuItem3);
 
 			// Line separators
