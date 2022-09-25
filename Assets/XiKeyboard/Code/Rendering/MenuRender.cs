@@ -42,12 +42,12 @@ namespace XiKeyboard.Rendering
             return result;
         }
 
-        void IMenuRender.RenderMenu(MenuPanelRepresentation panel, MenuRenderOptions options = MenuRenderOptions.Default)
+        void IMenuRender.RenderMenu(IMenuController controller, MenuPanelRepresentation panel, MenuRenderOptions options = MenuRenderOptions.Default)
         {
             stringBuilder.Clear();
 
             // Calculate te width and read all texts from
-            panel.Update(MenuConfig.Space.Length);
+            panel.Update(controller, MenuConfig.Space.Length);
             var separatorWidth = panel.widthOfLine + MenuConfig.PrefixNormal.Length + MenuConfig.SuffixNormal.Length;
 
             // Prepair a formatting lines

@@ -41,7 +41,7 @@ namespace XiKeyboard.Rendering
         /// <summary>
         /// Calculate menu, name, value columns width
         /// </summary>
-        public void Update(int spaceSize)
+        public void Update(IMenuController controller, int spaceSize)
         {
             title = keyMap.Title;
             widthOfName = title.Length;
@@ -60,7 +60,7 @@ namespace XiKeyboard.Rendering
                 {
                     var item = line as MenuLine;
                     var txt = item.Text;
-                    var val = item.Shorcut;
+                    var val = item.Value;
                     if (txt != null)
                         widthOfName = System.Math.Max(widthOfName, txt.Length);
                     if (val != null)
@@ -141,9 +141,12 @@ namespace XiKeyboard.Rendering
             return -1; // There is nothing to select
         }
 
-        public void OnEvent(MenuLine.MenuEvent evt, bool shift)
+        public void OnEvent(IMenuController controller)
         {
-            switch (evt)
+            var menuEvt = controller.GetMenuEvt();
+            var isShift = controller.GetKeyEvent().IsModifier(KeyModifiers.Shift);
+
+            switch (menuEvt)
             {
                 case MenuLine.MenuEvent.Up:
                     selectedLine--;
@@ -161,7 +164,7 @@ namespace XiKeyboard.Rendering
 
             if (items[selectedLine].line is KeyMap)
             {
-                switch (evt)
+                switch (menuEvt)
                 {
                     case MenuLine.MenuEvent.Right:
                         DM.Open(items[selectedLine].line as KeyMap);
@@ -171,18 +174,18 @@ namespace XiKeyboard.Rendering
             }
             else if (items[selectedLine].line is MenuLine)
             {
-                switch (evt)
+                switch (menuEvt)
                 {
                     case MenuLine.MenuEvent.Left:
-                        (items[selectedLine].line as MenuLine)?.OnEvent(evt, shift);
+                        (items[selectedLine].line as MenuLine)?.OnEvent(controller);
                         break;
 
                     case MenuLine.MenuEvent.Right:
-                        (items[selectedLine].line as MenuLine)?.OnEvent(evt, shift);
+                        (items[selectedLine].line as MenuLine)?.OnEvent(controller);
                         break;
 
                     case MenuLine.MenuEvent.Reset:
-                        (items[selectedLine].line as MenuLine)?.OnEvent(evt, shift);
+                        (items[selectedLine].line as MenuLine)?.OnEvent(controller);
                         break;
                 }
             }

@@ -14,6 +14,8 @@ namespace XiKeyboard.Menu
 
 		public override bool ButtonState => _getter();
 		public override DMButtonType ButtonType => DMButtonType.Toggle;
+		public override string Shorcut => shortcut;
+		public override string Value => shortcut;
 
 		#endregion
 

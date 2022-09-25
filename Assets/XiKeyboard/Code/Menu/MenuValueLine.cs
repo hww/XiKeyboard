@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using XiKeyboard.KeyMaps;
 
 namespace XiKeyboard.Menu
 {
@@ -45,14 +46,18 @@ namespace XiKeyboard.Menu
 
 		public override string Text => text;
 		public override string Help => help;
-		public override string Shorcut => ValueToString(_getter());
+		public override string Shorcut => null;
+		public override string Value => ValueToString(_getter());
 		public override object Binding => _getter;
 		public override bool IsDefault => _isDefault;
 		public override bool IsVisible => true;
 		public override bool IsEnabled => true;
 
-		public override void OnEvent(MenuEvent evt, bool isShift)
+
+		public override void OnEvent(IMenuController controller)
 		{
+			var evt = controller.GetMenuEvt();
+			var isShift = controller.GetKeyEvent().IsModifier(KeyModifiers.Shift);
 			if (evt == MenuEvent.Left && _setter != null)
 			{
 				var value = ValueDecrement(_getter.Invoke(), isShift);

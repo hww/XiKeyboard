@@ -51,9 +51,9 @@ namespace XiKeyboard.Menu
 			}
 		}
 
-		public override void OnEvent(MenuEvent evt, bool isShift)
+		public override void OnEvent(IMenuController controller)
 		{
-			base.OnEvent(evt, isShift);
+			base.OnEvent(controller);
 		}
 
 		protected sealed override string ValueToString(TStruct value) => value.ToString(Format, null);

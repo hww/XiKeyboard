@@ -123,7 +123,7 @@ namespace XiKeyboard.Examples.Menu
 			simpleMenu.AddMenuLine("-6", new MenuSeparator(MenuSeparator.Type.SingleLine));
 			DM.Add("simple/Enum", () => _enum, v => _enum = v);
 			simpleMenu.AddMenuLine("-6", new MenuSeparator(MenuSeparator.Type.DashedLine));
-			DM.Add("simple/Bool", () => _bool, v => _bool = v);
+			DM.Add("simple/Bool", () => _bool, v => _bool = v, "S-f");
 
 			//DM.Add("simple/Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2);
 			DM.Open(simpleMenu);
