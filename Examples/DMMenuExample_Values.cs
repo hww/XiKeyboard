@@ -3,6 +3,8 @@
 using UnityEngine;
 using System;
 using XiKeyboard;
+using XiKeyboard.Menu;
+using XiKeyboard.KeyMaps;
 
 namespace XiKeyboard.Examples.Menu
 {
@@ -101,7 +103,7 @@ namespace XiKeyboard.Examples.Menu
 		{
 			// Simple Menus
 			var simpleMenu = KeyMap.GlobalKeymap.CreateMenu("simple", "Simple Menu", "Help for simpe menu");
-			simpleMenu.AddMenuLine("-4", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
+			simpleMenu.AddMenuLine("-4", new MenuSeparator(MenuSeparator.Type.SingleLine));
 			var subMenu = KeyMap.GlobalKeymap.CreateMenu("simple/sub", "Sub Menu", "Help for sub menu menu");
 
 			//DM.Add("Simple Menus/Action", action => Debug.Log("Hello, Action!"), "Simple Action");
@@ -116,11 +118,11 @@ namespace XiKeyboard.Examples.Menu
 			DM.Add("simple/Int32", () => _int32, v => _int32 = v);
 			DM.Add("simple/Int64", () => _int64, v => _int64 = v);
 			DM.Add("simple/Float", () => _float, v => _float = v).SetPrecision(2);
-			simpleMenu.AddMenuLine("-5", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
+			simpleMenu.AddMenuLine("-5", new MenuSeparator(MenuSeparator.Type.SingleLine));
 			DM.AddEnumFlags("simple/Flags", () => _flags, v => _flags = v);
-			simpleMenu.AddMenuLine("-6", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
+			simpleMenu.AddMenuLine("-6", new MenuSeparator(MenuSeparator.Type.SingleLine));
 			DM.Add("simple/Enum", () => _enum, v => _enum = v);
-			simpleMenu.AddMenuLine("-6", new DMMenuSeparator(DMMenuSeparator.Type.DashedLine));
+			simpleMenu.AddMenuLine("-6", new MenuSeparator(MenuSeparator.Type.DashedLine));
 			DM.Add("simple/Bool", () => _bool, v => _bool = v);
 
 			//DM.Add("simple/Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2);

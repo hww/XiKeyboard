@@ -2,6 +2,8 @@
 
 using XiKeyboard;
 using UnityEngine;
+using XiKeyboard.KeyMaps;
+using XiKeyboard.Menu;
 
 namespace XiKeyboard.Examples.Menu
 {
@@ -19,21 +21,21 @@ namespace XiKeyboard.Examples.Menu
 
 			// Create save menu item (shortcut will be only displayed and can be omitted)
 			// The method Save of this class will be bind to this menu item
-			var menuItem1 = new DMMenuLineSimple("Save", (System.Action)Save, "S-s", "Save current file");
+			var menuItem1 = new MenuLineSimple("Save", (System.Action)Save, "S-s", "Save current file");
 			// Define this item as member of File menu 
 			fileMenu.AddMenuLine("save", menuItem1);
 			// Save As menu line
-			var menuItem2 = new DMMenuLineSimple("Save As", (System.Action)SaveAs, null, "Save current file as *");
+			var menuItem2 = new MenuLineSimple("Save As", (System.Action)SaveAs, null, "Save current file as *");
 			fileMenu.AddMenuLine("save-as", menuItem2);
 			// Export menu line
-			var menuItem3 = new DMMenuLineSimple("Export", (System.Action)Export, null, "Export current file as *");
+			var menuItem3 = new MenuLineSimple("Export", (System.Action)Export, null, "Export current file as *");
 			fileMenu.AddMenuLine("export", menuItem3);
 
 			// Line separators
-			fileMenu.AddMenuLine("-1", new DMMenuSeparator(DMMenuSeparator.Type.Space));
-			fileMenu.AddMenuLine("-2", new DMMenuSeparator(DMMenuSeparator.Type.NoLine));
-			fileMenu.AddMenuLine("-3", new DMMenuSeparator(DMMenuSeparator.Type.DashedLine));
-			fileMenu.AddMenuLine("-4", new DMMenuSeparator(DMMenuSeparator.Type.SingleLine));
+			fileMenu.AddMenuLine("-1", new MenuSeparator(MenuSeparator.Type.Space));
+			fileMenu.AddMenuLine("-2", new MenuSeparator(MenuSeparator.Type.NoLine));
+			fileMenu.AddMenuLine("-3", new MenuSeparator(MenuSeparator.Type.DashedLine));
+			fileMenu.AddMenuLine("-4", new MenuSeparator(MenuSeparator.Type.SingleLine));
 
 			// Now make shortcuts for menu options
 			// Open file menu by C+F 
