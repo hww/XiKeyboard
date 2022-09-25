@@ -99,11 +99,11 @@ namespace XiKeyboard.Examples.Menu
 
 		#region Unity Methods
 
-		private void Start()
+		private void OnEnable()
 		{
 			// Simple Menus
 			var simpleMenu = KeyMap.GlobalKeymap.CreateMenu("simple", "Simple Menu", "Help for simpe menu");
-			simpleMenu.AddMenuLine("-4", new MenuSeparator(MenuSeparator.Type.SingleLine));
+			
 			var subMenu = KeyMap.GlobalKeymap.CreateMenu("simple/sub", "Sub Menu", "Help for sub menu menu");
 
 			//DM.Add("Simple Menus/Action", action => Debug.Log("Hello, Action!"), "Simple Action");
@@ -124,6 +124,14 @@ namespace XiKeyboard.Examples.Menu
 			DM.Add("simple/Enum", () => _enum, v => _enum = v);
 			simpleMenu.AddMenuLine("-6", new MenuSeparator(MenuSeparator.Type.DashedLine));
 			DM.Add("simple/Bool", () => _bool, v => _bool = v, "S-f");
+			simpleMenu.AddMenuLine("-7", new MenuSeparator(MenuSeparator.Type.SingleLine));
+			DM.Add("simple/Vector 2", () => _vector2, v => _vector2 = v).SetPrecision(2);
+			DM.Add("simple/Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2);
+			DM.Add("simple/Vector 4", () => _vector4, v => _vector4 = v).SetPrecision(2);
+			DM.Add("simple/Quaternion", () => _quaternion, v => _quaternion = v).SetPrecision(2);
+			DM.Add("simple/Color", () => _color, v => _color = v).SetPrecision(2);
+			DM.Add("simple/Vector 2 Int", () => _vector2Int, v => _vector2Int = v);
+			DM.Add("simple/Vector 3 Int", () => _vector3Int, v => _vector3Int = v);
 
 			//DM.Add("simple/Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2);
 			DM.Open(simpleMenu);

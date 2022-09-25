@@ -173,12 +173,61 @@ namespace XiKeyboard
 			return val;
 		}
 
-		public static DMFloat Add(string path, Func<float> getter, Action<float> setter = null, string shortcut = null, string help = null)
+		public static DMVector2 Add(string path, Func<Vector2> getter, Action<Vector2> setter = null, string shortcut = null, string help = null)
         {
+			var val = new DMVector2(GetName(path), getter, setter, shortcut, help);
+			Global.DefineMenuLine(path, val);
+			return val;
+		}
+
+		public static DMVector3 Add(string path, Func<Vector3> getter, Action<Vector3> setter = null, string shortcut = null, string help = null)
+		{
+			var val = new DMVector3(GetName(path), getter, setter, shortcut, help);
+			Global.DefineMenuLine(path, val);
+			return val;
+		}
+		public static DMVector4 Add(string path, Func<Vector4> getter, Action<Vector4> setter = null, string shortcut = null, string help = null)
+		{
+			var val = new DMVector4(GetName(path), getter, setter, shortcut, help);
+			Global.DefineMenuLine(path, val);
+			return val;
+		}
+
+		public static DMQuaternion Add(string path, Func<Quaternion> getter, Action<Quaternion> setter = null, string shortcut = null, string help = null)
+		{
+			var val = new DMQuaternion(GetName(path), getter, setter, shortcut, help);
+			Global.DefineMenuLine(path, val);
+			return val;
+		}
+
+		public static DMColor Add(string path, Func<Color> getter, Action<Color> setter = null, string shortcut = null, string help = null)
+		{
+			var val = new DMColor(GetName(path), getter, setter, shortcut, help);
+			Global.DefineMenuLine(path, val);
+			return val;
+		}
+
+		public static DMVector2Int Add(string path, Func<Vector2Int> getter, Action<Vector2Int> setter = null, string shortcut = null, string help = null)
+		{
+			var val = new DMVector2Int(GetName(path), getter, setter, shortcut, help);
+			Global.DefineMenuLine(path, val);
+			return val;
+		}
+
+		public static DMVector3Int Add(string path, Func<Vector3Int> getter, Action<Vector3Int> setter = null, string shortcut = null, string help = null)
+		{
+			var val = new DMVector3Int(GetName(path), getter, setter, shortcut, help);
+			Global.DefineMenuLine(path, val);
+			return val;
+		}
+
+		public static DMFloat Add(string path, Func<float> getter, Action<float> setter = null, string shortcut = null, string help = null)
+		{
 			var val = new DMFloat(GetName(path), getter, setter, shortcut, help);
 			Global.DefineMenuLine(path, val);
 			return val;
 		}
+
 
 
 		// Produce the sequence which can  be binded to a key
