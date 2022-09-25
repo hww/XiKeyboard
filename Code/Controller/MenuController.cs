@@ -10,12 +10,19 @@ using XiKeyboard.Rendering;
 
 namespace XiKeyboard
 {
+    public interface IMenuController
+    {
+        public KeyEvent GetKeyEvent() => KeyEvent.None;
+        public MenuLine.MenuEvent GetMenuEvt() => MenuLine.MenuEvent.None;
+        public int GetVectorIndex() => 0;
+    }
+
     /// <summary>
     /// The menu manager controller
     /// Initialize the menu system and input stream
     /// then control the visibitily of menu
     /// </summary>
-    internal class MenuController : IMenuRender_OnGUI, IMenuRender_Update
+    internal class MenuController : IMenuRender_OnGUI, IMenuRender_Update, IMenuController
     {
         public delegate void Method();
         private Buffer menuBuffer;
@@ -40,6 +47,7 @@ namespace XiKeyboard
             KeyMap.GlobalKeymap.SetLocal("r", menuControlEvent);
             KeyMap.GlobalKeymap.SetLocal("s", menuControlEvent);
             KeyMap.GlobalKeymap.SetLocal("d", menuControlEvent);
+            KeyMap.GlobalKeymap.SetLocal("x", menuControlEvent);
 
             // the next two works only in the menu mode
             menuMap.SetLocal("w", menuControlEvent);
@@ -73,7 +81,7 @@ namespace XiKeyboard
         void Redraw()
         {
             if (currentMenu != null)
-                (menuRenderer as IMenuRender).RenderMenu(currentMenu);
+                (menuRenderer as IMenuRender).RenderMenu(this, currentMenu);
         }
 
         void SetVisibility(bool vis)
@@ -99,7 +107,7 @@ namespace XiKeyboard
             else
                 currentMenu = new MenuPanelRepresentation(Current, menu);
             SetVisibility(true);
-            (menuRenderer as IMenuRender).RenderMenu(currentMenu);
+            (menuRenderer as IMenuRender).RenderMenu(this, currentMenu);
         }
         /// <summary>
         /// Unwind all menu items to the selected menu
@@ -144,7 +152,7 @@ namespace XiKeyboard
             if (currentMenu != null)
             {
                 SetVisibility(true);
-                (menuRenderer as IMenuRender).RenderMenu(currentMenu);
+                (menuRenderer as IMenuRender).RenderMenu(this, currentMenu);
             }
             else
             {
@@ -172,37 +180,57 @@ namespace XiKeyboard
         // The user typed the keystroke
         void OnSequencePressed(Buffer buffer, DMKeyMapItem item)
         {
-            if (item.value is Method)
+            if (item.value is System.Action)
             {
-                (item.value as Method).Invoke();
+                (item.value as System.Action).Invoke();
+                Redraw();
+            }
+            if (item.value is DMBool)
+            {
+                menuEvt = MenuLine.MenuEvent.Right;
+                keyEvent = KeyEvent.None;
+                (item.value as DMBool).OnEvent(this);
+                Redraw();
             }
             else if (item.value == menuControlEvent)
             {
                 var evt = new KeyEvent(item.key);
                 OnEvent(evt);
-
             }
             else if (item.value is KeyMap)
                 OnPseudoPressed(buffer, item);
-            else if (item.value is System.Action)
-                (item.value as System.Action).Invoke();
             else
                 Debug.Log("{" + item.value + "}");  // Print "Pressed Sequence: N" 	
         }
 
         readonly KeyEvent EventE = KeyEvent.MakeEvent(KeyCode.E, KeyModifiers.None);
-        public void OnEvent(KeyEvent keyEvent)
+
+        private static int vectorIndex = 0;
+        private MenuLine.MenuEvent menuEvt;
+        private KeyEvent keyEvent;
+
+        public KeyEvent GetKeyEvent() => KeyEvent.None;
+        public MenuLine.MenuEvent GetMenuEvt() => menuEvt;
+        public int GetVectorIndex() => vectorIndex;
+
+        public void OnEvent(KeyEvent evt)
         {
-            var key = keyEvent.AsKeyCode;
+            keyEvent = evt;
+
+            var key = evt.AsKeyCode;
             if (key == KeyCode.E)
                 ToggleVisibility();
             if (key == KeyCode.Q)
                 Close();
+            if (key == KeyCode.X)
+                vectorIndex++;
+            if (key == KeyCode.S && key == KeyCode.A)
+                vectorIndex = 0;
 
             if (currentMenu != null)
             {
                 var shift = keyEvent.IsModifier(KeyModifiers.Shift);
-                MenuLine.MenuEvent menuEvt = MenuLine.MenuEvent.None;
+                menuEvt = MenuLine.MenuEvent.None;
 
                 if (isVisible)
                 {
@@ -231,7 +259,7 @@ namespace XiKeyboard
                 }
                 if (currentMenu != null)
                 {
-                    currentMenu.OnEvent(menuEvt, shift);
+                    currentMenu.OnEvent(this);
                     Redraw();
                 }
             }

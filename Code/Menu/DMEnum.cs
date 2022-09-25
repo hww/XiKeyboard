@@ -48,9 +48,9 @@ namespace XiKeyboard.Menu
 
 		#region Protected Methods
 
-		public override void OnEvent(MenuEvent evt, bool shift)
+		public override void OnEvent(IMenuController controller)
 		{
-			base.OnEvent(evt, shift);
+			base.OnEvent(controller);
 		}
 
 		protected override string ValueToString(T value)

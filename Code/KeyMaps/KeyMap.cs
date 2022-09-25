@@ -299,6 +299,8 @@ namespace XiKeyboard.KeyMaps
             var sequence = path.Split('/');
             var newSequence = KBD.ParsePseudo(sequence);
             Define(newSequence, line);
+            if (line.Shorcut!=null)
+                GlobalKeymap.SetLocal(line.Shorcut, line);
             return line;
         }
         

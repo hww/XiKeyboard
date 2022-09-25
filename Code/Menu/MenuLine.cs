@@ -17,6 +17,7 @@ namespace XiKeyboard.Menu
         public virtual string Text => null;
         public virtual string Help => null;
         public virtual string Shorcut => null;
+        public virtual string Value => null;
         public virtual object Binding => null;
         public virtual bool IsDefault => true;
         public virtual bool IsVisible => true;
@@ -38,7 +39,7 @@ namespace XiKeyboard.Menu
             Toggle
         }
 
-        public virtual void OnEvent(MenuEvent evt, bool shift) { }
+        public virtual void OnEvent(IMenuController controller) { }
     }
     /// <summary>
     /// The very simple menu item
@@ -76,11 +77,13 @@ namespace XiKeyboard.Menu
 
         public override string Text => text==null ? string.Empty : text;
         public override string Help => help == null ? string.Empty : help;
-        public override string Shorcut => shortcut == null ? string.Empty : shortcut ;
+        public override string Shorcut => shortcut;
+        public override string Value => shortcut == null ? string.Empty : shortcut;
         public override object Binding => binding;
 
-        public override void OnEvent(MenuEvent evt, bool shift)
+        public override void OnEvent(IMenuController controller)
         {
+            var evt = controller.GetMenuEvt();
             if (evt == MenuEvent.Right && binding is System.Action)
                 (binding as System.Action).Invoke();
         }
@@ -209,8 +212,9 @@ namespace XiKeyboard.Menu
             this.buttonState = buttonState;
         }
 
-        public override void OnEvent(MenuEvent evt, bool shift)
+        public override void OnEvent(IMenuController controller)
         {
+            var evt = controller.GetMenuEvt();
             if (evt == MenuEvent.Right && binding is System.Action)
                 (binding as System.Action).Invoke();
         }
