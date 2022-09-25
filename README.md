@@ -20,7 +20,8 @@ The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](
 - [x] Basic integer and float types support 
 - [x] Enum and the enum flags support
 - [ ] Vector3 and other vector classes 
-- [ ] Update documentation
+- [ ] Multiple menu panels on the screen
+- [ ] Update the documentation
 
 ## Introduction
 
