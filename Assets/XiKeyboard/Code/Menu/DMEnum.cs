@@ -32,7 +32,6 @@ namespace XiKeyboard.Menu
 
 		#endregion
 
-
 		#region Public Methods
 
 		public DMEnum(string text, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null)
