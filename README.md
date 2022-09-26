@@ -512,5 +512,9 @@ Will display:
 
 Press C-s will print the text _File Saved_
 	
-But this can be done by shorter way to define menu abowe. <sup>To Do ...</sup>
+But this can be done by shorter way to define menu abowe. The line below adding a checkbox with the shorcut <control+b> to it.
+
+```C#
+DM.Add("simple/Bool", () => _bool, v => _bool = v, "C-b");
+```
 
