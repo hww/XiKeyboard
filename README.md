@@ -21,10 +21,10 @@ The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](
 - [x] Basic integer and float types support 
 - [x] Enum and the enum flags support
 - [x] Vector3 and other vector classes 
-- [ ] Readline buffer
-- [ ] Update the documentation
-- [ ] Multiple menu panels on the screen
-- [ ] Minibuffer renderer
+- [x] Update the documentation
+- [ ] Fix and debug the readline buffer
+- [ ] Make example for multiple menu panels on the screen
+- [ ] Minibuffer frame renderer 
 
 ## Introduction
 
@@ -65,6 +65,7 @@ There are sevaral terms you should know before undertand this document
 | *KeyMap* | The table which convert a key event to the binding -- a delegate or an other key map. The maps organized as three and there is a global map at the top. |
 | *Mode* | The data containter with name and a key map. It can be used witt a buffer. |
 | *Buffer* | The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes. |
+| *Minibuffer* | The line on screen with feedback for the curent sequence |
 	
 Could be created multiple buffers, but only one buffer receiving inputs -- the current buffer. The image below has a _buffer2_ as current buffer and _mode1_ as the major mode.
 	
