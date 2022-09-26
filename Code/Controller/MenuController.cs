@@ -24,16 +24,7 @@ namespace XiKeyboard
     /// </summary>
     internal class MenuController : IMenuRender_OnGUI, IMenuRender_Update
     {
-        public delegate void Method();
-        private Buffer menuBuffer;
-        private Mode menuMode;
-        private KeyMap menuMap;
-        private MenuRender menuRenderer;
-        private MenuPanelRepresentation currentMenu;
-
-
-        private bool isVisible;
-
+        #region Public
         public MenuController()
         {
             menuRenderer = new MenuRender();
@@ -60,39 +51,8 @@ namespace XiKeyboard
             Buffer.OnPseudoPressed.Add(OnPseudoPressed);      // On keymap was selected
         }
 
-        ~MenuController()
-        {
-            menuRenderer = null;
-            menuMap = null;
-            menuBuffer = null;
-            menuMode = null;
-            currentMenu = null;
-            Buffer.OnSequencePressed.Remove(OnSequencePressed);  // On press sequence delegate
-            Buffer.OnKeyPressed.Remove(OnKeyPressed);            // On press key delegate
-            Buffer.OnPseudoPressed.Remove(OnPseudoPressed);      // On keymap was selecte
-        }
-
         public bool IsVisible => isVisible;
-
         public MenuPanelRepresentation Current => currentMenu;
-
-        public MenuEvent controllerEvent;
-
-        // Just render current menu if it is defined 
-        // do not check the visibility -- render it
-        void Redraw()
-        {
-            if (currentMenu != null)
-                (menuRenderer as IMenuRender).RenderMenu(currentMenu);
-        }
-
-        void SetVisibility(bool vis)
-        {
-            if (vis && currentMenu == null)
-                currentMenu = new MenuPanelRepresentation(null, DM.GlobalKeymap);
-            isVisible = vis;
-            menuBuffer.SetActive(isVisible);
-        }
 
         public void ToggleVisibility()
         {
@@ -113,38 +73,6 @@ namespace XiKeyboard
             currentMenu.OnEvent(controllerEvent);
             (menuRenderer as IMenuRender).RenderMenu(currentMenu);
         }
-        /// <summary>
-        /// Unwind all menu items to the selected menu
-        /// </summary>
-        /// <param name="menu"></param>
-        private void CloseAllMenusUpTo(KeyMap menu)
-        {
-            if (currentMenu != null)
-            {
-                var current = currentMenu;
-                while (current != null)
-                {
-                    if (current.keyMap == menu)
-                        return;
-                    var parent = current.parent;
-                    current.parent = null;
-                    current = parent;
-                }
-            }
-            currentMenu = new MenuPanelRepresentation(null, menu);
-        }
-
-        private bool ContainsMenu(KeyMap menu)
-        {
-            var current = currentMenu;
-            while (current != null)
-            {
-                if (current.keyMap == menu)
-                    return true;
-                current = current.parent;
-            }
-            return false;
-        }
 
         public void Close()
         {
@@ -164,50 +92,6 @@ namespace XiKeyboard
             }
         }
 
-        void IMenuRender_OnGUI.OnGUI()
-        {
-            InputManager.OnGUI();
-            if (isVisible)
-                (menuRenderer as IMenuRender_OnGUI).OnGUI();
-        }
-
-        float readrawAt = 0;
-        void IMenuRender_Update.Update()
-        {
-            if (Time.unscaledTime>readrawAt)
-            {
-                readrawAt = Time.unscaledTime + 0.5f;
-                Redraw();
-            }
-        }
-
-        // The user typed the keystroke
-        void OnSequencePressed(Buffer buffer, DMKeyMapItem item)
-        {
-            MenuEvent menuEvent;
-            if (item.value is System.Action)
-            {
-                (item.value as System.Action).Invoke();
-                Redraw();
-            }
-            if (item.value is DMBool)
-            {
-                menuEvent.eventType = MenuLine.MenuEventType.Right;
-                menuEvent.keyEvent = KeyEvent.None;
-                (item.value as DMBool).OnEvent(controllerEvent);
-                Redraw();
-            }
-            else if (item.value == menuControlEvent)
-            {
-                var evt = new KeyEvent(item.key);
-                OnEvent(evt);
-            }
-            else if (item.value is KeyMap)
-                OnPseudoPressed(buffer, item);
-            else
-                Debug.Log("{" + item.value + "}");  // Print "Pressed Sequence: N" 	
-        }
- 
         public void OnEvent(KeyEvent keyEvent)
         {
             MenuEvent menuEvent = new MenuEvent();
@@ -258,6 +142,100 @@ namespace XiKeyboard
             }
         }
 
+        #endregion
+
+        #region Protected
+
+        #endregion
+
+        #region Private
+        private Buffer menuBuffer;
+        private Mode menuMode;
+        private KeyMap menuMap;
+        private MenuRender menuRenderer;
+        private MenuPanelRepresentation currentMenu;
+        private bool isVisible;
+        private MenuEvent controllerEvent;
+        readonly object menuControlEvent = new object();
+
+        ~MenuController()
+        {
+            menuRenderer = null;
+            menuMap = null;
+            menuBuffer = null;
+            menuMode = null;
+            currentMenu = null;
+            Buffer.OnSequencePressed.Remove(OnSequencePressed);  // On press sequence delegate
+            Buffer.OnKeyPressed.Remove(OnKeyPressed);            // On press key delegate
+            Buffer.OnPseudoPressed.Remove(OnPseudoPressed);      // On keymap was selecte
+        }
+
+
+        // Just render current menu if it is defined 
+        // do not check the visibility -- render it
+        void Redraw()
+        {
+            if (currentMenu != null)
+                (menuRenderer as IMenuRender).RenderMenu(currentMenu);
+        }
+
+        void SetVisibility(bool vis)
+        {
+            if (vis && currentMenu == null)
+                currentMenu = new MenuPanelRepresentation(null, DM.GlobalKeymap);
+            isVisible = vis;
+            menuBuffer.SetActive(isVisible);
+        }
+        /// <summary>
+        /// Unwind all menu items to the selected menu
+        /// </summary>
+        /// <param name="menu"></param>
+        private void CloseAllMenusUpTo(KeyMap menu)
+        {
+            if (currentMenu != null)
+            {
+                var current = currentMenu;
+                while (current != null)
+                {
+                    if (current.keyMap == menu)
+                        return;
+                    var parent = current.parent;
+                    current.parent = null;
+                    current = parent;
+                }
+            }
+            currentMenu = new MenuPanelRepresentation(null, menu);
+        }
+
+        private bool ContainsMenu(KeyMap menu)
+        {
+            var current = currentMenu;
+            while (current != null)
+            {
+                if (current.keyMap == menu)
+                    return true;
+                current = current.parent;
+            }
+            return false;
+        }
+
+        void IMenuRender_OnGUI.OnGUI()
+        {
+            InputManager.OnGUI();
+            if (isVisible)
+                (menuRenderer as IMenuRender_OnGUI).OnGUI();
+        }
+
+        float readrawAt = 0;
+        void IMenuRender_Update.Update()
+        {
+            if (Time.unscaledTime > readrawAt)
+            {
+                readrawAt = Time.unscaledTime + 0.5f;
+                Redraw();
+            }
+        }
+
         void OnKeyPressed(Buffer buffer, KeyEvent evt)
         {
             Debug.Log(buffer.GetBufferHumanizedString());   // Just display current buffer content		
@@ -269,6 +247,32 @@ namespace XiKeyboard
             // (this as IMenuRender).RenderMenu(item.value as KeyMap, 0);
         }
 
-        readonly object menuControlEvent = new object();
+        // The user typed the keystroke
+        void OnSequencePressed(Buffer buffer, DMKeyMapItem item)
+        {
+            MenuEvent menuEvent = new MenuEvent();
+            if (item.value is System.Action)
+            {
+                (item.value as System.Action).Invoke();
+                Redraw();
+            }
+            if (item.value is DMBool)
+            {
+                menuEvent.eventType = MenuLine.MenuEventType.Increment;
+                menuEvent.keyEvent = KeyEvent.None;
+                (item.value as DMBool).OnEvent(menuEvent);
+                Redraw();
+            }
+            else if (item.value == menuControlEvent)
+            {
+                var evt = new KeyEvent(item.key);
+                OnEvent(evt);
+            }
+            else if (item.value is KeyMap)
+                OnPseudoPressed(buffer, item);
+            else
+                Debug.Log("{" + item.value + "}");  // Print "Pressed Sequence: N" 	
+        }
+        #endregion
     }
 }
