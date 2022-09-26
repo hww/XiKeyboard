@@ -38,23 +38,6 @@ This keyboard and menu system has designed for functionality and better keyboard
 The other alternative is my simple menu [XiDebugMenu](https://github.com/hww/XiDebugMenu) designed for simplicity and low memory footprint.
 
 If you need more than _XiDebugMenu_ but less than _XiKeyboard_ then consider to use the advanced version [extDebug](https://github.com/Iam1337/extDebug). It has much ballanced number of features and I believe you will have a professional support from autor [Iam1337](https://github.com/Iam1337).
-	
-## Terms
-
-There are sevaral terms you should know before undertand this document
-
-- *Keyboard vs Menu* The big thing is: the keyboard and menu systems are combined in the Emacs
-- *Key modifier* The bitfield with keep the state of special keys: shift, control, alt, etc
-- *Pseudo key* The single bit, modifier which is signaling the virtual key. Used for the menu system
-- *Event* The data container. Holds the keycode and key modifier
-- *Key sequence* Is the sequance of events
-- *Key map* The table which convert the event to the binding -- a delegate or an other key map. The maps organized as three and there is a global map at the top.
-- *Mode* The data containter with name and a key map
-- *Buffer* The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes. 
-	
-Could be created multiple buffers, but only one buffer receiving inputs -- current buffer. The image below has a _buffer2_ as current buffer and _mode1_ as the major mode.
-	
-![Understanding Emacs keyboard](https://raw.githubusercontent.com/hww/XiKeyboard/master/Documentation/XiKeyboard.drawio.png)
 
 ## Installing
 
@@ -68,6 +51,23 @@ You can also install via git url by adding this entry in your manifest.json
 ```bash
 "com.hww.xikeyboard": "https://github.com/hww/XiKeyboard.git#upm"
 ```
+	
+## Terminology
+
+There are sevaral terms you should know before undertand this document
+
+| *Keyboard vs Menu* | Main thing: Keyboard and menu systems are closely related in Emacs. |
+| *Key modifier* | The bitfield with keep the state of special keys: shift, control, alt, etc. |
+| *Pseudo key* | A virtual key by special key modifier. Used for the menu system. |
+| *KeyEvent* | The data container. Holds the keycode and key modifier. |
+| *KeySequence* | Is the sequance of key events. |
+| *KeyMap* | The table which convert a key event to the binding -- a delegate or an other key map. The maps organized as three and there is a global map at the top. |
+| *Mode* | The data containter with name and a key map. It can be used witt a buffer. |
+| *Buffer* | The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes. |
+	
+Could be created multiple buffers, but only one buffer receiving inputs -- the current buffer. The image below has a _buffer2_ as current buffer and _mode1_ as the major mode.
+	
+![Understanding Emacs keyboard](https://raw.githubusercontent.com/hww/XiKeyboard/master/Documentation/XiKeyboard.drawio.png)
 
 ## Usage
 	
