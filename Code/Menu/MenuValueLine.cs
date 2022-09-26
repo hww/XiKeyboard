@@ -6,7 +6,8 @@ using XiKeyboard.KeyMaps;
 
 namespace XiKeyboard.Menu
 {
-	public abstract class MenuValueLine<T> : MenuLine
+
+	public abstract class TMenuValueLine<T> : MenuLine
 	{
 		#region Protected Methods
 
@@ -22,13 +23,13 @@ namespace XiKeyboard.Menu
 		protected string help;
 		protected string shortcut;
 		protected bool _isDefault;
-		private T _defaultValue;
+		protected T _defaultValue;
 
 		#endregion
 
 		#region Public Methods
 
-		protected MenuValueLine(string text, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) 
+		protected TMenuValueLine(string text, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) 
 		{
 			this.text = text;
 			this.help = help;
@@ -53,40 +54,37 @@ namespace XiKeyboard.Menu
 		public override bool IsVisible => true;
 		public override bool IsEnabled => true;
 
-
-		public override void OnEvent(IMenuController controller)
+		public override void OnEvent(MenuEvent menuEvent)
 		{
-			var evt = controller.GetMenuEvt();
-			var isShift = controller.GetKeyEvent().IsModifier(KeyModifiers.Shift);
-			if (evt == MenuEvent.Left && _setter != null)
+			var evt = menuEvent.eventType;
+			var isShift = menuEvent.keyEvent.IsModifier(KeyModifiers.Shift);
+			if (evt == MenuEventType.Decrement && _setter != null)
 			{
-				var value = ValueDecrement(_getter.Invoke(), isShift);
+				var value = ValueDecrement(_getter.Invoke(), isShift, menuEvent.vectorIndex);
 
 				ChangeValue(value, false);
 			}
-			else if (evt == MenuEvent.Right && _setter != null)
+			else if (evt == MenuEventType.Increment && _setter != null)
 			{
-				var value = ValueIncrement(_getter.Invoke(), isShift);
+				var value = ValueIncrement(_getter.Invoke(), isShift, menuEvent.vectorIndex);
 
 				ChangeValue(value, false);
 			}
-			else if (evt == MenuEvent.Reset && _setter != null)
+			else if (evt == MenuEventType.Reset && _setter != null)
 			{
 				ChangeValue(_defaultValue, true);
 			}
 		}
-
 		protected abstract string ValueToString(T value);
+		protected abstract T ValueIncrement(T value, bool isShift, int idx = 0);
 
-		protected abstract T ValueIncrement(T value, bool isShift);
-
-		protected abstract T ValueDecrement(T value, bool isShift);
+		protected abstract T ValueDecrement(T value, bool isShift, int idx = 0);
 
 		#endregion
 
 		#region Private Methods
 
-		private void ChangeValue(T value, bool isReset)
+		protected virtual void ChangeValue(T value, bool isReset)
 		{
 			// Change value.
 			_setter.Invoke(value);

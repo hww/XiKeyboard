@@ -18,6 +18,8 @@ namespace XiKeyboard.Menu
         public virtual string Help => null;
         public virtual string Shorcut => null;
         public virtual string Value => null;
+        public virtual int Count => 1;
+        public virtual string GetValue(int idx) => Value;
         public virtual object Binding => null;
         public virtual bool IsDefault => true;
         public virtual bool IsVisible => true;
@@ -25,21 +27,23 @@ namespace XiKeyboard.Menu
         public virtual bool ButtonState => false;
         public virtual DMButtonType ButtonType => DMButtonType.NoButton;
 
-        public enum MenuEvent
+        public enum MenuEventType
         {
             None,           
             Up,             
             Down,           
             Left,           
             Right,          
-            Back,           
+            Back, 
+            Increment,
+            Decrement,
             Reset,
             Open,
             Close,
             Toggle
         }
 
-        public virtual void OnEvent(IMenuController controller) { }
+        public virtual void OnEvent(MenuEvent menuEvent) { }
     }
     /// <summary>
     /// The very simple menu item
@@ -81,10 +85,10 @@ namespace XiKeyboard.Menu
         public override string Value => shortcut == null ? string.Empty : shortcut;
         public override object Binding => binding;
 
-        public override void OnEvent(IMenuController controller)
+        public override void OnEvent(MenuEvent menuEvent)
         {
-            var evt = controller.GetMenuEvt();
-            if (evt == MenuEvent.Right && binding is System.Action)
+            var evt = menuEvent.eventType;
+            if (evt == MenuEventType.Right && binding is System.Action)
                 (binding as System.Action).Invoke();
         }
 
@@ -212,10 +216,10 @@ namespace XiKeyboard.Menu
             this.buttonState = buttonState;
         }
 
-        public override void OnEvent(IMenuController controller)
+        public override void OnEvent(MenuEvent menuEvent)
         {
-            var evt = controller.GetMenuEvt();
-            if (evt == MenuEvent.Right && binding is System.Action)
+            var evt = menuEvent.eventType;
+            if (evt == MenuEventType.Right && binding is System.Action)
                 (binding as System.Action).Invoke();
         }
     }

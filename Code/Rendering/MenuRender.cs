@@ -42,12 +42,12 @@ namespace XiKeyboard.Rendering
             return result;
         }
 
-        void IMenuRender.RenderMenu(IMenuController controller, MenuPanelRepresentation panel, MenuRenderOptions options = MenuRenderOptions.Default)
+        void IMenuRender.RenderMenu(MenuPanelRepresentation panel, MenuRenderOptions options = MenuRenderOptions.Default)
         {
             stringBuilder.Clear();
 
             // Calculate te width and read all texts from
-            panel.Update(controller, MenuConfig.Space.Length);
+            panel.PreRenderMenu(MenuConfig.Space.Length);
             var separatorWidth = panel.widthOfLine + MenuConfig.PrefixNormal.Length + MenuConfig.SuffixNormal.Length;
 
             // Prepair a formatting lines
@@ -107,7 +107,7 @@ namespace XiKeyboard.Rendering
                     {
                         if (keyItem.IsVisible)
                         {
-                            var prefix = i == panel.selectedLine ? MenuConfig.PrefixCursor : MenuConfig.PrefixNormal;
+                            var prefix = i == panel.lineIndex ? MenuConfig.PrefixCursor : MenuConfig.PrefixNormal;
                             var suffix = keyItem.IsDefault ? MenuConfig.SuffixNormal : MenuConfig.SuffixModified;
 
                             var titleColor = MenuColors.TitleDisabled;
@@ -143,7 +143,7 @@ namespace XiKeyboard.Rendering
                 } 
                 else if (panelItem.line is KeyMap)
                 {
-                    var prefix = i == panel.selectedLine ? MenuConfig.PrefixCursor : MenuConfig.PrefixNormal;
+                    var prefix = i == panel.lineIndex ? MenuConfig.PrefixCursor : MenuConfig.PrefixNormal;
                     string lineText = string.Format(itemFormat2,
                                prefix,
                                MenuColors.TitleNormal, panelItem.title,

@@ -8,7 +8,7 @@ using XiKeyboard.Libs;
 
 namespace XiKeyboard.Menu
 {
-	public class DMFloat : MenuValueLine<float>
+	public class DMFloat : TMenuValueLine<float>
 	{
 		#region Public Vars
 
@@ -50,9 +50,9 @@ namespace XiKeyboard.Menu
 
 		protected override string ValueToString(float value) => value.ToString(string.IsNullOrEmpty(Format) ? FloatFormats.Formats[_precision] : Format);
 
-		protected override float ValueIncrement(float value, bool isShift) => (Mathf.Floor(value * _floatPointScale + 0.1f) + (isShift ? ShiftStep : Step)) / _floatPointScale;
+		protected override float ValueIncrement(float value, bool isShift, int idx = 0) => (Mathf.Floor(value * _floatPointScale + 0.1f) + (isShift ? ShiftStep : Step)) / _floatPointScale;
 
-		protected override float ValueDecrement(float value, bool isShift) => (Mathf.Floor(value * _floatPointScale + 0.1f) - (isShift ? ShiftStep : Step)) / _floatPointScale;
+		protected override float ValueDecrement(float value, bool isShift, int idx = 0) => (Mathf.Floor(value * _floatPointScale + 0.1f) - (isShift ? ShiftStep : Step)) / _floatPointScale;
 
 		#endregion
 	}

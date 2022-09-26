@@ -7,7 +7,7 @@ using XiKeyboard.Libs;
 
 namespace XiKeyboard.Menu
 {
-	public abstract class DMIntVector<TStruct> : MenuValueLine<TStruct> where TStruct : struct, IFormattable
+	public abstract class DMIntVector<TStruct> : TMenuValueLine<TStruct> where TStruct : struct, IFormattable
 	{
 		#region Public Vars
 
@@ -51,31 +51,31 @@ namespace XiKeyboard.Menu
 			}
 		}
 
-		public override void OnEvent(IMenuController controller)
+		public override void OnEvent(MenuEvent menuEvent)
 		{
-			base.OnEvent(controller);
+			base.OnEvent(menuEvent);
 		}
-
+		public override int Count => StructUtils.GetFieldsCount(typeof(TStruct));
+		public override string GetValue(int idx)
+		{
+			var val = StructFieldGetter(_getter.Invoke(), idx);
+			return val.ToString(Format, null);
+		}
 		protected sealed override string ValueToString(TStruct value) => value.ToString(Format, null);
 
-		protected sealed override TStruct ValueIncrement(TStruct value, bool isShift)
+		protected sealed override TStruct ValueIncrement(TStruct value, bool isShift, int idx = 0)
 		{
 			var count = StructUtils.GetFieldsCount(typeof(TStruct));
-			for (var i = 0; i < count; i++)
-			{
-				StructFieldSetter(ref value, i, StructFieldGetter(value, i) + Step);
-			}
-
+			var i = idx % count;
+			StructFieldSetter(ref value, i, StructFieldGetter(value, i) + Step);
 			return value;
 		}
 
-		protected sealed override TStruct ValueDecrement(TStruct value, bool isShift)
+		protected sealed override TStruct ValueDecrement(TStruct value, bool isShift, int idx = 0)
 		{
 			var count = StructUtils.GetFieldsCount(typeof(TStruct));
-			for (var i = 0; i < count; i++)
-			{
-				StructFieldSetter(ref value, i, StructFieldGetter(value, i) - Step);
-			}
+			var i = idx % count;
+			StructFieldSetter(ref value, i, StructFieldGetter(value, i) - Step);
 
 			return value;
 		}
@@ -83,6 +83,16 @@ namespace XiKeyboard.Menu
 		protected abstract int StructFieldGetter(TStruct vector, int fieldIndex);
 
 		protected abstract void StructFieldSetter(ref TStruct vector, int fieldIndex, int value);
+
+		protected override void ChangeValue(TStruct value, bool isReset)
+		{
+			// Change value.
+			_setter.Invoke(value);
+			var count = StructUtils.GetFieldsCount(typeof(TStruct));
+			_isDefault = true;
+			for (var i = 0; i < count; i++)
+				_isDefault &= StructFieldGetter(value, i) == StructFieldGetter(_defaultValue, i);
+		}
 
 		#endregion
 

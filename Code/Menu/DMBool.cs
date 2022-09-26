@@ -4,7 +4,7 @@ using System;
 
 namespace XiKeyboard.Menu
 {
-	public class DMBool : MenuValueLine<bool>
+	public class DMBool : TMenuValueLine<bool>
 	{
 		#region Public Methods
 
@@ -23,9 +23,9 @@ namespace XiKeyboard.Menu
 
 		protected override string ValueToString(bool value) => String.Empty;
 
-		protected override bool ValueIncrement(bool value, bool isShift) => !value;
+		protected override bool ValueIncrement(bool value, bool isShift, int idx = 0) => !value;
 
-		protected override bool ValueDecrement(bool value, bool isShift) => !value;
+		protected override bool ValueDecrement(bool value, bool isShift, int idx = 0) => !value;
 
 		#endregion
 	}
