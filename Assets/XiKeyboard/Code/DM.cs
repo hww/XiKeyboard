@@ -58,7 +58,7 @@ namespace XiKeyboard
 			KeyMap.GlobalKeymap.CreateMenu(path, title, help);
 
 		// Action
-		//public static DMAction Add(string path, Action<MenuEvent> action, string description = "", int order = 0) =>
+		//public static DMAction Add(string path, Action<MenuEventType> action, string description = "", int order = 0) =>
 		//	Container.Add(path, action, description, order);
 
 		public static DMString Add(string path, Func<string> getter, string shortcut = null, string help = null)

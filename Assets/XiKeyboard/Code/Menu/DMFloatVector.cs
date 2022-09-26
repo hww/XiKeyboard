@@ -5,10 +5,11 @@ using UnityEngine;
 using System;
 using XiKeyboard.Libs;
 using XiKeyboard.KeyMaps;
+using System.Collections.Generic;
 
 namespace XiKeyboard.Menu
 {
-	public abstract class DMFloatVector<TStruct> : MenuValueLine<TStruct> where TStruct : struct, IFormattable
+	public abstract class DMFloatVector<TStruct> : TMenuValueLine<TStruct> where TStruct : struct, IFormattable
 	{
 		#region Public Vars
 
@@ -41,56 +42,37 @@ namespace XiKeyboard.Menu
 		protected DMFloatVector(string text, Func<TStruct> getter, Action<TStruct> setter = null, string shortcut = null, string help = null)
 			: base(text, getter, setter, shortcut, help)
 		{
-			if (setter != null)
-			{
-				var names = StructUtils.GetFieldsNames(typeof(TStruct));
-				var count = StructUtils.GetFieldsCount(typeof(TStruct));
-
-				for (var i = 0; i < count; i++)
-				{
-					//var fieldIndex = i;
-					//_fields[i] = _fieldsBranch.Add(names[i],
-					//	() => StructFieldGetter(getter.Invoke(), fieldIndex), v =>
-					//	{
-					//		var vector = getter.Invoke();
-					//		StructFieldSetter(ref vector, fieldIndex, v);
-					//		setter.Invoke(vector);
-					//	}, i);
-				}
-
-			}
-
 			SetPrecision(2);
 		}
 
-		public override void OnEvent(IMenuController controller)
+		public override void OnEvent(MenuEvent menuEvent)
 		{
-			base.OnEvent(controller);
+			base.OnEvent(menuEvent);
 		}
-
+		public override int Count => StructUtils.GetFieldsCount(typeof(TStruct));
+		public override string GetValue(int idx)
+        {
+			var val = StructFieldGetter(_getter.Invoke(), idx);
+			return val.ToString(string.IsNullOrEmpty(Format) ? FloatFormats.Formats[_precision] : Format, null);
+		}
 		protected sealed override string ValueToString(TStruct value) =>
 			value.ToString(string.IsNullOrEmpty(Format) ? FloatFormats.Formats[_precision] : Format, null);
 
-		protected sealed override TStruct ValueIncrement(TStruct value, bool isShift)
+		protected sealed override TStruct ValueIncrement(TStruct value, bool isShift, int idx = 0)
 		{
 			var count = StructUtils.GetFieldsCount(typeof(TStruct));
-			for (var i = 0; i < count; i++)
-			{
-				StructFieldSetter(ref value, i,
+			var i = idx % count;
+			StructFieldSetter(ref value, i,
 					(Mathf.Floor(StructFieldGetter(value, i) * _floatPointScale + 0.1f) + Step) / _floatPointScale);
-			}
-
 			return value;
 		}
 
-		protected sealed override TStruct ValueDecrement(TStruct value, bool isShift)
+		protected sealed override TStruct ValueDecrement(TStruct value, bool isShift, int idx)
 		{
 			var count = StructUtils.GetFieldsCount(typeof(TStruct));
-			for (var i = 0; i < count; i++)
-			{
-				StructFieldSetter(ref value, i,
+			var i = idx % count;
+			StructFieldSetter(ref value, i,
 					(Mathf.Floor(StructFieldGetter(value, i) * _floatPointScale + 0.1f) - Step) / _floatPointScale);
-			}
 
 			return value;
 		}
@@ -98,6 +80,16 @@ namespace XiKeyboard.Menu
 		protected abstract float StructFieldGetter(TStruct vector, int fieldIndex);
 
 		protected abstract void StructFieldSetter(ref TStruct vector, int fieldIndex, float value);
+
+		protected override void ChangeValue(TStruct value, bool isReset)
+		{
+			// Change value.
+			_setter.Invoke(value);
+			var count = StructUtils.GetFieldsCount(typeof(TStruct));
+			_isDefault = true;
+			for (var i=0; i<count; i++)
+				_isDefault &= StructFieldGetter(value, i) == StructFieldGetter(_defaultValue, i);
+		}
 
 		#endregion
 

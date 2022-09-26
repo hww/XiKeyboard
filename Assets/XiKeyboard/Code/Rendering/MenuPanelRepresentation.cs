@@ -14,16 +14,20 @@ namespace XiKeyboard.Rendering
 
         /// <summary>A parent menu</summary>
         public MenuPanelRepresentation parent;
+
         /// <summary>A reference to the KeyMap</summary>
         public KeyMap keyMap;
-        /// <summary>The index of selected line</summary>
-        public int selectedLine;
 
-        public bool isChanged;
+        /// <summary>The index of selected selectedLine</summary>
+        public int lineIndex;
+
+        /// <summary>The vector editor index or -1 for disabled</summary>
+        public int columnIndex = -1;
 
         public int widthOfValue;
         public int widthOfName;
         public int widthOfLine;
+
 
         public string title;
         /// <summary>The menu lines</summary> 
@@ -35,13 +39,15 @@ namespace XiKeyboard.Rendering
             this.parent = parent;
             this.keyMap = keyMap;
             items = new MenuLineRepresentation[MAX_MENU_LINES];
-            selectedLine = 0;
+            lineIndex = 0;
+            columnIndex = -1;
         }
+
 
         /// <summary>
         /// Calculate menu, name, value columns width
         /// </summary>
-        public void Update(IMenuController controller, int spaceSize)
+        public void PreRenderMenu(int spaceSize)
         {
             title = keyMap.Title;
             widthOfName = title.Length;
@@ -58,18 +64,51 @@ namespace XiKeyboard.Rendering
                 var line = keyMap[i].value;
                 if (line is MenuLine)
                 {
-                    var item = line as MenuLine;
-                    var txt = item.Text;
-                    var val = item.Value;
-                    if (txt != null)
-                        widthOfName = System.Math.Max(widthOfName, txt.Length);
-                    if (val != null)
-                        widthOfValue = System.Math.Max(widthOfValue, val.Length);
+                    var menuLine = line as MenuLine;
+                    var lineTitle = menuLine.Text;
+                    var vectorCount = menuLine.Count;
+                    var lineValue = string.Empty;
+                    if (vectorCount == 1)
+                    {
+                        lineValue = menuLine.Value;
+                    }
+                    else
+                    {
+                        var selectedElement = columnIndex % vectorCount;
+                        if (lineIndex == Count && selectedElement >= 0)
+                        {
+                            // Render highlighted vector element
+
+                            lineValue += "(";
+                            for (var j = 0; j < vectorCount; j++)
+                            {
+                                if (j == selectedElement)
+                                    lineValue += string.Format("({0})", menuLine.GetValue(j));
+                                else
+                                    lineValue += string.Format(" {0} ", menuLine.GetValue(j));
+                            }
+                            lineValue += ")";
+                        }
+                        else
+                        {
+                            // Render vector as value only
+                            lineValue += "(";
+                            for (var j = 0; j < vectorCount; j++)
+                                lineValue += string.Format(" {0} ", menuLine.GetValue(j));
+                            lineValue += ")";
+                        }
+                    }
+                    var val = menuLine.Value;
+                    if (lineTitle != null)
+                        widthOfName = System.Math.Max(widthOfName, lineTitle.Length);
+                    if (lineValue != null)
+                        widthOfValue = System.Math.Max(widthOfValue, lineValue.Length);
+
                     items[Count++] = new MenuLineRepresentation()
                     {
-                        title = txt,
-                        value = val,
-                        line = item
+                        title = lineTitle,
+                        value = lineValue,
+                        line = menuLine
                     };
                 }
                 else if (line is KeyMap)
@@ -91,11 +130,12 @@ namespace XiKeyboard.Rendering
                 }
             }
             widthOfLine = System.Math.Max(widthOfLine, widthOfName + widthOfValue + spaceSize);
-            selectedLine = GetSelectedLineIndex(selectedLine, true);
+            lineIndex = GetSelectedLineIndex(lineIndex, true);
+
         }
 
         /// <summary>
-        /// Find the best position for selected line
+        /// Find the best position for selected selectedLine
         /// Skip all sepoarators and disabled lines
         /// </summary>
         /// <param name="forward"></param>
@@ -141,54 +181,126 @@ namespace XiKeyboard.Rendering
             return -1; // There is nothing to select
         }
 
-        public void OnEvent(IMenuController controller)
-        {
-            var menuEvt = controller.GetMenuEvt();
-            var isShift = controller.GetKeyEvent().IsModifier(KeyModifiers.Shift);
 
-            switch (menuEvt)
+        public void OnEvent(MenuEvent menuEvent)
+        {
+            var eventType = menuEvent.eventType;
+            var isShift = menuEvent.keyEvent.IsModifier(KeyModifiers.Shift);
+
+            if (eventType == MenuLine.MenuEventType.Open)
             {
-                case MenuLine.MenuEvent.Up:
-                    selectedLine--;
-                    selectedLine = GetSelectedLineIndex(selectedLine, false);
+                lineIndex = 0;
+                columnIndex = -1;
+            }
+            // There are two posibilities: a normal navigation and changig values
+            // or the vector navigation and values
+
+            var line = items[lineIndex].line as MenuLine;
+            if (line != null)
+            {
+                if (line.Count == 1)
+                {
+                    // The normal option is not a vector
+                    columnIndex = 0;
+                }
+                else
+                {
+                    // Change value of the vector
+                    MenuEvent menuEventVector = menuEvent;
+
+                    // The vector editor is active or inactivated
+                    switch (eventType)
+                    {
+                        case MenuLine.MenuEventType.Left:
+                            if (--columnIndex < -1)
+                                columnIndex = -1;
+                            return;
+
+                        case MenuLine.MenuEventType.Right:
+                            if (++columnIndex >= line.Count)
+                                columnIndex = line.Count - 1;
+                            return;
+                    }
+
+                    if (columnIndex >= 0)
+                    {
+                        // The vector editor is activated
+                        switch (eventType)
+                        {
+                            case MenuLine.MenuEventType.Up:
+                                menuEventVector.vectorIndex = columnIndex;
+                                menuEventVector.eventType = MenuLine.MenuEventType.Increment;
+                                (items[lineIndex].line as MenuLine)?.OnEvent(menuEventVector);
+                                return;
+
+                            case MenuLine.MenuEventType.Down:
+                                menuEventVector.vectorIndex = columnIndex;
+                                menuEventVector.eventType = MenuLine.MenuEventType.Decrement;
+                                (items[lineIndex].line as MenuLine)?.OnEvent(menuEventVector);
+                                return;
+
+                            case MenuLine.MenuEventType.Reset:
+                                (items[lineIndex].line as MenuLine)?.OnEvent(menuEvent);
+                                break;
+                        }
+                        return;
+                    }
+                }
+            }
+
+
+            // Normal menu navigation
+            switch (eventType)
+            {
+                case MenuLine.MenuEventType.Up:
+                    columnIndex = -1;
+                    lineIndex--;
+                    lineIndex = GetSelectedLineIndex(lineIndex, false);
                     return;
 
-                case MenuLine.MenuEvent.Down:
-                    selectedLine++;
-                    selectedLine = GetSelectedLineIndex(selectedLine, true);
+                case MenuLine.MenuEventType.Down:
+                    columnIndex = -1;
+                    lineIndex++;
+                    lineIndex = GetSelectedLineIndex(lineIndex, true);
                     return;
             }
 
-            if (selectedLine < 0)
+            if (lineIndex < 0)
                 return;
 
-            if (items[selectedLine].line is KeyMap)
+            if (items[lineIndex].line is KeyMap)
             {
-                switch (menuEvt)
+                switch (eventType)
                 {
-                    case MenuLine.MenuEvent.Right:
-                        DM.Open(items[selectedLine].line as KeyMap);
+                    case MenuLine.MenuEventType.Right:
+                        DM.Open(items[lineIndex].line as KeyMap);
                         return;
                 }
 
             }
-            else if (items[selectedLine].line is MenuLine)
+            else if (items[lineIndex].line is MenuLine)
             {
-                switch (menuEvt)
+                MenuEvent menuEventValue = menuEvent;
+                switch (eventType)
                 {
-                    case MenuLine.MenuEvent.Left:
-                        (items[selectedLine].line as MenuLine)?.OnEvent(controller);
+                    case MenuLine.MenuEventType.Left:
+                        menuEventValue.eventType = MenuLine.MenuEventType.Decrement;
+                        (items[lineIndex].line as MenuLine)?.OnEvent(menuEventValue);
                         break;
 
-                    case MenuLine.MenuEvent.Right:
-                        (items[selectedLine].line as MenuLine)?.OnEvent(controller);
+                    case MenuLine.MenuEventType.Right:
+                        menuEventValue.eventType = MenuLine.MenuEventType.Increment;
+                        (items[lineIndex].line as MenuLine)?.OnEvent(menuEventValue);
                         break;
 
-                    case MenuLine.MenuEvent.Reset:
-                        (items[selectedLine].line as MenuLine)?.OnEvent(controller);
+                    case MenuLine.MenuEventType.Reset:
+                        (items[lineIndex].line as MenuLine)?.OnEvent(menuEvent);
                         break;
                 }
             }
+
+
+
         }
     }
 }

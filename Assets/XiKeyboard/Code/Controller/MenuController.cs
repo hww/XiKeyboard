@@ -10,11 +10,11 @@ using XiKeyboard.Rendering;
 
 namespace XiKeyboard
 {
-    public interface IMenuController
+    public struct MenuEvent
     {
-        public KeyEvent GetKeyEvent() => KeyEvent.None;
-        public MenuLine.MenuEvent GetMenuEvt() => MenuLine.MenuEvent.None;
-        public int GetVectorIndex() => 0;
+        public KeyEvent keyEvent;
+        public MenuLine.MenuEventType eventType;
+        public int vectorIndex;
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ namespace XiKeyboard
     /// Initialize the menu system and input stream
     /// then control the visibitily of menu
     /// </summary>
-    internal class MenuController : IMenuRender_OnGUI, IMenuRender_Update, IMenuController
+    internal class MenuController : IMenuRender_OnGUI, IMenuRender_Update
     {
         public delegate void Method();
         private Buffer menuBuffer;
@@ -76,12 +76,14 @@ namespace XiKeyboard
 
         public MenuPanelRepresentation Current => currentMenu;
 
+        public MenuEvent controllerEvent;
+
         // Just render current menu if it is defined 
         // do not check the visibility -- render it
         void Redraw()
         {
             if (currentMenu != null)
-                (menuRenderer as IMenuRender).RenderMenu(this, currentMenu);
+                (menuRenderer as IMenuRender).RenderMenu(currentMenu);
         }
 
         void SetVisibility(bool vis)
@@ -107,7 +109,9 @@ namespace XiKeyboard
             else
                 currentMenu = new MenuPanelRepresentation(Current, menu);
             SetVisibility(true);
-            (menuRenderer as IMenuRender).RenderMenu(this, currentMenu);
+            controllerEvent.eventType = MenuLine.MenuEventType.Open;
+            currentMenu.OnEvent(controllerEvent);
+            (menuRenderer as IMenuRender).RenderMenu(currentMenu);
         }
         /// <summary>
         /// Unwind all menu items to the selected menu
@@ -152,7 +156,7 @@ namespace XiKeyboard
             if (currentMenu != null)
             {
                 SetVisibility(true);
-                (menuRenderer as IMenuRender).RenderMenu(this, currentMenu);
+                (menuRenderer as IMenuRender).RenderMenu(currentMenu);
             }
             else
             {
@@ -180,6 +184,7 @@ namespace XiKeyboard
         // The user typed the keystroke
         void OnSequencePressed(Buffer buffer, DMKeyMapItem item)
         {
+            MenuEvent menuEvent;
             if (item.value is System.Action)
             {
                 (item.value as System.Action).Invoke();
@@ -187,9 +192,9 @@ namespace XiKeyboard
             }
             if (item.value is DMBool)
             {
-                menuEvt = MenuLine.MenuEvent.Right;
-                keyEvent = KeyEvent.None;
-                (item.value as DMBool).OnEvent(this);
+                menuEvent.eventType = MenuLine.MenuEventType.Right;
+                menuEvent.keyEvent = KeyEvent.None;
+                (item.value as DMBool).OnEvent(controllerEvent);
                 Redraw();
             }
             else if (item.value == menuControlEvent)
@@ -202,64 +207,52 @@ namespace XiKeyboard
             else
                 Debug.Log("{" + item.value + "}");  // Print "Pressed Sequence: N" 	
         }
-
-        readonly KeyEvent EventE = KeyEvent.MakeEvent(KeyCode.E, KeyModifiers.None);
-
-        private static int vectorIndex = 0;
-        private MenuLine.MenuEvent menuEvt;
-        private KeyEvent keyEvent;
-
-        public KeyEvent GetKeyEvent() => KeyEvent.None;
-        public MenuLine.MenuEvent GetMenuEvt() => menuEvt;
-        public int GetVectorIndex() => vectorIndex;
-
-        public void OnEvent(KeyEvent evt)
+ 
+        public void OnEvent(KeyEvent keyEvent)
         {
-            keyEvent = evt;
+            MenuEvent menuEvent = new MenuEvent();
+            menuEvent.keyEvent = keyEvent;
 
-            var key = evt.AsKeyCode;
+            var key = keyEvent.AsKeyCode;
             if (key == KeyCode.E)
                 ToggleVisibility();
             if (key == KeyCode.Q)
                 Close();
-            if (key == KeyCode.X)
-                vectorIndex++;
-            if (key == KeyCode.S && key == KeyCode.A)
-                vectorIndex = 0;
+
 
             if (currentMenu != null)
             {
                 var shift = keyEvent.IsModifier(KeyModifiers.Shift);
-                menuEvt = MenuLine.MenuEvent.None;
+                menuEvent.eventType = MenuLine.MenuEventType.None;
 
                 if (isVisible)
                 {
                     if (key == KeyCode.W)
-                        menuEvt = MenuLine.MenuEvent.Up;
+                        menuEvent.eventType = MenuLine.MenuEventType.Up;
                     if (key == KeyCode.S)
-                        menuEvt = MenuLine.MenuEvent.Down;
+                        menuEvent.eventType = MenuLine.MenuEventType.Down;
                     if (key == KeyCode.A)
-                        menuEvt = MenuLine.MenuEvent.Left;
+                        menuEvent.eventType = MenuLine.MenuEventType.Left;
                     if (key == KeyCode.D)
-                        menuEvt = MenuLine.MenuEvent.Right;
+                        menuEvent.eventType = MenuLine.MenuEventType.Right;
                     if (key == KeyCode.R)
-                        menuEvt = MenuLine.MenuEvent.Reset;
+                        menuEvent.eventType = MenuLine.MenuEventType.Reset;
                 }
                 else
                 {
                     if (shift)
                     {
                         if (key == KeyCode.A)
-                            menuEvt = MenuLine.MenuEvent.Left;
+                            menuEvent.eventType = MenuLine.MenuEventType.Left;
                         if (key == KeyCode.D)
-                            menuEvt = MenuLine.MenuEvent.Right;
+                            menuEvent.eventType = MenuLine.MenuEventType.Right;
                         if (key == KeyCode.R)
-                            menuEvt = MenuLine.MenuEvent.Reset;
+                            menuEvent.eventType = MenuLine.MenuEventType.Reset;
                     }
                 }
                 if (currentMenu != null)
                 {
-                    currentMenu.OnEvent(this);
+                    currentMenu.OnEvent(menuEvent);
                     Redraw();
                 }
             }

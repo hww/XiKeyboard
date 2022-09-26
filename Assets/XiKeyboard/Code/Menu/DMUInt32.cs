@@ -5,7 +5,7 @@ using System;
 
 namespace XiKeyboard.Menu
 {
-	public class DMUInt32 : MenuValueLine<UInt32>
+	public class DMUInt32 : TMenuValueLine<UInt32>
 	{
 		#region Public Vars
 
@@ -29,9 +29,9 @@ namespace XiKeyboard.Menu
 
 		protected override string ValueToString(UInt32 value) => value.ToString(Format);
 
-		protected override UInt32 ValueIncrement(UInt32 value, bool isShift) => value + (isShift ? ShiftStep : Step);
+		protected override UInt32 ValueIncrement(UInt32 value, bool isShift, int idx = 0) => value + (isShift ? ShiftStep : Step);
 
-		protected override UInt32 ValueDecrement(UInt32 value, bool isShift) => value - (isShift ? ShiftStep : Step);
+		protected override UInt32 ValueDecrement(UInt32 value, bool isShift, int idx = 0) => value - (isShift ? ShiftStep : Step);
 
 		#endregion
 	}

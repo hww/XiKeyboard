@@ -13,7 +13,7 @@ namespace XiKeyboard.Rendering
 		#region Methods
 
 		// Debug Menu Hooks
-		void RenderMenu(IMenuController controller, MenuPanelRepresentation menu, MenuRenderOptions options = MenuRenderOptions.Default);
+		void RenderMenu(MenuPanelRepresentation menu, MenuRenderOptions options = MenuRenderOptions.Default);
 
 		#endregion
 	}

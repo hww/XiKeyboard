@@ -4,7 +4,7 @@ using System;
 
 namespace XiKeyboard.Menu
 {
-	public class DMEnum<T> : MenuValueLine<T> where T : struct, Enum
+	public class DMEnum<T> : TMenuValueLine<T> where T : struct, Enum
 	{
 		#region Static Private Methods
 
@@ -48,7 +48,7 @@ namespace XiKeyboard.Menu
 
 		#region Protected Methods
 
-		public override void OnEvent(IMenuController controller)
+		public override void OnEvent(XiKeyboard.MenuEvent controller)
 		{
 			base.OnEvent(controller);
 		}
@@ -58,9 +58,9 @@ namespace XiKeyboard.Menu
 			return value.ToString();
 		}
 
-		protected override T ValueIncrement(T value, bool isShift) => NextEnum(value);
+		protected override T ValueIncrement(T value, bool isShift, int idx = 0) => NextEnum(value);
 
-		protected override T ValueDecrement(T value, bool isShift) => PrevEnum(value);
+		protected override T ValueDecrement(T value, bool isShift, int idx = 0) => PrevEnum(value);
 
 		#endregion
 
