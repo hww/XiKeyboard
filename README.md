@@ -1,9 +1,76 @@
-# Keyboard Manager
+# XiKeyboard Manager for Unity 3D
 
-The asset for Unity 3D with keyboard manager similar to Emacs. <sup>Work In Progress</sup> 
+The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](https://github.com/hww)
+
+![](https://img.shields.io/badge/unity-2018.3%20or%20later-green.svg)
+[![⚙ Build and Release](https://github.com/hww/XiKeyboard/actions/workflows/ci.yml/badge.svg)](https://github.com/hww/XiKeyboard/actions/workflows/ci.yml)
+[![openupm](https://img.shields.io/npm/v/com.hww.xikeyboard?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.hww.xikeyboard/)
+[![](https://img.shields.io/github/license/hww/XiKeyboard.svg)](https://github.com/hww/XiKeyboard/blob/master/LICENSE)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
+## Status
+
+<sup>Basic functionality works but still there are things todo</sup> 
+
+- [x] Keyboard and Shortcuts System
+- [x] Simple and complex menu lines
+- [x] The menu separator: space, line, dashed
+- [x] Keystroke binding
+- [x] Menu system: open, close, toggle, submbenu 
+- [x] Basic integer and float types support 
+- [x] Enum and the enum flags support
+- [ ] Vector3 and other vector classes 
+- [ ] Readline buffer
+- [ ] Update the documentation
+- [ ] Multiple menu panels on the screen
+- [ ] Minibuffer renderer
 
 ## Introduction
 
+This package provides a handy API which allows you to easily create handlers for keyboard sequences. For example the sequence <control>+<c> followed by <control>+<x> can be specified by the string "C-c C-x". The main purpose of the package is as a debugging tool for game developers. After all, it is desirable for a game developer to have a dozen or more different functions quickly available -- on the keyboard. For the target platform the library can be used but probably only on a platform with a keyboard. The XiKeyboard is integrated with simple in game debugging menu.
+
+![Example Menu](Documentation/menu-picture-2.png)
+
+## Alternative
+
+This keyboard and menu system has designed for functionality and better keyboard support. It is better to use for complex projects with hundreds of shortcuts.
+
+The other alternative is my simple menu [XiDebugMenu](https://github.com/hww/XiDebugMenu) designed for simplicity and low memory footprint.
+
+If you need more than _XiDebugMenu_ but less than _XiKeyboard_ then consider to use the advanced version [extDebug](https://github.com/Iam1337/extDebug). It has much ballanced number of features and I believe you will have a professional support from autor [Iam1337](https://github.com/Iam1337).
+	
+## Terms
+
+There are sevaral terms you should know before undertand this document
+
+- *Keyboard vs Menu* The big thing is: the keyboard and menu systems are combined in the Emacs
+- *Key modifier* The bitfield with keep the state of special keys: shift, control, alt, etc
+- *Pseudo key* The single bit, modifier which is signaling the virtual key. Used for the menu system
+- *Event* The data container. Holds the keycode and key modifier
+- *Key sequence* Is the sequance of events
+- *Key map* The table which convert the event to the binding -- a delegate or an other key map. The maps organized as three and there is a global map at the top.
+- *Mode* The data containter with name and a key map
+- *Buffer* The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes. 
+	
+Could be created multiple buffers, but only one buffer receiving inputs -- current buffer. The image below has a _buffer2_ as current buffer and _mode1_ as the major mode.
+	
+![Understanding Emacs keyboard](https://raw.githubusercontent.com/hww/XiKeyboard/master/Documentation/XiKeyboard.drawio.png)
+
+## Installing
+
+The package is available on the openupm registry. You can install it via openupm-cli.
+
+```bash
+openupm add com.hww.xikeyboard
+```
+You can also install via git url by adding this entry in your manifest.json
+
+```bash
+"com.hww.xikeyboard": "https://github.com/hww/XiKeyboard.git#upm"
+```
+
+## Usage
+	
 The example below shows how the API can be used to define key sequences. Each key press will print current buffer to log. And in case of two sequences will be printed "Pressed Sequence: N" text (where N is 1 or 2)
 
 ```C#
@@ -15,10 +82,14 @@ void Start ()
 	Buffer.OnKeyPressed.Add(OnKeyPressed);                     // On press key delegate
 }
 void OnSequencePressed(Buffer buffer, KeyMapItem item) {
-	Debug.Log("{" + item.value + "}");	  // Print "Pressed Sequence: N" 	
+	Debug.Log("{" + item.value + "}");	      // Print "Pressed Sequence: N" 	
 }
 void OnKeyPressed(Buffer buffer, Event evt) {
 	Debug.Log(buffer.GetBufferHumanizedString()); // Just display current buffer content		
+}
+void OnGUI()
+{
+        InputManager.OnGUI(); // Execute the input manager will send key press to the XiKeyboard
 }
  ```
 
@@ -39,11 +110,6 @@ abcS-1defS-2S3
 {Pressed: S-2 S-3}
 ```
 
-
-
-## Dependency
-
-This project uses [VARP/Delegates](https://github.com/hww/varp_delegates) library.
 
 ## Key Modifiers
 
@@ -72,7 +138,7 @@ var event = Event.MakeEvent(KeyCode.A, KeyModifyers.Shift);      // Makes S-a ev
 
 To check event's modifiers there is _IsModifyer_ method.
 
-```C#
+```C# 
 event.IsModifyer(event, KeyModifyers.Shift);                     // Return true
 event.IsModifyer(event, KeyModifyers.Control);                   // Return false
 ```
@@ -444,7 +510,7 @@ Will display:
 
 ![menu-picture-1](Documentation/menu-picture-1.png)
 
-But this can be done by shorter way. 
-
-<sup>To Do ...</sup>
+Press C-s will print the text _File Saved_
+	
+But this can be done by shorter way to define menu abowe. <sup>To Do ...</sup>
 
