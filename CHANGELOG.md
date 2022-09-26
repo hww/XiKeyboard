@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/hww/XiKeyboard/compare/v1.0.4...v1.1.0) (2022-09-26)
+
+
+### Features
+
+* **code:** The vector editing works ([902386a](https://github.com/hww/XiKeyboard/commit/902386a55df62e3df18fee131cf618be6adc220e))
+
 ## [1.0.4](https://github.com/hww/XiKeyboard/compare/v1.0.3...v1.0.4) (2022-09-24)
 
 
