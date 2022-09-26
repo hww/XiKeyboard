@@ -8,6 +8,7 @@ The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](
 [![](https://img.shields.io/github/license/hww/XiKeyboard.svg)](https://github.com/hww/XiKeyboard/blob/master/LICENSE)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
+![Page Image](Documentation/page-image.gif)
 ## Status
 
 <sup>Basic functionality works but still there are things todo</sup> 
