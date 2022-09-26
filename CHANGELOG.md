@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/hww/XiKeyboard/compare/v1.1.0...v1.1.1) (2022-09-26)
+
+
+### Bug Fixes
+
+* **code:** Boolean shortcut is fixed ([581f9ce](https://github.com/hww/XiKeyboard/commit/581f9ce5aa0aca8e4ee4c4a98daa4e889949efb0))
+
 # [1.1.0](https://github.com/hww/XiKeyboard/compare/v1.0.4...v1.1.0) (2022-09-26)
 
 
