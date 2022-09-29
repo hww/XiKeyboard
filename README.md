@@ -57,6 +57,7 @@ You can also install via git url by adding this entry in your manifest.json
 
 There are sevaral terms you should know before undertand this document
 
+|---|---|
 | *Keyboard vs Menu* | Main thing: Keyboard and menu systems are closely related in Emacs. |
 | *Key modifier* | The bitfield with keep the state of special keys: shift, control, alt, etc. |
 | *Pseudo key* | A virtual key by special key modifier. Used for the menu system. |
