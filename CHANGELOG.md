@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/hww/XiKeyboard/compare/v1.1.1...v1.1.2) (2022-10-10)
+
+
+### Bug Fixes
+
+* **code:** Update dependencies ([a4b4d90](https://github.com/hww/XiKeyboard/commit/a4b4d90c52ce403c1eb072b0d688ce6de1035d95))
+
 ## [1.1.1](https://github.com/hww/XiKeyboard/compare/v1.1.0...v1.1.1) (2022-09-26)
 
 
