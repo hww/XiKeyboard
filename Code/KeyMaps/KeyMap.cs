@@ -69,15 +69,6 @@ namespace XiKeyboard.KeyMaps
         /// </summary>
         public static readonly KeyMap GlobalKeymap = new KeyMap("global-keymap");
 
-        /// <summary>
-        /// The global menu bar. There can be more than one if you need.
-        /// </summary>
-        public static KeyMap MenuBar;
-
-        static KeyMap()
-        {
-            MenuBar = GlobalKeymap.CreateMenu("menu-bar", "Menu Bar", "Global menu bar");
-        }
 
         public string title;                  //< title of keymap
         public string help;                   //< help for this item (used for menu only)
@@ -85,7 +76,8 @@ namespace XiKeyboard.KeyMaps
         public List<DMKeyMapItem> items;      //< key map items
         // This binding can be returned when the requested key binding is not found
         public DMKeyMapItem defaultBinding;   //< default binding or null. 
-        
+        public bool isMenu;
+
         /// <summary>
         /// Get title name of this keymap
         /// </summary>
@@ -290,38 +282,7 @@ namespace XiKeyboard.KeyMaps
             }
             throw new Exception("We can\'t be here");
         }
-        // ===============================================================================================
-        // Define menu map
-        // ===============================================================================================
-        
-        /// <summary>Define list of key-strings. This way used for defining menu</summary>
-        public KeyMap CreateMenu(string path, string title, string help)
-        {
-            var menu = new KeyMap(title, help );
-            var sequence = path.Split('/');
-            var newSequence = KBD.ParsePseudo(sequence);
-            Define(newSequence, menu);
-            return menu;
-        }
-        
-        /// <summary>Define by string expression with '/' separator</summary>
-        public MenuLine DefineMenuLine(string path, MenuLine line)
-        {
-            var sequence = path.Split('/');
-            var newSequence = KBD.ParsePseudo(sequence);
-            Define(newSequence, line);
-            if (line.Shorcut!=null)
-                GlobalKeymap.SetLocal(line.Shorcut, line);
-            return line;
-        }
 
-        /// <summary>Define by string expression</summary>
-        public MenuLine AddMenuLine(string name, MenuLine line)
-        {
-            var code = KeyEvent.GetPseudoCode(name);
-            SetLocal(code, line);
-            return line;
-        }
     }
     /// <summary>
     /// If an element of a keymap is a char-table, it counts as holding bindings for all
@@ -403,4 +364,68 @@ namespace XiKeyboard.KeyMaps
             return acceptDefaults ? defaultBinding : null;
         }
     }
+
+    public class MenuMap : KeyMap
+    {   
+        /// <summary>
+        /// The global menu bar. There can be more than one if you need.
+        /// </summary>
+        public static MenuMap MenuBar;
+
+        static MenuMap()
+        {
+            MenuBar = new MenuMap("Menu Bar", "The global menu bar");
+            string[] name = { "menu-bar" };
+            var newSequence = KBD.ParsePseudo(name);
+            KeyMap.GlobalKeymap.Define(newSequence, MenuBar);
+        }
+
+        /// <summary>
+        /// Create emty keymap
+        /// </summary>
+        public MenuMap(string title = null, string help = null) : base(title, help)
+        {
+        }
+        /// <summary>
+        /// Create empty keymap based on parent keymap
+        /// </summary>
+        public MenuMap(KeyMap parent, string title = null, string help = null) : base(parent, title, help)
+        {
+        }
+
+
+        // ===============================================================================================
+        // Define menu map
+        // ===============================================================================================
+
+        /// <summary>Define list of key-strings. This way used for defining menu</summary>
+        public MenuMap CreateMenu(string path, string title, string help)
+        {
+            var menu = new MenuMap(title, help);
+            var sequence = path.Split('/');
+            var newSequence = KBD.ParsePseudo(sequence);
+            GlobalKeymap.Define(newSequence, menu);
+            return menu;
+        }
+
+        /// <summary>Define by string expression with '/' separator</summary>
+        public MenuLine DefineMenuLine(string path, MenuLine line)
+        {
+            var sequence = path.Split('/');
+            var newSequence = KBD.ParsePseudo(sequence);
+            Define(newSequence, line);
+            if (line.Shorcut != null)
+                GlobalKeymap.SetLocal(line.Shorcut, line);
+            return line;
+        }
+
+        /// <summary>Define by string expression</summary>
+        public MenuLine AddMenuLine(string name, MenuLine line)
+        {
+            var code = KeyEvent.GetPseudoCode(name);
+            SetLocal(code, line);
+            return line;
+        }
+    }
+
 }

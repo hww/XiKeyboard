@@ -142,6 +142,15 @@ namespace XiKeyboard.Buffers
                 OnKeyPressed.Call(this, evt);
                 return true;
             }
+            if (result.value is KeyMap)
+            {
+                // The keymap is found. There can be two ptions
+                // 1. The kystroke is not finished. For example
+                //    was typed C-x from the sequense C-x C-f
+                // 2. The menu list found
+                OnSequenceProgress.Call(this, result);
+                return true;
+            }
             if (result.IsPseudo)
             {
                 // no reason to continue
@@ -153,6 +162,12 @@ namespace XiKeyboard.Buffers
             OnSequencePressed.Call(this, result);
             return true;
         }
+
+        public void Clear()
+        {
+            textBuffer.Clear();
+        }
+
         // when buffer is enabling this method will be called
         private void OnEnable()
         {
@@ -191,6 +206,8 @@ namespace XiKeyboard.Buffers
         public readonly FastAction<Buffer> onDisableListeners = new FastAction<Buffer>();
         /// <summary>When some key sequence found</summary>
         public static readonly FastAction<Buffer,DMKeyMapItem> OnSequencePressed = new FastAction<Buffer, DMKeyMapItem>();
+        /// <summary>When some key sequence found</summary>
+        public static readonly FastAction<Buffer, DMKeyMapItem> OnSequenceProgress = new FastAction<Buffer, DMKeyMapItem>();
         /// <summary>When keymap found</summary>
         public static readonly FastAction<Buffer,DMKeyMapItem> OnPseudoPressed = new FastAction<Buffer, DMKeyMapItem>();
         /// <summary>When key pressed</summary>
