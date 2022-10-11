@@ -18,6 +18,8 @@ namespace XiKeyboard
 		/// </summary>
 		public static KeyMap GlobalKeymap => KeyMap.GlobalKeymap;
 
+		public static KeyMap MenuBar => KeyMap.MenuBar;
+
 		static readonly MenuController controller = new MenuController();
 
 		#region Static Public Vars
@@ -38,7 +40,7 @@ namespace XiKeyboard
 
 		public static void Open() => controller.Open();
 
-		public static void Open(KeyMap branch) => controller.Open(branch);
+		public static void Open(KeyMap menu) => controller.Open(menu);
 
 		public static void Close() => controller.Close();
 
@@ -53,13 +55,12 @@ namespace XiKeyboard
 			return (idx >= 0) ? path.Substring(0, idx) : null;
 		}
 
-		// Branch
+		public static KeyMap CreateKeymap(string title, string help) =>
+			new KeyMap(title, help);
+
 		public static KeyMap CreateMenu(string path, string title, string help) =>
 			KeyMap.GlobalKeymap.CreateMenu(path, title, help);
 
-		// Action
-		//public static DMAction Add(string path, Action<MenuEventType> action, string description = "", int order = 0) =>
-		//	Container.Add(path, action, description, order);
 
 		public static DMString Add(string path, Func<string> getter, string shortcut = null, string help = null)
 		{

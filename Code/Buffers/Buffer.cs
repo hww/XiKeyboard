@@ -142,11 +142,6 @@ namespace XiKeyboard.Buffers
                 OnKeyPressed.Call(this, evt);
                 return true;
             }
-            if (result.value is KeyMap)
-            {
-                OnKeyPressed.Call(this, evt);
-                return true;
-            }
             if (result.IsPseudo)
             {
                 // no reason to continue

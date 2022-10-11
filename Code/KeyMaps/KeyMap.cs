@@ -69,6 +69,16 @@ namespace XiKeyboard.KeyMaps
         /// </summary>
         public static readonly KeyMap GlobalKeymap = new KeyMap("global-keymap");
 
+        /// <summary>
+        /// The global menu bar. There can be more than one if you need.
+        /// </summary>
+        public static KeyMap MenuBar;
+
+        static KeyMap()
+        {
+            MenuBar = GlobalKeymap.CreateMenu("menu-bar", "Menu Bar", "Global menu bar");
+        }
+
         public string title;                  //< title of keymap
         public string help;                   //< help for this item (used for menu only)
         public KeyMap parent;                 //< parent key map
@@ -171,9 +181,9 @@ namespace XiKeyboard.KeyMaps
                 if ( items[ i ].Compare ( evt ) )
                     return i;
             }
-
             return -1;
         }
+
         // ===============================================================================================
         // Lockup the key binding recursively
         // ===============================================================================================
@@ -283,6 +293,7 @@ namespace XiKeyboard.KeyMaps
         // ===============================================================================================
         // Define menu map
         // ===============================================================================================
+        
         /// <summary>Define list of key-strings. This way used for defining menu</summary>
         public KeyMap CreateMenu(string path, string title, string help)
         {
@@ -303,7 +314,7 @@ namespace XiKeyboard.KeyMaps
                 GlobalKeymap.SetLocal(line.Shorcut, line);
             return line;
         }
-        
+
         /// <summary>Define by string expression</summary>
         public MenuLine AddMenuLine(string name, MenuLine line)
         {

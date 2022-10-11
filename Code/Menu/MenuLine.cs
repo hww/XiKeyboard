@@ -88,7 +88,7 @@ namespace XiKeyboard.Menu
         public override void OnEvent(MenuEvent menuEvent)
         {
             var evt = menuEvent.eventType;
-            if (evt == MenuEventType.Right && binding is System.Action)
+            if (evt == MenuLine.MenuEventType.Increment && binding is System.Action)
                 (binding as System.Action).Invoke();
         }
 
