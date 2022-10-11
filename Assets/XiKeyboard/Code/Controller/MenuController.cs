@@ -28,7 +28,8 @@ namespace XiKeyboard
         public MenuController()
         {
             menuRenderer = new MenuRender();
-            menuMap = new KeyMap("menu-map", "The menu key map");
+            menuMap = KeyMap.MenuBar;
+            //menuMap = new KeyMap("menu-map", "The menu key map");
             menuMode = new Mode("menu-mode", "The menu main mode", menuMap);
             menuBuffer = new Buffer("menu-buffer", "The menu input buffer");
             menuBuffer.EnabeMajorMode(menuMode);
@@ -62,7 +63,7 @@ namespace XiKeyboard
         public void Open(KeyMap menu = null)
         {
             if (menu == null)
-                menu = KeyMap.GlobalKeymap;
+                menu = KeyMap.MenuBar;
 
             if (ContainsMenu(menu))
                 CloseAllMenusUpTo(menu);
@@ -182,7 +183,7 @@ namespace XiKeyboard
         void SetVisibility(bool vis)
         {
             if (vis && currentMenu == null)
-                currentMenu = new MenuPanelRepresentation(null, DM.GlobalKeymap);
+                currentMenu = new MenuPanelRepresentation(null, DM.MenuBar);
             isVisible = vis;
             menuBuffer.SetActive(isVisible);
         }
@@ -243,8 +244,14 @@ namespace XiKeyboard
 
         void OnPseudoPressed(Buffer buffer, DMKeyMapItem item)
         {
-            Debug.Log("{menu:" + item.value + "}");
-            // (this as IMenuRender).RenderMenu(item.value as KeyMap, 0);
+            if (item.value is KeyMap)
+            {
+                Open(item.value as KeyMap);
+            }
+            else
+            {
+                Debug.Log("{menu:" + item.value + "}");
+            }
         }
 
         // The user typed the keystroke
