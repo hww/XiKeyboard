@@ -13,14 +13,15 @@ namespace XiKeyboard.Examples.Menu
 	{
 		public delegate void Method();
 
-		private const string kHelpText = "USAGE\n"
-                                       + "SHIFT+F  Open file menu\n"
-                                       + "SHIFT+S  Save\n"
-                                       + "A,S,D,W  Cursors\n"
-                                       + "Q        Quit menu\n"
-                                       + "E        Tollge menu\n"
-                                       + "R        Reset value\n"
-			                           + "--------------------\n";
+		private const string kHelpText = "Menu navigation\n"
+                                       + "  A,S,D,W  Cursors\n"
+                                       + "  Q        Quit menu\n"
+                                       + "  E        Tollge menu\n"
+                                       + "  R        Reset value\n"
+									   + "Demo file methods\n"
+									   + "  SHIFT+F  Open file menu\n"
+									   + "  SHIFT+S  Save\n"
+									   + "--------------------\n";
 
 		private string miniBuffer = "";
 
@@ -91,15 +92,6 @@ namespace XiKeyboard.Examples.Menu
 		IEnumerator UpdateMiniBuffer()
 		{
 			yield return new WaitForSeconds(3f);
-			//if (theBuffer != null)
-			//{
-			//	theBuffer.Clear();
-			//	miniBuffer = theBuffer.GetBufferHumanizedString();
-			//}
-			//else
-			//{
-			//	miniBuffer = string.Empty;
-			//}
 		}
 
 		void OnGUI()
