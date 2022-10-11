@@ -98,6 +98,26 @@ namespace XiKeyboard.Examples.Menu
 		#endregion
 
 		#region Unity Methods
+		private const string kHelpText = "Menu navigation\n"
+									   + "  A,S,D,W  Cursors\n"
+									   + "  Q        Quit menu\n"
+									   + "  E        Tollge menu\n"
+									   + "  R        Reset value\n"
+									   + "Demo file methods\n"
+									   + "  SHIFT+f  Open simple menu\n"
+									   + "  SHIFT+g  Open submmenu\n"
+									   + "  SHIFT+b  Change boolean value\n"
+									   + "--------------------\n";
+
+		private string miniBuffer = "";
+
+		private GUISkin skin;
+
+		void Awake()
+		{
+			skin = Resources.Load<GUISkin>("XiKeyboard/Skins/Default Skin");
+			skin.box.normal.background = MakeTex(2, 2, new Color(0f, 0f, 0f, 0.7f));
+		}
 
 		private void OnEnable()
 		{
@@ -105,8 +125,6 @@ namespace XiKeyboard.Examples.Menu
 			var simpleMenu = MenuMap.MenuBar.CreateMenu("menu-bar/simple", "Simple Menu", "Help for simpe menu");
 			
 			var subMenu = MenuMap.MenuBar.CreateMenu("menu-bar/simple/sub", "Sub Menu", "Help for sub menu menu");
-
-			//DM.Add("Simple Menus/Action", action => Debug.Log("Hello, Action!"), "Simple Action");
 
 			DM.Add("simple/String", () => _string);
 			DM.Add("simple/UInt8", () => _uint8, v => _uint8 = v);
@@ -123,7 +141,7 @@ namespace XiKeyboard.Examples.Menu
 			simpleMenu.AddMenuLine("-6", new MenuSeparator(MenuSeparator.Type.SingleLine));
 			DM.Add("simple/Enum", () => _enum, v => _enum = v);
 			simpleMenu.AddMenuLine("-6", new MenuSeparator(MenuSeparator.Type.DashedLine));
-			DM.Add("simple/Bool", () => _bool, v => _bool = v, "S-f");
+			DM.Add("simple/Bool", () => _bool, v => _bool = v, "S-b");
 			simpleMenu.AddMenuLine("-7", new MenuSeparator(MenuSeparator.Type.SingleLine));
 			DM.Add("simple/Vector 2", () => _vector2, v => _vector2 = v).SetPrecision(2);
 			DM.Add("simple/Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2);
@@ -133,19 +151,57 @@ namespace XiKeyboard.Examples.Menu
 			DM.Add("simple/Vector 2 Int", () => _vector2Int, v => _vector2Int = v);
 			DM.Add("simple/Vector 3 Int", () => _vector3Int, v => _vector3Int = v);
 
-			//DM.Add("simple/Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2);
-			DM.Open(simpleMenu);
+			DM.Add("simple/sub/String", () => _string);
+
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			// All abow is creating the menu tree but did not define a 
+			// shortcuts in the global kay bindings.
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			// To make S+F to open file menu
+			KeyMap.GlobalKeymap.SetLocal("S-f", simpleMenu);
+			KeyMap.GlobalKeymap.SetLocal("S-g", subMenu);
+
+			// To display menu uncomment it 
+			// DM.Open(simpleMenu);
 		}
 		private void Update()
 		{
 			DM.Update();
 		}
 
-		private void OnGUI()
-        {
-			DM.OnGUI();
-        }
+		void OnGUI()
+		{
+			GUI.skin = skin;
+			var menuText = kHelpText + "> " + miniBuffer;
 
-        #endregion
-    }
+			var textSize = GUI.skin.label.CalcSize(new GUIContent(menuText)) + new Vector2(10, 10);
+			var position = new Vector2(500, 20);
+			var rect = new Rect(position, textSize);
+
+			GUI.Box(rect, GUIContent.none, GUI.skin.box);
+
+			rect.x += 5f;
+			rect.width -= 5f * 2f;
+			rect.y += 5f;
+			rect.height -= 5f * 2f;
+
+			GUI.Label(rect, menuText);
+
+			DM.OnGUI();
+		}
+
+		private Texture2D MakeTex(int width, int height, Color col)
+		{
+			Color[] pix = new Color[width * height];
+			for (int i = 0; i < pix.Length; ++i)
+			{
+				pix[i] = col;
+			}
+			Texture2D result = new Texture2D(width, height);
+			result.SetPixels(pix);
+			result.Apply();
+			return result;
+		}
+		#endregion
+	}
 }

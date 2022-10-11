@@ -93,6 +93,10 @@ namespace XiKeyboard.KeyMaps
         /// </summary>
         public int Count => items.Count;
 
+        public override string ToString()
+        {
+            return $"KeyMap Title={Title} Count={Count}";
+        }
         /// <summary>
         /// Get key binding with this index
         /// </summary>
@@ -425,6 +429,11 @@ namespace XiKeyboard.KeyMaps
             var code = KeyEvent.GetPseudoCode(name);
             SetLocal(code, line);
             return line;
+        }
+
+        public override string ToString()
+        {
+            return $"MenuMap Title={Title} Count={Count}";
         }
     }
 

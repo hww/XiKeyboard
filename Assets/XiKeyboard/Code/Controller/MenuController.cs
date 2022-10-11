@@ -201,7 +201,10 @@ namespace XiKeyboard
                 while (current != null)
                 {
                     if (current.keyMap == menu)
+                    {
+                        currentMenu = current;
                         return;
+                    }
                     var parent = current.parent;
                     current.parent = null;
                     current = parent;
@@ -246,10 +249,12 @@ namespace XiKeyboard
 
         void OnSequenceProgress(Buffer buffer, DMKeyMapItem item)
         {
+            // Ignore keymaps but open the menu map
             if (item.value is MenuMap)
             {
-                Open(item.value as MenuMap); 
                 buffer.Clear();
+                Open(item.value as MenuMap);
+                Redraw();
             }
         }
 
@@ -257,7 +262,9 @@ namespace XiKeyboard
         {
             if (item.value is KeyMap)
             {
+                buffer.Clear();
                 Open(item.value as KeyMap);
+                Redraw();
             }
             else
             {
