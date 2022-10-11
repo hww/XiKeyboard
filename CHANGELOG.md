@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/hww/XiKeyboard/compare/v1.1.2...v1.1.3) (2022-10-11)
+
+
+### Bug Fixes
+
+* **code:** Emacs style demo is improved ([bfd4d22](https://github.com/hww/XiKeyboard/commit/bfd4d220003caa9c220e215c004eca0ffb4ca422))
+
 ## [1.1.2](https://github.com/hww/XiKeyboard/compare/v1.1.1...v1.1.2) (2022-10-10)
 
 
