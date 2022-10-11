@@ -28,7 +28,7 @@ namespace XiKeyboard
         public MenuController()
         {
             menuRenderer = new MenuRender();
-            menuMap = KeyMap.MenuBar;
+            menuMap = MenuMap.MenuBar;
             //menuMap = new KeyMap("menu-map", "The menu key map");
             menuMode = new Mode("menu-mode", "The menu main mode", menuMap);
             menuBuffer = new Buffer("menu-buffer", "The menu input buffer");
@@ -48,6 +48,7 @@ namespace XiKeyboard
             menuMap.SetLocal("S-a", menuControlEvent);
 
             Buffer.OnSequencePressed.Add(OnSequencePressed);  // On press sequence delegate
+            Buffer.OnSequenceProgress.Add(OnSequenceProgress);// On press part of sequence delegate
             Buffer.OnKeyPressed.Add(OnKeyPressed);            // On press key delegate
             Buffer.OnPseudoPressed.Add(OnPseudoPressed);      // On keymap was selected
         }
@@ -63,7 +64,7 @@ namespace XiKeyboard
         public void Open(KeyMap menu = null)
         {
             if (menu == null)
-                menu = KeyMap.MenuBar;
+                menu = MenuMap.MenuBar;
 
             if (ContainsMenu(menu))
                 CloseAllMenusUpTo(menu);
@@ -167,6 +168,7 @@ namespace XiKeyboard
             menuMode = null;
             currentMenu = null;
             Buffer.OnSequencePressed.Remove(OnSequencePressed);  // On press sequence delegate
+            Buffer.OnSequenceProgress.Remove(OnSequenceProgress);// On press part of sequence delegate
             Buffer.OnKeyPressed.Remove(OnKeyPressed);            // On press key delegate
             Buffer.OnPseudoPressed.Remove(OnPseudoPressed);      // On keymap was selecte
         }
@@ -236,10 +238,19 @@ namespace XiKeyboard
                 Redraw();
             }
         }
-
         void OnKeyPressed(Buffer buffer, KeyEvent evt)
         {
             Debug.Log(buffer.GetBufferHumanizedString());   // Just display current buffer content		
+            buffer.Clear();
+        }
+
+        void OnSequenceProgress(Buffer buffer, DMKeyMapItem item)
+        {
+            if (item.value is MenuMap)
+            {
+                Open(item.value as MenuMap); 
+                buffer.Clear();
+            }
         }
 
         void OnPseudoPressed(Buffer buffer, DMKeyMapItem item)
@@ -263,7 +274,7 @@ namespace XiKeyboard
                 (item.value as System.Action).Invoke();
                 Redraw();
             }
-            if (item.value is DMBool)
+            else if (item.value is DMBool)
             {
                 menuEvent.eventType = MenuLine.MenuEventType.Increment;
                 menuEvent.keyEvent = KeyEvent.None;

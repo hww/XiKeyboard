@@ -4,6 +4,7 @@ using XiKeyboard;
 using UnityEngine;
 using XiKeyboard.KeyMaps;
 using XiKeyboard.Menu;
+using System.Collections;
 
 namespace XiKeyboard.Examples.Menu
 {
@@ -12,15 +13,24 @@ namespace XiKeyboard.Examples.Menu
 	{
 		public delegate void Method();
 
-		private string helpText = "USAGE\n"
-			+ "SHIFT+F -- Open file menu\n"
-			+ "SHIFT+S -- Save\n"
-			+ "A,S,D,W -- Cursors\n"
-			+ "Q       -- Quit menu\n"
-			+ "E       -- Tollge menu\n"
-			+ "R       -- Reset value\n";
+		private const string kHelpText = "USAGE\n"
+                                       + "SHIFT+F  Open file menu\n"
+                                       + "SHIFT+S  Save\n"
+                                       + "A,S,D,W  Cursors\n"
+                                       + "Q        Quit menu\n"
+                                       + "E        Tollge menu\n"
+                                       + "R        Reset value\n"
+			                           + "--------------------\n";
 
-		private string guiText = "";
+		private string miniBuffer = "";
+
+		private GUISkin skin;
+
+		void Awake()
+		{
+			skin = Resources.Load<GUISkin>("XiKeyboard/Skins/Default Skin");
+			skin.box.normal.background = MakeTex(2, 2, new Color(0f, 0f, 0f, 0.7f));
+		}
 
 		// Use this for initialization the menu system
 		private void Start()
@@ -34,7 +44,7 @@ namespace XiKeyboard.Examples.Menu
 			//   KeyMap.MenuBar.CreateMenu ("file", "File", "Help text");
 			// The other way is to do it from global menu with full
 			// path "menu-bar/file" (see below)
-			var fileMenu = KeyMap.GlobalKeymap.CreateMenu("menu-bar/file", "File", "Help text");
+			var fileMenu = MenuMap.MenuBar.CreateMenu("menu-bar/file", "File", "Help text");
 			
 			// Create save menu item (shortcut will be only displayed and can be omitted)
 			// The method Save of this class will be bind to this menu item
@@ -77,28 +87,74 @@ namespace XiKeyboard.Examples.Menu
 			DM.Update();
 		}
 
+
+		IEnumerator UpdateMiniBuffer()
+		{
+			yield return new WaitForSeconds(3f);
+			//if (theBuffer != null)
+			//{
+			//	theBuffer.Clear();
+			//	miniBuffer = theBuffer.GetBufferHumanizedString();
+			//}
+			//else
+			//{
+			//	miniBuffer = string.Empty;
+			//}
+		}
+
 		void OnGUI()
 		{
-			Rect rect1 = new Rect(500, 10, 500, 200);
-			GUI.Box (rect1, guiText);
-			Rect rect2 = new Rect(500, 220, 500, 200);
-			GUI.Box (rect2, helpText);
+			GUI.skin = skin;
+			var menuText = kHelpText + "> " + miniBuffer;
+
+			var textSize = GUI.skin.label.CalcSize(new GUIContent(menuText)) + new Vector2(10, 10);
+			var position = new Vector2(500, 20);
+			var rect = new Rect(position, textSize);
+
+			GUI.Box(rect, GUIContent.none, GUI.skin.box);
+
+			rect.x += 5f;
+			rect.width -= 5f * 2f;
+			rect.y += 5f;
+			rect.height -= 5f * 2f;
+
+			GUI.Label(rect, menuText);
+
 			DM.OnGUI();
+		}
+
+		private Texture2D MakeTex(int width, int height, Color col)
+		{
+			Color[] pix = new Color[width * height];
+			for (int i = 0; i < pix.Length; ++i)
+			{
+				pix[i] = col;
+			}
+			Texture2D result = new Texture2D(width, height);
+			result.SetPixels(pix);
+			result.Apply();
+			return result;
 		}
 
 		void Save()
 		{
-			guiText = "File Saved\n";
+			miniBuffer = "File Saved\n";
+			StopAllCoroutines();
+			StartCoroutine(UpdateMiniBuffer());
 		}
 
 		void SaveAs()
 		{
-			guiText = "File Saved As\n";
+			miniBuffer = "File Saved As\n";
+			StopAllCoroutines();
+			StartCoroutine(UpdateMiniBuffer());
 		}
 
 		void Export()
 		{
-			guiText = "File Exported\n";
+			miniBuffer = "File Exported\n";
+			StopAllCoroutines();
+			StartCoroutine(UpdateMiniBuffer());
 		}
 
 	}

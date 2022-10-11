@@ -102,9 +102,9 @@ namespace XiKeyboard.Examples.Menu
 		private void OnEnable()
 		{
 			// Simple Menus
-			var simpleMenu = KeyMap.GlobalKeymap.CreateMenu("simple", "Simple Menu", "Help for simpe menu");
+			var simpleMenu = MenuMap.MenuBar.CreateMenu("menu-bar/simple", "Simple Menu", "Help for simpe menu");
 			
-			var subMenu = KeyMap.GlobalKeymap.CreateMenu("simple/sub", "Sub Menu", "Help for sub menu menu");
+			var subMenu = MenuMap.MenuBar.CreateMenu("menu-bar/simple/sub", "Sub Menu", "Help for sub menu menu");
 
 			//DM.Add("Simple Menus/Action", action => Debug.Log("Hello, Action!"), "Simple Action");
 
