@@ -1,3 +1,10 @@
+## [1.1.6](https://github.com/hww/XiKeyboard/compare/v1.1.5...v1.1.6) (2022-10-12)
+
+
+### Bug Fixes
+
+* **code:** Better API in the DM class ([3227f41](https://github.com/hww/XiKeyboard/commit/3227f410284e329cbb028ef6962f400d2dafb731))
+
 ## [1.1.5](https://github.com/hww/XiKeyboard/compare/v1.1.4...v1.1.5) (2022-10-11)
 
 
