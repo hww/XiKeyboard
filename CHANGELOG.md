@@ -1,3 +1,10 @@
+## [1.1.7](https://github.com/hww/XiKeyboard/compare/v1.1.6...v1.1.7) (2022-10-12)
+
+
+### Bug Fixes
+
+* **code:** added console class to make the readline in future ([05915fa](https://github.com/hww/XiKeyboard/commit/05915fa7104c8ef9d9cb517a8ff6c0ab3efe8abc))
+
 ## [1.1.6](https://github.com/hww/XiKeyboard/compare/v1.1.5...v1.1.6) (2022-10-12)
 
 
