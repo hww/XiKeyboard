@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace XiKeyboard.KeyMaps
@@ -14,7 +15,7 @@ namespace XiKeyboard.KeyMaps
         public static implicit operator KeyEvent(int code) { return new KeyEvent(code); }
         public static implicit operator KeyEvent(KeyCode code) { return new KeyEvent((int)code); }
         public static implicit operator KeyEvent(string expression){ return ParseExpression(expression); }
-        
+
         /// <summary>Check if code is valid</summary>
         public bool IsValid => code>= 0 && code < KeyModifiers.MaxCode;
 
@@ -168,6 +169,47 @@ namespace XiKeyboard.KeyMaps
             if (NameToKeyCodeTable.TryGetValue(name, out code))
                 return code;
             throw new Exception($"Expected key code name, found '{name}'");
+        }
+        // ===============================================================================================
+        // EMACS keycode sequence parser
+        // For converting from expression like: "C-x C-v" to convert to the KeyEvent[]
+        // ===============================================================================================
+        /// <summary>
+        /// Supports multiple or single tokens
+        /// When multiple tokens each one separated with ' ' space
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static KeyEvent[] ParseSequence([NotNull] string expression)
+        {
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
+            if (expression == string.Empty) throw new ArgumentException(nameof(expression));
+
+            var sequence = new List<KeyEvent>();
+            var tags = expression.Split(' ');
+
+            foreach (var s in tags)
+            {
+                if (string.IsNullOrEmpty(s))
+                    continue;
+
+                var evt = KeyEvent.ParseExpression(s);
+
+                if (evt >= 0)
+                {
+                    sequence.Add(evt);
+                }
+                else
+                {
+                    // This case will be translated as string
+                    // "abcd" => "abcd"
+                    foreach (var c in s)
+                    {
+                        sequence.Add(c);
+                    }
+                }
+            }
+            return sequence.ToArray();
         }
         // ===============================================================================================
         // EMACS keycode expressions parser

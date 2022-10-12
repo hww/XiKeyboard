@@ -18,7 +18,7 @@ namespace XiKeyboard
     }
 
     /// <summary>
-    /// The menu manager controller
+    /// The menu manager Controller
     /// Initialize the menu system and input stream
     /// then control the visibitily of menu
     /// </summary>
@@ -143,6 +143,8 @@ namespace XiKeyboard
                 }
             }
         }
+
+        public Buffer Buffer => menuBuffer;
 
         #endregion
 
