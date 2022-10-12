@@ -5,6 +5,7 @@ using UnityEngine;
 using XiKeyboard.KeyMaps;
 using XiKeyboard.Menu;
 using System.Collections;
+using XiKeyboard.Buffers;
 
 namespace XiKeyboard.Examples.Menu
 {
@@ -42,10 +43,10 @@ namespace XiKeyboard.Examples.Menu
 
 			// Define menu as member of MenuBar
 			// One way is to define menu from the MenuBar (see below)
-			//   KeyMap.MenuBar.CreateMenu ("file", "File", "Help text");
+			//   KeyMap.MenuBar.EasyCreateMenu ("file", "File", "Help text");
 			// The other way is to do it from global menu with full
 			// path "menu-bar/file" (see below)
-			var fileMenu = MenuMap.MenuBar.CreateMenu("menu-bar/file", "File", "Help text");
+			var fileMenu = MenuMap.MenuBar.EasyCreateMenu("menu-bar/file", "File", "Help text");
 			
 			// Create save menu item (shortcut will be only displayed and can be omitted)
 			// The method Save of this class will be bind to this menu item
@@ -55,11 +56,11 @@ namespace XiKeyboard.Examples.Menu
 			fileMenu.AddMenuLine("save", menuItem1);
 			
 			// Save As menu line
-			var menuItem2 = new MenuLineSimple("Save As", (System.Action)SaveAs, null, "Save current file as *");
+			var menuItem2 = new MenuLineSimple("Save As", (System.Action)SaveAs, "S-x S-s", "Save current file as *");
 			fileMenu.AddMenuLine("save-as", menuItem2);
 			
 			// Export menu line
-			var menuItem3 = new MenuLineSimple("Export", (System.Action)Export, null, "Export current file as *");
+			var menuItem3 = new MenuLineSimple("Export", (System.Action)Export, "S-x S-e", "Export current file as *");
 			fileMenu.AddMenuLine("export", menuItem3);
 
 			// Line separators
@@ -77,11 +78,31 @@ namespace XiKeyboard.Examples.Menu
 
 			// Tomake S+S as the save shortcut 
 			KeyMap.GlobalKeymap.SetLocal(menuItem1.Shorcut, menuItem1.binding);
+			KeyMap.GlobalKeymap.Define(menuItem2.Shorcut, menuItem2.binding);
+			KeyMap.GlobalKeymap.Define(menuItem3.Shorcut, menuItem3.binding);
+
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			// Just to display the message 
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+			Buffer.OnSequenceProgress.Add(OnSequencePressed);// On press part of sequence delegate
+			Buffer.OnKeyPressed.Add(OnKeyPressed);            // On press key delegate
 
 			// To open menu uncomment next line
 			// DM.Open(KeyMap.MenuBar);
 		}
-
+		void OnSequencePressed(Buffer buffer, DMKeyMapItem item)
+        {
+			miniBuffer = buffer.GetBufferHumanizedString();
+			StopAllCoroutines();
+			StartCoroutine(UpdateMiniBuffer());
+		}
+		void OnKeyPressed(Buffer buffer, KeyEvent item)
+		{
+			miniBuffer = buffer.GetBufferHumanizedString();
+			StopAllCoroutines();
+			StartCoroutine(UpdateMiniBuffer());
+		}
 
 		void Update()
 		{

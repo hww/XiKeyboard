@@ -232,7 +232,7 @@ namespace XiKeyboard.KeyMaps
         /// <summary>Define by string expression</summary>
         public bool Define(string sequence, object value)
         {
-            var newSequence = KBD.ParseSequence(sequence);
+            var newSequence = KeyEvent.ParseSequence(sequence);
             return Define(newSequence, value);
         }
         /// <summary>Define sequence with given binding</summary>
@@ -393,7 +393,7 @@ namespace XiKeyboard.KeyMaps
         /// <summary>
         /// Create empty keymap based on parent keymap
         /// </summary>
-        public MenuMap(KeyMap parent, string title = null, string help = null) : base(parent, title, help)
+        public MenuMap(MenuMap parent, string title = null, string help = null) : base(parent, title, help)
         {
         }
 
@@ -403,7 +403,7 @@ namespace XiKeyboard.KeyMaps
         // ===============================================================================================
 
         /// <summary>Define list of key-strings. This way used for defining menu</summary>
-        public MenuMap CreateMenu(string path, string title, string help)
+        public MenuMap EasyCreateMenu(string path, string title, string help)
         {
             var menu = new MenuMap(title, help);
             var sequence = path.Split('/');

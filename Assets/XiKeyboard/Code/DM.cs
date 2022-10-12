@@ -17,17 +17,21 @@ namespace XiKeyboard
 		/// The global keymap. It is represent top level of keymaps
 		/// </summary>
 		public static KeyMap GlobalKeymap => KeyMap.GlobalKeymap;
-
+		/// <summary>
+		/// The main menu map tree
+		/// </summary>
 		public static MenuMap MenuBar => MenuMap.MenuBar;
-
-		static readonly MenuController controller = new MenuController();
+		/// <summary>
+		/// Default menu map Controller
+		/// </summary>
+		static readonly MenuController Controller = new MenuController();
 
 		#region Static Public Vars
 
-		public static KeyMap Global => KeyMap.GlobalKeymap;
-		public static MenuPanelRepresentation Current => controller.Current;
-
-		public static bool IsVisible => controller.IsVisible;
+		/// <summary>
+		/// Is menu visible or not 
+		/// </summary>
+		public static bool IsVisible => Controller.IsVisible;
 
 		#endregion
 
@@ -38,40 +42,62 @@ namespace XiKeyboard
 
 		}
 
-		public static void Open() => controller.Open();
-
-		public static void Open(KeyMap menu) => controller.Open(menu);
-
-		public static void Close() => controller.Close();
-
-		private static string GetName(string path)
+		/// <summary>
+		/// Open default menu
+		/// </summary>
+		public static void Open() => Controller.Open();
+		/// <summary>
+		/// Open the menu map
+		/// </summary>
+		/// <param name="menu"></param>
+		public static void Open(KeyMap menu) => Controller.Open(menu);
+		/// <summary>
+		/// Close current mmenu
+		/// </summary>
+		public static void Close() => Controller.Close();
+		/// <summary>
+		/// Toggle visibility
+		/// </summary>
+		public static void ToggleVisibility() => Controller.ToggleVisibility();
+		/// <summary>
+		/// Get the menu name from the path
+		/// </summary>
+		/// <param name="path">A menu path</param>
+		/// <returns></returns>
+		private static string GetMenuName(string path)
 		{
 			var idx = path.LastIndexOf('/');
 			return (idx >= 0) ? path.Substring(idx + 1) : path;
 		}
-		private static string GetPath(string path)
+		/// <summary>
+		/// Get the menu path (aka folder) and get rid of name
+		/// </summary>
+		/// <param name="path">A menu path</param>
+		/// <returns></returns>
+		private static string GetMenuPath(string path)
 		{
 			var idx = path.LastIndexOf('/');
 			return (idx >= 0) ? path.Substring(0, idx) : null;
 		}
-
-		public static KeyMap CreateKeymap(string title, string help) =>
-			new KeyMap(title, help);
-
-		public static KeyMap CreateMenu(string path, string title, string help) =>
-			MenuBar.CreateMenu(path, title, help);
-
+		/// <summary>
+		/// Create and define menu map
+		/// </summary>
+		/// <param name="path">Path to the menu map</param>
+		/// <param name="title">The title of menu map</param>
+		/// <param name="help">The help tex for menu map</param>
+		/// <returns></returns>
+		public static MenuMap EasyCreateMenu(string path, string title, string help) => MenuBar.EasyCreateMenu(path, title, help);
 
 		public static DMString Add(string path, Func<string> getter, string shortcut = null, string help = null)
 		{
-			var val = new DMString(GetName(path), getter, shortcut, help);
+			var val = new DMString(GetMenuName(path), getter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMBool Add(string path, Func<bool> getter, Action<bool> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMBool(GetName(path), getter, setter, shortcut, help);
+			var val = new DMBool(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
@@ -81,7 +107,7 @@ namespace XiKeyboard
 
 		public static DMEnum<T> Add<T>(string path, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) where T : struct, Enum
 		{
-			var val = new DMEnum<T>(GetName(path), getter, setter, shortcut, help);
+			var val = new DMEnum<T>(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
@@ -120,111 +146,111 @@ namespace XiKeyboard
 
 		public static DMUInt8 Add(string path, Func<byte> getter, Action<byte> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMUInt8(GetName(path), getter, setter, shortcut, help);
+			var val = new DMUInt8(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMUInt16 Add(string path, Func<UInt16> getter, Action<UInt16> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMUInt16(GetName(path), getter, setter, shortcut, help);
+			var val = new DMUInt16(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMUInt32 Add(string path, Func<UInt32> getter, Action<UInt32> setter = null, string shortcut = null, string help = null)
         {
-			var val = new DMUInt32(GetName(path), getter, setter, shortcut, help);
+			var val = new DMUInt32(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMUInt64 Add(string path, Func<UInt64> getter, Action<UInt64> setter = null, string shortcut = null, string help = null)
         {
-			var val = new DMUInt64(GetName(path), getter, setter, shortcut, help);
+			var val = new DMUInt64(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMInt8 Add(string path, Func<sbyte> getter, Action<sbyte> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMInt8(GetName(path), getter, setter, shortcut, help);
+			var val = new DMInt8(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMInt16 Add(string path, Func<Int16> getter, Action<Int16> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMInt16(GetName(path), getter, setter, shortcut, help);
+			var val = new DMInt16(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMInt32 Add(string path, Func<Int32> getter, Action<Int32> setter = null, string shortcut = null, string help = null)
         {
-			var val = new DMInt32(GetName(path), getter, setter, shortcut, help);
+			var val = new DMInt32(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMInt64 Add(string path, Func<Int64> getter, Action<Int64> setter = null, string shortcut = null, string help = null) 		
 		{
-			var val = new DMInt64(GetName(path), getter, setter, shortcut, help);
+			var val = new DMInt64(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMVector2 Add(string path, Func<Vector2> getter, Action<Vector2> setter = null, string shortcut = null, string help = null)
         {
-			var val = new DMVector2(GetName(path), getter, setter, shortcut, help);
+			var val = new DMVector2(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMVector3 Add(string path, Func<Vector3> getter, Action<Vector3> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMVector3(GetName(path), getter, setter, shortcut, help);
+			var val = new DMVector3(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 		public static DMVector4 Add(string path, Func<Vector4> getter, Action<Vector4> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMVector4(GetName(path), getter, setter, shortcut, help);
+			var val = new DMVector4(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMQuaternion Add(string path, Func<Quaternion> getter, Action<Quaternion> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMQuaternion(GetName(path), getter, setter, shortcut, help);
+			var val = new DMQuaternion(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMColor Add(string path, Func<Color> getter, Action<Color> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMColor(GetName(path), getter, setter, shortcut, help);
+			var val = new DMColor(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMVector2Int Add(string path, Func<Vector2Int> getter, Action<Vector2Int> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMVector2Int(GetName(path), getter, setter, shortcut, help);
+			var val = new DMVector2Int(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMVector3Int Add(string path, Func<Vector3Int> getter, Action<Vector3Int> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMVector3Int(GetName(path), getter, setter, shortcut, help);
+			var val = new DMVector3Int(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
 
 		public static DMFloat Add(string path, Func<float> getter, Action<float> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMFloat(GetName(path), getter, setter, shortcut, help);
+			var val = new DMFloat(GetMenuName(path), getter, setter, shortcut, help);
 			MenuBar.DefineMenuLine(path, val);
 			return val;
 		}
@@ -239,12 +265,12 @@ namespace XiKeyboard
 
         public static void Update()
 		{
-			(controller as IMenuRender_Update).Update();
+			(Controller as IMenuRender_Update).Update();
 		}
 
 		public static void OnGUI()
         {
-			(controller as IMenuRender_OnGUI).OnGUI();
+			(Controller as IMenuRender_OnGUI).OnGUI();
 		}
 	}
 }

@@ -85,43 +85,7 @@ namespace XiKeyboard.KeyMaps
             return result;
         }
 
-        /// <summary>
-        /// Supports multiple or single tokens
-        /// When multiple tokens each one separated with ' ' space
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public static KeyEvent [] ParseSequence([NotNull] string expression)
-        {
-            if (expression == null) throw new ArgumentNullException(nameof(expression));
-            if (expression == string.Empty) throw new ArgumentException(nameof(expression));
-
-            var sequence = new List<KeyEvent>();
-            var tags = expression.Split(' ');
-
-            foreach (var s in tags)
-            {
-                if (string.IsNullOrEmpty(s))
-                    continue;
-
-                var evt = KeyEvent.ParseExpression(s);
-
-                if (evt >= 0)
-                {
-                    sequence.Add(evt);
-                }
-                else
-                {
-                    // This case will be translated as string
-                    // "abcd" => "abcd"
-                    foreach (var c in s)
-                    {
-                        sequence.Add(c);
-                    }
-                }
-            }
-            return sequence.ToArray();
-        }
+ 
         /// <summary>
         /// Convert list of strings to list of events
         /// </summary>

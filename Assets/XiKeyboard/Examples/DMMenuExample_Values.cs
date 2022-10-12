@@ -122,9 +122,9 @@ namespace XiKeyboard.Examples.Menu
 		private void OnEnable()
 		{
 			// Simple Menus
-			var simpleMenu = MenuMap.MenuBar.CreateMenu("menu-bar/simple", "Simple Menu", "Help for simpe menu");
+			var simpleMenu = MenuMap.MenuBar.EasyCreateMenu("menu-bar/simple", "Simple Menu", "Help for simpe menu");
 			
-			var subMenu = MenuMap.MenuBar.CreateMenu("menu-bar/simple/sub", "Sub Menu", "Help for sub menu menu");
+			var subMenu = MenuMap.MenuBar.EasyCreateMenu("menu-bar/simple/sub", "Sub Menu", "Help for sub menu menu");
 
 			DM.Add("simple/String", () => _string);
 			DM.Add("simple/UInt8", () => _uint8, v => _uint8 = v);
