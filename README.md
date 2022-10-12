@@ -129,14 +129,14 @@ Key modifiers encoded as most significant bits of integer value. The virtual key
 | KeyModifyers.Alt         | 1 << 22     |
 | KeyModifyers.Pseudo      | 1 << 21     |
 
-## Event
+## KeyEvent
 
 The key Event is container with key code and key modifier. For every pressed key will the key code will be packed with modifier to Event and submit to current input buffer<sup>Read Below</sup>. 
 
 To create new event there is _MakeEvent_ method.
 
 ```C#
-var event = Event.MakeEvent(KeyCode.A, KeyModifyers.Shift);      // Makes S-a event
+var event = KeyEvent.MakeEvent(KeyCode.A, KeyModifyers.Shift);      // Makes S-a event
 ```
 
 To check event's modifiers there is _IsModifyer_ method.
@@ -160,8 +160,8 @@ var keyModf = event.Modifyers;                                   // Return KeyMo
 The pseudo codes are virtual keys with unique names. Each pseudocode has a key modifier _Pseudo_ is in pressed state. 
 
 ```C#
-var pseudo = Event.GetPseudocode("Foo");       // Get random pseudo code with unique name "Foo"
-var default = Event.DefaultPseudoCode;         // Get default pseudo code. It has name "default"
+var pseudo = KeyEvent.GetPseudocode("Foo");       // Get random pseudo code with unique name "Foo"
+var default = KeyEvent.DefaultPseudoCode;         // Get default pseudo code. It has name "default"
 ```
 
 ## Humanized Key Name
@@ -169,8 +169,8 @@ var default = Event.DefaultPseudoCode;         // Get default pseudo code. It ha
 The key code can be converted to humanize name, or reversed. To define the name use method _SetName_
 
 ```C#
-Event.SetName((int)KeyCode.RightCommand, "\\c-");
-var name = Event.GetName((int)KeyCode.RightCommand);  // Return "\\c-"
+KeyEvent.SetName((int)KeyCode.RightCommand, "\\c-");
+var name = KeyEvent.GetName((int)KeyCode.RightCommand);  // Return "\\c-"
 ```
 
 ## Key Sequence
@@ -179,16 +179,27 @@ The sequence can be defined as array of events. The example below defines the se
 
 ```C#
 Event[] sequence = new Event[2] { 
-    Event.MakeEvent((int)KeyCode.X, KeyModifyers.Control), 
-    Event.MakeEvent((int)KeyCode.F, KeyModifyers.Control) 
+    KeyEvent.MakeEvent((int)KeyCode.X, KeyModifyers.Control), 
+    KeyEvent.MakeEvent((int)KeyCode.F, KeyModifyers.Control) 
     };
 ```
 
 Alternative way is parsing the expression <sup>similar to Emacs</sup>.
 
 ```C#
-var sequence = Kbd.ParseExpression("C-x C-f");
+var sequence = KBD.ParseExpression("C-x C-f");
 ```
+For the pseudo codes
+
+```C#
+var sequence = KBD.ParsePseudo("foo/bar/baz");
+```
+To convert the sequence to the text
+
+```C#
+string KBD.ConvertToString(int[] sequence, string separator = null);
+string KBD.ConvertToString(int[] sequence, int starts, int quantity, string separator = null);
+string[] KBD.ConvertToStringList(int[] sequence);
 
 ## Key Map
 
@@ -293,7 +304,14 @@ The constructor for sequence requires two fields values.
 ```C#
 SequenceBinding(string name, int[] sequence, string help = null)
 ```
+## Menu Map
 
+The MenuMap class inherinced from KeyMap and it has the same API.
+
+```C#
+MenuMap(string title = null, string help = null)
+MenuMap(MenuMap parent, string title = null, string help = null)
+```
 
 ## Mode
 
