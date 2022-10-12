@@ -6,6 +6,12 @@ using System;
 
 namespace XiKeyboard.Libs
 {
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   A structure utilities. </summary>
+    ///
+
+    ///-------------------------------------------------------------------------------------------------
+
 	internal static class StructUtils
 	{
 		#region Public Vars

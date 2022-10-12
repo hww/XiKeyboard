@@ -2,22 +2,29 @@
 
 namespace XiKeyboard.Rendering
 {
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   A menu configuration. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     public static class MenuConfig
     {
         public const string PrefixNormal = " ";
         public const string PrefixCursor = ">";
-        public const string SuffixNormal = " ";   //< Suffix for all lines
-        public const string SuffixModified = "*"; //< Suffix for modified line
-        public const string Space = "  ";          //< Space between title and value
+        public const string SuffixNormal = " ";   // Suffix for all lines
+        public const string SuffixModified = "*"; // Suffix for modified line
+        public const string Space = "  ";         // Space between title and value
 
         public const char DashedLineChar = '-';
         public const char NormalLineChar = '─';
 
     }
 
-	/// <summary>
-	/// The stylesheet for menu system
-	/// </summary>
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   The stylesheet for menu system. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
 	public static class MenuColors
 	{
 		public const string MenuHeader = "#eeffff";

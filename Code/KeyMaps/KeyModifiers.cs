@@ -2,9 +2,13 @@
 
 namespace XiKeyboard.KeyMaps
 {
+    ///-------------------------------------------------------------------------------------------------
     /// <summary>
-    /// Similar ro Enum class defines all key Modifiers as bits in the integer word
+    /// Similar ro Enum class defines all key Modifiers as bits in the integer word.
     /// </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     public static class KeyModifiers
     {
         public static readonly int None = 0;
@@ -16,13 +20,23 @@ namespace XiKeyboard.KeyMaps
         public static readonly int Super = 1 << 23;
         public static readonly int Alt = 1 << 22;
         public static readonly int Pseudo = 1 << 21;
+
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Use for masking the modifier bits
+        /// (Immutable)
+        /// Use for masking the modifier bits.
         /// </summary>
+        ///-------------------------------------------------------------------------------------------------
+
         public static readonly int AllModifiers = Control | Shift | Alt | Hyper | Super | Meta;
-        /// <summary>
-        /// Used internally for iteration over modifier. It is replacement for System.Enum.Values(typeof(Modifiers)).
-        /// <summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   (Immutable)
+        ///             Used internally for iteration over modifier. It is replacement for
+        ///             System.Enum.Values(typeof(Modifiers)). </summary>
+        /// <summary>   . </summary>
+        ///-------------------------------------------------------------------------------------------------
+
         public static readonly int[] AllModifiersList = { Control, Alt, Shift };
     }
 }

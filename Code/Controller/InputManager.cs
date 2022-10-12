@@ -5,18 +5,31 @@ using XiKeyboard.Buffers;
 
 namespace XiKeyboard.KeyMaps
 {
-    /// <summary>This component redirecting key events to current buffer</summary>
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   This component redirecting key events to current buffer. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     internal static class InputManager 
     {
+        /// <summary>   The previous key. </summary>
         private static KeyEvent _previousKey;
+        /// <summary>   The repeat time. </summary>
         private static float _repeatTime;
+        /// <summary>   (Immutable) the repeat delay. </summary>
         private const float kRepeatDelay = 0.75f;
+        /// <summary>   (Immutable) the repeat interval. </summary>
         private const float kRepeatInterval = 0.1f;
 
-        /// <summary>
-        /// Make a key from the current Unity 3D input manager
-        /// </summary>
-        /// <returns></returns>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Make a key from the current Unity 3D input manager. </summary>
+        ///
+        ///
+        /// <param name="currentTime">  The current time. </param>
+        ///
+        /// <returns>   The key. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         private static KeyEvent GetKey(float currentTime)
         {
             var evt = UnityEngine.Event.current;
@@ -55,8 +68,11 @@ namespace XiKeyboard.KeyMaps
             return KeyEvent.None;
         }
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Unity will call it to deliver message. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
 
-        /// <summary>Unity will call it to deliver message</summary>
         public static void OnGUI()
         {
             var evt = GetKey(Time.unscaledTime);
