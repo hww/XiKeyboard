@@ -5,34 +5,49 @@ using XiKeyboard.Menu;
 
 namespace XiKeyboard.Rendering
 {
-    /// <summary>
-    /// The MenuPanelRepresentation is the view model the keymap
-    /// </summary>
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   The MenuPanelRepresentation is the view model the keymap. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     public class MenuPanelRepresentation
     {
+        /// <summary>   (Immutable) the maximum menu lines. </summary>
         const int MAX_MENU_LINES = 64;
 
-        /// <summary>A parent menu</summary>
+        /// <summary>   A parent menu. </summary>
         public MenuPanelRepresentation parent;
 
-        /// <summary>A reference to the KeyMap</summary>
+        /// <summary>   A reference to the KeyMap. </summary>
         public KeyMap keyMap;
 
-        /// <summary>The index of selected selectedLine</summary>
+        /// <summary>   The index of selected selectedLine. </summary>
         public int lineIndex;
 
-        /// <summary>The vector editor index or -1 for disabled</summary>
+        /// <summary>   The vector editor index or -1 for disabled. </summary>
         public int columnIndex = -1;
 
+        /// <summary>   Width of the value. </summary>
         public int widthOfValue;
+        /// <summary>   Name of the width of. </summary>
         public int widthOfName;
+        /// <summary>   Width of the line. </summary>
         public int widthOfLine;
 
 
+        /// <summary>   The title. </summary>
         public string title;
-        /// <summary>The menu lines</summary> 
+        /// <summary>   The menu lines. </summary>
         public MenuLineRepresentation[] items;
         public int Count;
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Constructor. </summary>
+        ///
+        ///
+        /// <param name="parent">   A parent menu. </param>
+        /// <param name="keyMap">   A reference to the KeyMap. </param>
+        ///-------------------------------------------------------------------------------------------------
 
         public MenuPanelRepresentation(MenuPanelRepresentation parent, KeyMap keyMap)
         {
@@ -43,10 +58,13 @@ namespace XiKeyboard.Rendering
             columnIndex = -1;
         }
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Calculate menu, name, value columns width. </summary>
+        ///
+        ///
+        /// <param name="spaceSize">    Size of the space. </param>
+        ///-------------------------------------------------------------------------------------------------
 
-        /// <summary>
-        /// Calculate menu, name, value columns width
-        /// </summary>
         public void PreRenderMenu(int spaceSize)
         {
             title = keyMap.Title;
@@ -134,11 +152,18 @@ namespace XiKeyboard.Rendering
 
         }
 
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Find the best position for selected selectedLine
-        /// Skip all sepoarators and disabled lines
+        /// Find the best position for selected selectedLine Skip all sepoarators and disabled lines.
         /// </summary>
-        /// <param name="forward"></param>
+        ///
+        ///
+        /// <param name="index">    Zero-based index of the. </param>
+        /// <param name="forward">  TRUE - for forward moving. </param>
+        ///
+        /// <returns>   The selected line index. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         private int GetSelectedLineIndex(int index, bool forward)
         {
             if (index >= Count)
@@ -181,6 +206,12 @@ namespace XiKeyboard.Rendering
             return -1; // There is nothing to select
         }
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Executes the 'event' action. </summary>
+        ///
+        ///
+        /// <param name="menuEvent">    The menu event. </param>
+        ///-------------------------------------------------------------------------------------------------
 
         public void OnEvent(MenuEvent menuEvent)
         {
@@ -298,9 +329,6 @@ namespace XiKeyboard.Rendering
                         break;
                 }
             }
-
-
-
         }
     }
 }

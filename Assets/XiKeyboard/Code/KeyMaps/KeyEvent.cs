@@ -7,56 +7,170 @@ using UnityEngine;
 
 namespace XiKeyboard.KeyMaps
 {
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   A key event. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     public partial struct KeyEvent
     {
+        /// <summary>   The code. </summary>
         private int code;
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Constructor. </summary>
+        ///
+
+        ///
+        /// <param name="code"> The code. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public KeyEvent(int code) { this.code = code; }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Implicit cast that converts the given KeyEvent to an int. </summary>
+        ///
+
+        ///
+        /// <param name="evt">  The event. </param>
+        ///
+        /// <returns>   The result of the operation. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public static implicit operator int(KeyEvent evt){ return evt.code; }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Implicit cast that converts the given int to a KeyEvent. </summary>
+        ///
+
+        ///
+        /// <param name="code"> The code. </param>
+        ///
+        /// <returns>   The result of the operation. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public static implicit operator KeyEvent(int code) { return new KeyEvent(code); }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Implicit cast that converts the given KeyCode to a KeyEvent. </summary>
+        ///
+
+        ///
+        /// <param name="code"> The code. </param>
+        ///
+        /// <returns>   The result of the operation. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public static implicit operator KeyEvent(KeyCode code) { return new KeyEvent((int)code); }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Implicit cast that converts the given string to a KeyEvent. </summary>
+        ///
+
+        ///
+        /// <param name="expression">   The expression. </param>
+        ///
+        /// <returns>   The result of the operation. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public static implicit operator KeyEvent(string expression){ return ParseExpression(expression); }
 
-        /// <summary>Check if code is valid</summary>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Check if code is valid. </summary>
+        ///
+        /// <value> True if this object is valid, false if not. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public bool IsValid => code>= 0 && code < KeyModifiers.MaxCode;
 
-        /// <summary>Get name of key code code</summary>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Get name of key code code. </summary>
+        ///
+        /// <value> The name. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public string Name => GetName(this);
 
-        /// <summary>Get modifiers of this event</summary>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Get modifiers of this event. </summary>
+        ///
+        /// <value> The modifiers. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public KeyEvent Modifiers => code & KeyModifiers.AllModifiers;
 
-        /// <summary>Get code of this event</summary>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Get code of this event. </summary>
+        ///
+        /// <value> The key code. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public KeyEvent KeyCode => code & ~KeyModifiers.AllModifiers;
 
-        /// <summary>Get code as key code</summary>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Get code as key code. </summary>
+        ///
+        /// <value> as key code. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public KeyCode AsKeyCode => (KeyCode)(code & ~KeyModifiers.AllModifiers);
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Check if the given keycode is with the given modifier mask. </summary>
+        ///
 
-        /// <summary>Check if the given keycode is with the given modifier mask</summary>
+        ///
+        /// <param name="modifiers">    Get modifiers of this event. </param>
+        ///
+        /// <returns>   True if modifier, false if not. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public bool IsModifier(int modifiers) { return (code & modifiers) == modifiers; }
 
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>
-        /// None event
+        /// (Immutable)
+        /// None event.
         /// </summary>
+        ///-------------------------------------------------------------------------------------------------
+
         public static readonly KeyEvent None = new KeyEvent();
     }
 
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   A key event. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     public partial struct KeyEvent
     {   
-        /// <summary>
-        /// Create nev event from code and use new modifiers
-        /// </summary>
-        /// <param name="keyCode"></param>
-        /// <param name="modifiers"></param>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Create nev event from code and use new modifiers. </summary>
+        ///
+
+        ///
+        /// <param name="keyCode">      . </param>
+        /// <param name="modifiers">    . </param>
+        ///
+        /// <returns>   A KeyEvent. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public static KeyEvent MakeEvent(KeyCode keyCode, int modifiers)
         {
             return MakeEvent((int)keyCode, modifiers);
         }
-        /// <summary>
-        /// Create nev event from code and use new modifiers
-        /// </summary>
-        /// <param name="keyCode"></param>
-        /// <param name="modifiers"></param>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Create nev event from code and use new modifiers. </summary>
+        ///
+        /// <remarks>   Valery, 10/12/2022. </remarks>
+        ///
+        /// <param name="keyCode">      . </param>
+        /// <param name="modifiers">    . </param>
+        ///
+        /// <returns>   A KeyEvent. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public static KeyEvent MakeEvent(int keyCode, int modifiers)
         {
             var code = keyCode & ~KeyModifiers.AllModifiers;
@@ -74,21 +188,32 @@ namespace XiKeyboard.KeyMaps
             }
         }
 
-        // ===============================================================================================
-        // PseudoCode Generator 
-        //
-        // The pseudo code looks like unique random key code (non existed in keyboard). Think about 
-        // like it is: "pseudo-1", "pseudo-2",...,"pseudo-N"
-        // Pseudo code has large keycode and the key modifier Pseudo added
-        // ===============================================================================================
-        /// <summary>
-        /// this pseudocode is reserved word "default" used for 
-        /// default binding in keymaps
-        /// </summary>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   this pseudocode is reserved word "default" used for default binding in keymaps. </summary>
+        ///
+        /// <value> The default pseudo code. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public static KeyEvent DefaultPseudoCode { get; private set; }
-        /// <summary>Incremental value used for pseudo codes generator.</summary>
+        /// <summary>   Incremental value used for pseudo codes generator. </summary>
         private static int pseudoCodeIndex = 0;
-        /// <summary>generate new pseudo code</summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// PseudoCode Generator
+        /// 
+        /// The pseudo code looks like unique random key code (non existed in keyboard). Think about like
+        /// it is: "pseudo-1", "pseudo-2",...,"pseudo-N" Pseudo code has large keycode and the key
+        /// modifier Pseudo added.
+        /// </summary>
+        ///
+        /// <remarks>   Valery, 10/12/2022. </remarks>
+        ///
+        /// <param name="name"> The name. </param>
+        ///
+        /// <returns>   The pseudo code. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public static KeyEvent GetPseudoCode(string name)
         {
             KeyEvent code;
@@ -98,11 +223,13 @@ namespace XiKeyboard.KeyMaps
             SetName(code, name);
             return code;
         }
-        // ===============================================================================================
-        // Conversion Tables
-        // Those tables alow to convert keycode to the name, and reversed.
-        // ===============================================================================================
-        /// <summary>Table to convert name to the key code</summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Table to convert name to the key code. </summary>
+        ///
+        /// <value> The name to key code table. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public static Dictionary<string, KeyEvent> NameToKeyCodeTable
         {
             get {
@@ -111,7 +238,13 @@ namespace XiKeyboard.KeyMaps
                 return nameToKeyCodeTable;
             }
         }
-        /// <summary>Table to convert key code to the code name</summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Table to convert key code to the code name. </summary>
+        ///
+        /// <value> The key code to name table. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public static Dictionary<KeyEvent, string> KeyCodeToNameTable
         {
             get {
@@ -120,10 +253,15 @@ namespace XiKeyboard.KeyMaps
                 return keyCodeToNameTable;
             }
         }
-        /// <summary>
-        /// Declare new key code name
-        /// SetName((int)KeyCode.RightCommand, "\\c-");
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Declare new key code name SetName((int)KeyCode.RightCommand, "\\c-"); </summary>
+        ///
+        ///
+        /// <param name="keyCode">  . </param>
+        /// <param name="name">     The name. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public static void SetName(KeyEvent keyCode, string name)
         {
             var modifiers = keyCode.Modifiers;
@@ -134,7 +272,18 @@ namespace XiKeyboard.KeyMaps
             NameToKeyCodeTable[name] = keyCode;
             KeyCodeToNameTable[keyCode] = name;
         }
-        /// <summary>Get name of key code code</summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Get name of key code code. </summary>
+        ///
+        ///
+        /// <exception cref="Exception">    Thrown when an exception error condition occurs. </exception>
+        ///
+        /// <param name="evt">  The event. </param>
+        ///
+        /// <returns>   The name. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public static string GetName(KeyEvent evt)
         {
             var keyModifiers = evt.Modifiers;
@@ -162,7 +311,18 @@ namespace XiKeyboard.KeyMaps
             else
                 throw new Exception($"Unexpected keycode '{evt:X}'");
         }
-        /// <summary>Get keycode by name</summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Get keycode by name. </summary>
+        ///
+        ///
+        /// <exception cref="Exception">    Thrown when an exception error condition occurs. </exception>
+        ///
+        /// <param name="name"> The name. </param>
+        ///
+        /// <returns>   The key code internal. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         private static KeyEvent GetKeyCodeInternal(string name)
         {
             KeyEvent code;
@@ -170,52 +330,24 @@ namespace XiKeyboard.KeyMaps
                 return code;
             throw new Exception($"Expected key code name, found '{name}'");
         }
-        // ===============================================================================================
-        // EMACS keycode sequence parser
-        // For converting from expression like: "C-x C-v" to convert to the KeyEvent[]
-        // ===============================================================================================
+
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Supports multiple or single tokens
-        /// When multiple tokens each one separated with ' ' space
+        /// EMACS keycode expressions parser for converting from expression like: "C-v" to convert to the
+        /// keycode Parse the expression without spaces.
         /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public static KeyEvent[] ParseSequence([NotNull] string expression)
-        {
-            if (expression == null) throw new ArgumentNullException(nameof(expression));
-            if (expression == string.Empty) throw new ArgumentException(nameof(expression));
+        ///
+        ///
+        /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+        ///                                             null. </exception>
+        /// <exception cref="ArgumentException">        Thrown when one or more arguments have
+        ///                                             unsupported or illegal values. </exception>
+        ///
+        /// <param name="expression">   The expression. </param>
+        ///
+        /// <returns>   A KeyEvent. </returns>
+        ///-------------------------------------------------------------------------------------------------
 
-            var sequence = new List<KeyEvent>();
-            var tags = expression.Split(' ');
-
-            foreach (var s in tags)
-            {
-                if (string.IsNullOrEmpty(s))
-                    continue;
-
-                var evt = KeyEvent.ParseExpression(s);
-
-                if (evt >= 0)
-                {
-                    sequence.Add(evt);
-                }
-                else
-                {
-                    // This case will be translated as string
-                    // "abcd" => "abcd"
-                    foreach (var c in s)
-                    {
-                        sequence.Add(c);
-                    }
-                }
-            }
-            return sequence.ToArray();
-        }
-        // ===============================================================================================
-        // EMACS keycode expressions parser
-        // For converting from expression like: "C-v" to convert to the keycode
-        // ===============================================================================================
-        /// <summary>Parse the expression without spaces</summary>
         public static KeyEvent ParseExpression(string expression)
         {
             if (expression == null) 
@@ -237,12 +369,24 @@ namespace XiKeyboard.KeyMaps
             // There is test for named character Shift, LeftAlt, Space
             return GetKeyCodeInternal(expression);
         }
+
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Parse string expression EMACS style and build the keycode
-        /// Support only single token with '-' character inside
-        /// Such as C- A- S- the function produce an exception
-        /// it the expression is badly format
+        /// Parse string expression EMACS style and build the keycode Support only single token with '-'
+        /// character inside Such as C- A- S- the function produce an exception it the expression is
+        /// badly format.
         /// </summary>
+        ///
+        ///
+        /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+        ///                                             null. </exception>
+        /// <exception cref="Exception">                Thrown when an exception error condition occurs. </exception>
+        ///
+        /// <param name="expression">   The expression. </param>
+        ///
+        /// <returns>   A KeyEvent. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         private static KeyEvent ParseWordWithModifiers(string expression)
         {
             if (expression == null) throw new ArgumentNullException(nameof(expression));
@@ -324,10 +468,12 @@ namespace XiKeyboard.KeyMaps
                 return modifiers;
             }
         }
-        // ===============================================================================================
-        // The initialization block
-        // ===============================================================================================
-        /// <summary>Initialize the class<summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Initialize the class&lt;summary&gt; </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         public static void Initialize ( )
         {
             nameToKeyCodeTable = new Dictionary<string, KeyEvent> ( );
@@ -365,7 +511,9 @@ namespace XiKeyboard.KeyMaps
             // pseudo-code for default binding.
             DefaultPseudoCode = GetPseudoCode ( "default" );
         }
+        /// <summary>   The name to key code table. </summary>
         private static Dictionary<string, KeyEvent> nameToKeyCodeTable;
+        /// <summary>   The key code to name table. </summary>
         private static Dictionary<KeyEvent, string> keyCodeToNameTable;
     }
 }

@@ -1,59 +1,86 @@
 ﻿/* Copyright (c) 2016 Valery Alex P. All rights reserved. */
 
+using System;
+using System.Collections.Generic;
+using XiCore.Delegates;
+using XiCore.StringTools;
+using XiKeyboard.KeyMaps;
 using XiKeyboard.Modes;
 
 namespace XiKeyboard.Buffers
 {
+    ///-------------------------------------------------------------------------------------------------
     /// <summary>
-    /// This class is one of input Modes. It allow to complete the word by TAB, and navigate 
-    /// in history by arrow keys
+    /// This class is one of input Modes. It allow to complete the word by TAB, and navigate in
+    /// history by arrow keys.
     /// </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     public class ReadLineMode : Mode
     {
-   
-        // ===============================================================================================
-        // Constructors
-        // ===============================================================================================
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Constructors. </summary>
+        ///
+        /// <remarks>   Valery, 10/12/2022. </remarks>
+        ///-------------------------------------------------------------------------------------------------
+
         public ReadLineMode () : base("readline")
         {
-           // keyMap = new KeyMap();
-           // keyMap.Define(KBD.ParseSequence("Tab"), new NativeFunction("AutoComplete", AutoComplete));
-           // keyMap.Define(KBD.ParseSequence("UpArrow"), new NativeFunction("HistoryUp", HistoryUp));
-           // keyMap.Define(KBD.ParseSequence("DownArrow"), new NativeFunction("HistoryUp", HistoryDown));
-           // keyMap.Define(KBD.ParseSequence("C-c"), new NativeFunction("ControlC", ControlC));
-        }     /*
-        // ===============================================================================================
-        // Delegates
-        // ===============================================================================================
-        /// <summary>
-        /// Callback when line was entered
-        /// </summary>
-        public Action<string> OnReadLineListener = new Action<string>(string obj);
+#if FIXME
+            keyMap = new KeyMap();
+           keyMap.Define(KBD.ParseSequence("Tab"),  AutoComplete);
+           keyMap.Define(KBD.ParseSequence("UpArrow"), HistoryUp);
+           keyMap.Define(KBD.ParseSequence("DownArrow"), HistoryUp);
+           keyMap.Define(KBD.ParseSequence("C-c"), ControlC);
+#endif
+        }
+#if FIXME
+
+        /// <summary>   Callback when line was entered. </summary>
+        public FastAction<string> OnReadLineListener = new FastAction<string>();
+
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>
         /// Callback when TAB pressed but no one completition found
         /// @string line
-        /// @int caretPosition
+        /// @int caretPosition.
         /// </summary>
-        public Action<string, int> OnAutoCompletionDelegate = new Action<string, int>();
+        ///-------------------------------------------------------------------------------------------------
+
+        public FastAction<string, int> OnAutoCompletionDelegate = new FastAction<string, int>();
+
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>
-        /// The istory buffer
+        /// (Immutable)
+        /// The istory buffer.
         /// </summary>
+        ///-------------------------------------------------------------------------------------------------
+
         private readonly ReadLineHistory historyBuffer = new ReadLineHistory();
-        // ===============================================================================================
-        // KeyMap
-        // ===============================================================================================
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Auto complete
+        /// </summary>
+        ///
+        ///
+        /// <param name="args"> The arguments. </param>
+        ///
+        /// <returns>   An object. </returns>
+        ///-------------------------------------------------------------------------------------------------
 
-        private object AutoComplete(object[] args)
+        private void AutoComplete(object[] args)
         {
-            if (OnAutoCompletionDelegate.Count == 0)
-                return null;
+            if (OnAutoCompletionDelegate == null)
+                return;
 
             string text = null;
             int caretPosition = 0;
             //if ( GameConsole.GetInputLine(out text, out caretPosition))
             {
-                if (caretPosition == 0) return null;
+                if (caretPosition == 0) 
+                    return;
 
                 // only if the field is focused
                 var variants = OnAutoCompletionDelegate(text, caretPosition);
@@ -61,7 +88,7 @@ namespace XiKeyboard.Buffers
                 {
                     var prefix = variants[0];
                     var result = prefix + text.Substring(caretPosition);
- //FIX!                   GameConsole.SetInputLine(result, prefix.Length, true);
+                    GameConsole.SetInputLine(result, prefix.Length, true);
                 }
                 else if (variants.Length > 1)
                 {
@@ -72,71 +99,111 @@ namespace XiKeyboard.Buffers
                     }
                 }
             }
-            return null;
         }
-        // move inhistory up
-        private object HistoryUp(object[] args)
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   move inhistory up. </summary>
+        ///
+        ///
+        /// <param name="args"> The arguments. </param>
+        ///
+        /// <returns>   An object. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        private void HistoryUp(object[] args)
         {
             var str = historyBuffer.GetCurentLine( );
             historyBuffer.MoveToPreviousLine ( );
-            if (str == null) return null;
-       //     GameConsole.SetInputLine(str, str.Length, true);
-            return null;
+            if (str != null)
+                GameConsole.SetInputLine(str, str.Length, true);
         }
-        // move inhistory down
-        private object HistoryDown(object[] args)
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   move inhistory down. </summary>
+        ///
+        ///
+        /// <param name="args"> The arguments. </param>
+        ///
+        /// <returns>   An object. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        private void HistoryDown(object[] args)
         {
             var str = historyBuffer.GetCurentLine ( );
             historyBuffer.MoveToNextLine ( );
-            if (str == null) return null;
-    //        GameConsole.SetInputLine(str, str.Length, true);
-            return null;
+            if (str != null)
+                GameConsole.SetInputLine(str, str.Length, true);
         }
-        // move inhistory down
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   move inhistory down. </summary>
+        ///
+        ///
+        /// <param name="args"> The arguments. </param>
+        ///
+        /// <returns>   An object. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         private object ControlC(object[] args)
         {
             var str = "";
             var caretPosition = 0;
             GameConsole.WriteLine ( str + "C-c" );
-         //   if ( GameConsole.GetInputLine(out str, out caretPosition))
+            if ( GameConsole.GetInputLine(out str, out caretPosition))
             {
-     //           GameConsole.WriteLine(str + "C-c");
-    //            GameConsole.SetInputLine("", 0, true);
+                GameConsole.WriteLine(str + "C-c");
+                GameConsole.SetInputLine("", 0, true);
             }
             return null;
         }
     }
-    /// <summary>
-    /// This clas is the history buffer for ReadLine mode
-    /// </summary>
+
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   This clas is the history buffer for ReadLine mode. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     public class ReadLineHistory
     {
-        /// <summary>
-        /// Constroctor
-        /// </summary>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Constroctor. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         public ReadLineHistory()
         { }
-        // ===============================================================================================
-        // Navigating trought history
-        // the arrays of expressions in history
-        // ===============================================================================================
-        /// <summary>
-        /// Get history list
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Get history list. </summary>
+        ///
+        ///
+        /// <returns>   the arrays of expressions in history. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public List<string> GetAllHistory ( )
         {
             return historyBuffer;
         }
-        /// <summary>
-        /// Get curent line from history or null
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Get curent line from history or null. </summary>
+        ///
+        ///
+        /// <returns>   The curent line. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public string GetCurentLine ( )
         {
             return ( historyPosition < historyBuffer.Count && historyPosition >= 0 ) ? historyBuffer[ historyPosition ] : null;
         }
-        /// <summary>
-        /// Add single word to the history
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Add single word to the history. </summary>
+        ///
+        ///
+        /// <param name="text"> The text. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public void AddHistory ( string text )
         {
             MoveToLastLine ( );
@@ -147,55 +214,92 @@ namespace XiKeyboard.Buffers
                 MoveToLastLine ( );
             }
         }
-        /// <summary>
-        /// Add multiple words to the history
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Add multiple words to the history. </summary>
+        ///
+        ///
+        /// <param name="history">  The history. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public void AddHistory ( string[] history )
         {
             foreach ( var s in history )
                 historyBuffer.Add ( s );
             MoveToLastLine ( );
         }
-        /// <summary>
-        /// Add list of strings to the history
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Add list of strings to the history. </summary>
+        ///
+        ///
+        /// <param name="history">  The history. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public void AddHistory ( List<string> history )
         {
             foreach ( var s in history )
                 historyBuffer.Add ( s );
             MoveToLastLine ( );
         }
-        /// <summary>
-        /// Clear all histiry
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Clear all histiry. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         public void ClearHistory ( )
         {
             historyBuffer.Clear ( );
             MoveToLastLine ( );
         }
-        // ===============================================================================================
-        // Navigation methods
-        // ===============================================================================================
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Navigation methods
+        /// </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         public void MoveToNextLine ( )
         {
             if ( historyPosition < historyBuffer.Count - 1 )
                 historyPosition++;
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Move to previous line. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         public void MoveToPreviousLine ( )
         {
             if ( historyPosition > 0 )
                 historyPosition--;
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Move to last line. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         private void MoveToLastLine ( )
         {
             historyPosition = historyBuffer.Count - 1;
         }
-        // ===============================================================================================
-        // Objet's fields
-        // ===============================================================================================
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// (Immutable)
+        /// Objet's fields
+        /// </summary>
+        ///-------------------------------------------------------------------------------------------------
+
         private readonly List<string> historyBuffer = new List<string> ( 100 );
+
+        /// <summary>   The history position. </summary>
         private int historyPosition;
-        */
+#endif
     }
 
 }

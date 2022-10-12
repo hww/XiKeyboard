@@ -6,9 +6,11 @@ using UnityEngine;
 
 namespace XiKeyboard.Rendering
 {
-    /// <summary>
-    /// A single renderable menu line
-    /// </summary>
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   A single renderable menu line. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     public struct MenuLineRepresentation 
     {
         public string title;

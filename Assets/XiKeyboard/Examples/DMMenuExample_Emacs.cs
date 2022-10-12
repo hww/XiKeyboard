@@ -6,6 +6,7 @@ using XiKeyboard.KeyMaps;
 using XiKeyboard.Menu;
 using System.Collections;
 using XiKeyboard.Buffers;
+using XiKeyboard.Assets.XiKeyboard.Code.Libs;
 
 namespace XiKeyboard.Examples.Menu
 {
@@ -31,10 +32,10 @@ namespace XiKeyboard.Examples.Menu
 		void Awake()
 		{
 			skin = Resources.Load<GUISkin>("XiKeyboard/Skins/Default Skin");
-			skin.box.normal.background = MakeTex(2, 2, new Color(0f, 0f, 0f, 0.7f));
+			skin.box.normal.background = TextureUtils.MakeTex(2, 2, new Color(0f, 0f, 0f, 0.7f));
 		}
 
-		// Use this for initialization the menu system
+
 		private void Start()
 		{
 			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,18 +137,6 @@ namespace XiKeyboard.Examples.Menu
 			DM.OnGUI();
 		}
 
-		private Texture2D MakeTex(int width, int height, Color col)
-		{
-			Color[] pix = new Color[width * height];
-			for (int i = 0; i < pix.Length; ++i)
-			{
-				pix[i] = col;
-			}
-			Texture2D result = new Texture2D(width, height);
-			result.SetPixels(pix);
-			result.Apply();
-			return result;
-		}
 
 		void Save()
 		{

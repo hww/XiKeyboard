@@ -5,30 +5,39 @@ using XiKeyboard.KeyMaps;
 
 namespace XiKeyboard
 {
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   The line of characters collected in the array. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// The line of characters collected in the array
-    /// </summary>
     public class TextBuffer 
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Constructor. </summary>
+        ///
+        ///
+        /// <param name="capacity"> (Optional) The capacity. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public TextBuffer ( int capacity = 256 )
         {
             buffer = new KeyEvent[ capacity ];
             BufferSize = 0;
         }
-        // ===========================================================================================
-        // Working with buffer
-        // ===========================================================================================
+
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>
-        /// On key down event will add the character to the buffer.
-        /// In case if buffer is overflowed it will clear this buffer
+        /// On key down event will add the character to the buffer. In case if buffer is overflowed it
+        /// will clear this buffer.
         /// </summary>
+        ///
+        ///
+        /// <param name="evt">  . </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public void InsertCharacter ( KeyEvent evt )
         {
-            //TODO if there is selection
+            // TODO if there is selection
             // insert character
             for (var i = Point; i < BufferSize - 1; i++)
                 buffer[i + 1] = buffer[i];
@@ -37,18 +46,25 @@ namespace XiKeyboard
             Point++;
             isModified = true;
         }
-        /// <summary>
-        /// Set character at the point
-        /// </summary>
-        /// <param name="evt"></param>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Set character at the point. </summary>
+        ///
+        ///
+        /// <param name="evt">  . </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public void OverrideCharacter(KeyEvent evt)
         {
             buffer[Point] = evt;
             isModified = true;
         }
-        /// <summary>
-        /// Clear buffer
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Clear buffer. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         public void Clear ( )
         {
             for (var i = 0; i < buffer.Length; i++)
@@ -59,14 +75,24 @@ namespace XiKeyboard
             isModified = true;
         }
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Clears the sequence. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         public void ClearSequence()
         {
             bufferSize = point = sequenceStarts;
         }
 
-        /// <summary>
-        /// Get buffer size. How many characters in the buffer
-        /// </summary>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Get buffer size. How many characters in the buffer. </summary>
+        ///
+        /// <exception cref="SystemException">  Thrown when a System error condition occurs. </exception>
+        ///
+        /// <value> The size of the buffer. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public int BufferSize
         {
             get => bufferSize;
@@ -78,10 +104,12 @@ namespace XiKeyboard
             }
         }
 
-        // ===========================================================================================
-        // Required for scanning in keyboard map
-        // ===========================================================================================
-        /// <summary>Where are sequence similar to ""C-x C-f"" starts</summary>
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Where are sequence similar to ""C-x C-f"" starts. </summary>
+        ///
+        /// <value> The sequence starts. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public int SequenceStarts
         {
             get => sequenceStarts;
@@ -91,12 +119,15 @@ namespace XiKeyboard
                 sequenceStarts = value;
             }
         }
-        // ===========================================================================================
-        // Point
-        // ===========================================================================================
-        /// <summary>
-        /// Point is the position of cursor in the text
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Point is the position of cursor in the text. </summary>
+        ///
+        /// <exception cref="SystemException">  Thrown when a System error condition occurs. </exception>
+        ///
+        /// <value> The point. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public int Point
         {
             get => point;
@@ -108,25 +139,50 @@ namespace XiKeyboard
                 point = value;
             }
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Goto character. </summary>
+        ///
+        ///
+        /// <param name="position"> The position. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public void GotoChar(int position)
         {
             Point = position;
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Forward character. </summary>
+        ///
+        ///
+        /// <param name="count">    (Optional) Number of. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public void ForwardChar(int count = 1)
         {
             Point = System.Math.Min(bufferSize, point + count);
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Backward character. </summary>
+        ///
+        ///
+        /// <param name="count">    (Optional) Number of. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public void BackwardChar(int count = 1)
         {
             Point = System.Math.Max(0, point - count);
         }
-        //TODO! MOVE WORD
-        // ===========================================================================================
-        // Conversion
-        // ===========================================================================================
-        /// <summary>
-        /// Convert buffer to the string
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Convert buffer to the string. </summary>
+        ///
+        ///
+        /// <returns>   A string that represents this object. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public override string ToString ( )
         {
             var s = "\"";
@@ -140,9 +196,16 @@ namespace XiKeyboard
             s += "\"";
             return s;
         }
+
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Get current buffer string. The result length should be exactly same as source
+        /// Get current buffer string. The result length should be exactly same as source.
         /// </summary>
+        ///
+        ///
+        /// <returns>   The buffer string. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public string GetBufferString()
         {
             var s = "";
@@ -153,9 +216,16 @@ namespace XiKeyboard
             }
             return s;
         }
+
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Get current buffer string. The result lenght should be exactly same as source
+        /// Get current buffer string. The result lenght should be exactly same as source.
         /// </summary>
+        ///
+        ///
+        /// <returns>   The buffer humanized string. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public string GetBufferHumanizedString    ()
         {
             var s = "";
@@ -163,10 +233,20 @@ namespace XiKeyboard
                 s += KeyEvent.GetName(buffer[i]);
             return s;
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>
         /// Get buffer substring. The result lenght should be exactly same as source
         /// </summary>
-        /// <param name="starts"></param>
-        /// <param name="ends"></param>
+        /// </summary>
+        ///
+        ///
+        /// <param name="starts">   . </param>
+        /// <param name="ends">     . </param>
+        ///
+        /// <returns>   The buffer sub string. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         public string GetBufferSubString(int starts, int ends)
         {
             UnityEngine.Debug.Assert(starts >= 0 && starts < BufferSize);
@@ -179,41 +259,51 @@ namespace XiKeyboard
             }
             return s;
         }
-        // ===========================================================================================
-        // Selection
-        // ===========================================================================================
-        /// <summary>
-        /// Get selection
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Get selection. </summary>
+        ///
+        ///
+        /// <param name="starts">   [out] . </param>
+        /// <param name="ends">     [out] . </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public void GetSelection(out int starts, out int ends)
         {
             starts = selectionStart;
             ends = selectionEnd;
         }
-        /// <summary>
-        /// Set selection
-        /// </summary>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Set selection. </summary>
+        ///
+        ///
+        /// <param name="starts">   . </param>
+        /// <param name="ends">     . </param>
+        ///-------------------------------------------------------------------------------------------------
+
         public void SetSelection(int starts, int ends)
         {
             selectionStart = starts;
             selectionEnd = ends;
         }
-        // ===========================================================================================
-        // Members
-        // ===========================================================================================
-        // sequence of events inside of this buffer
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary> (Immutable) Sequence of events inside of this buffer. </summary>
+        ///-------------------------------------------------------------------------------------------------
+
         public readonly KeyEvent[] buffer;
-        // position of first character in the kbd-map's sequence as: "C-x C-f"
+        /// <summary>   Position of first character in the kbd-map's sequence as: "C-x C-f". </summary>
         private int sequenceStarts;
-        // position of entry point
+        /// <summary>   Position of entry point. </summary>
         private int point;
-        // current text size
+        /// <summary>   Current text size. </summary>
         private int bufferSize;
-        // selection marker
+        /// <summary>   Selection marker. </summary>
         private int selectionStart;
-        // selection marker
+        /// <summary>   Selection marker. </summary>
         private int selectionEnd;
-        // modified or not
+        /// <summary>   Modified or not. </summary>
         public bool isModified;
     }
 

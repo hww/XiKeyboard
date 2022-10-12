@@ -1,4 +1,4 @@
-/* Copyright (c) 2021 dr. ext (Vladimir Sigalkin) */
+/* Copyright (c) 2021 dr. ext (Vladimir Sigalkin)*/
 
 using System;
 using System.Collections.Generic;
@@ -6,6 +6,13 @@ using XiKeyboard.KeyMaps;
 
 namespace XiKeyboard.Menu
 {
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   A menu value line. </summary>
+    ///
+
+    ///
+    /// <typeparam name="T">    Generic type parameter. </typeparam>
+    ///-------------------------------------------------------------------------------------------------
 
 	public abstract class TMenuValueLine<T> : MenuLine
 	{
@@ -28,6 +35,18 @@ namespace XiKeyboard.Menu
 		#endregion
 
 		#region Public Methods
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Specialized constructor for use only by derived class. </summary>
+        ///
+
+        ///
+        /// <param name="text">     The text. </param>
+        /// <param name="getter">   The getter. </param>
+        /// <param name="setter">   (Optional) The setter. </param>
+        /// <param name="shortcut"> (Optional) The shortcut. </param>
+        /// <param name="help">     (Optional) The help. </param>
+        ///-------------------------------------------------------------------------------------------------
 
 		protected TMenuValueLine(string text, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) 
 		{
@@ -54,6 +73,14 @@ namespace XiKeyboard.Menu
 		public override bool IsVisible => true;
 		public override bool IsEnabled => true;
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Executes the 'event' action. </summary>
+        ///
+
+        ///
+        /// <param name="menuEvent">    The menu event. </param>
+        ///-------------------------------------------------------------------------------------------------
+
 		public override void OnEvent(MenuEvent menuEvent)
 		{
 			var evt = menuEvent.eventType;
@@ -75,14 +102,59 @@ namespace XiKeyboard.Menu
 				ChangeValue(_defaultValue, true);
 			}
 		}
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Value to string. </summary>
+        ///
+
+        ///
+        /// <param name="value">    The value. </param>
+        ///
+        /// <returns>   A string. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
 		protected abstract string ValueToString(T value);
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Value increment. </summary>
+        ///
+
+        ///
+        /// <param name="value">    The value. </param>
+        /// <param name="isShift">  True if is shift, false if not. </param>
+        /// <param name="idx">      (Optional) Zero-based index of the. </param>
+        ///
+        /// <returns>   A T. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
 		protected abstract T ValueIncrement(T value, bool isShift, int idx = 0);
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Value decrement. </summary>
+        ///
+
+        ///
+        /// <param name="value">    The value. </param>
+        /// <param name="isShift">  True if is shift, false if not. </param>
+        /// <param name="idx">      (Optional) Zero-based index of the. </param>
+        ///
+        /// <returns>   A T. </returns>
+        ///-------------------------------------------------------------------------------------------------
 
 		protected abstract T ValueDecrement(T value, bool isShift, int idx = 0);
 
 		#endregion
 
 		#region Private Methods
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Change value. </summary>
+        ///
+
+        ///
+        /// <param name="value">    The value. </param>
+        /// <param name="isReset">  True if is reset, false if not. </param>
+        ///-------------------------------------------------------------------------------------------------
 
 		protected virtual void ChangeValue(T value, bool isReset)
 		{

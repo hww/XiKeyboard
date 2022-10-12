@@ -10,21 +10,38 @@ using XiKeyboard.Rendering;
 
 namespace XiKeyboard
 {
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   A menu event. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     public struct MenuEvent
     {
+        /// <summary>   The key event. </summary>
         public KeyEvent keyEvent;
+        /// <summary>   Type of the event. </summary>
         public MenuLine.MenuEventType eventType;
+        /// <summary>   Zero-based index of the vector. </summary>
         public int vectorIndex;
     }
 
+    ///-------------------------------------------------------------------------------------------------
     /// <summary>
-    /// The menu manager Controller
-    /// Initialize the menu system and input stream
-    /// then control the visibitily of menu
+    /// The menu manager Controller Initialize the menu system and input stream then control the
+    /// visibitily of menu.
     /// </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     internal class MenuController : IMenuRender_OnGUI, IMenuRender_Update
     {
         #region Public
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Default constructor. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         public MenuController()
         {
             menuRenderer = new MenuRender();
@@ -53,13 +70,38 @@ namespace XiKeyboard
             Buffer.OnPseudoPressed.Add(OnPseudoPressed);      // On keymap was selected
         }
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Gets a value indicating whether this object is visible. </summary>
+        ///
+        /// <value> True if this object is visible, false if not. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public bool IsVisible => isVisible;
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Gets the current. </summary>
+        ///
+        /// <value> The current. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public MenuPanelRepresentation Current => currentMenu;
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Toggle visibility. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
 
         public void ToggleVisibility()
         {
             SetVisibility(!isVisible);
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Opens the given menu. </summary>
+        ///
+        ///
+        /// <param name="menu"> (Optional) . </param>
+        ///-------------------------------------------------------------------------------------------------
 
         public void Open(KeyMap menu = null)
         {
@@ -75,6 +117,11 @@ namespace XiKeyboard
             currentMenu.OnEvent(controllerEvent);
             (menuRenderer as IMenuRender).RenderMenu(currentMenu);
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Closes this object. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
 
         public void Close()
         {
@@ -93,6 +140,13 @@ namespace XiKeyboard
                 SetVisibility(false);
             }
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Executes the 'event' action. </summary>
+        ///
+        ///
+        /// <param name="keyEvent"> The key event. </param>
+        ///-------------------------------------------------------------------------------------------------
 
         public void OnEvent(KeyEvent keyEvent)
         {
@@ -144,6 +198,12 @@ namespace XiKeyboard
             }
         }
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Gets the buffer. </summary>
+        ///
+        /// <value> The buffer. </value>
+        ///-------------------------------------------------------------------------------------------------
+
         public Buffer Buffer => menuBuffer;
 
         #endregion
@@ -153,14 +213,27 @@ namespace XiKeyboard
         #endregion
 
         #region Private
+        /// <summary>   Buffer for menu data. </summary>
         private Buffer menuBuffer;
+        /// <summary>   The menu mode. </summary>
         private Mode menuMode;
+        /// <summary>   The menu map. </summary>
         private KeyMap menuMap;
+        /// <summary>   The menu renderer. </summary>
         private MenuRender menuRenderer;
+        /// <summary>   The current menu. </summary>
         private MenuPanelRepresentation currentMenu;
+        /// <summary>   True if is visible, false if not. </summary>
         private bool isVisible;
+        /// <summary>   The controller event. </summary>
         private MenuEvent controllerEvent;
+        /// <summary>   (Immutable) the menu control event. </summary>
         readonly object menuControlEvent = new object();
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Finalizer. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
 
         ~MenuController()
         {
@@ -175,14 +248,25 @@ namespace XiKeyboard
             Buffer.OnPseudoPressed.Remove(OnPseudoPressed);      // On keymap was selecte
         }
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Just render current menu if it is defined do not check the visibility -- render it.
+        /// </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
 
-        // Just render current menu if it is defined 
-        // do not check the visibility -- render it
         void Redraw()
         {
             if (currentMenu != null)
                 (menuRenderer as IMenuRender).RenderMenu(currentMenu);
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Sets a visibility. </summary>
+        ///
+        ///
+        /// <param name="vis">  True to vis. </param>
+        ///-------------------------------------------------------------------------------------------------
 
         void SetVisibility(bool vis)
         {
@@ -191,10 +275,14 @@ namespace XiKeyboard
             isVisible = vis;
             menuBuffer.SetActive(isVisible);
         }
-        /// <summary>
-        /// Unwind all menu items to the selected menu
-        /// </summary>
-        /// <param name="menu"></param>
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Unwind all menu items to the selected menu. </summary>
+        ///
+        ///
+        /// <param name="menu"> . </param>
+        ///-------------------------------------------------------------------------------------------------
+
         private void CloseAllMenusUpTo(KeyMap menu)
         {
             if (currentMenu != null)
@@ -215,6 +303,15 @@ namespace XiKeyboard
             currentMenu = new MenuPanelRepresentation(null, menu);
         }
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Query if 'menu' contains menu. </summary>
+        ///
+        ///
+        /// <param name="menu"> . </param>
+        ///
+        /// <returns>   True if it succeeds, false if it fails. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
         private bool ContainsMenu(KeyMap menu)
         {
             var current = currentMenu;
@@ -227,6 +324,11 @@ namespace XiKeyboard
             return false;
         }
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Called for rendering and handling GUI events. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         void IMenuRender_OnGUI.OnGUI()
         {
             InputManager.OnGUI();
@@ -234,7 +336,14 @@ namespace XiKeyboard
                 (menuRenderer as IMenuRender_OnGUI).OnGUI();
         }
 
+        /// <summary>   The readraw at. </summary>
         float readrawAt = 0;
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Called every frame, if the MonoBehaviour is enabled. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         void IMenuRender_Update.Update()
         {
             if (Time.unscaledTime > readrawAt)
@@ -243,11 +352,28 @@ namespace XiKeyboard
                 Redraw();
             }
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Executes the 'key pressed' action. </summary>
+        ///
+        ///
+        /// <param name="buffer">   The buffer. </param>
+        /// <param name="evt">      The event. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         void OnKeyPressed(Buffer buffer, KeyEvent evt)
         {
             Debug.Log(buffer.GetBufferHumanizedString());   // Just display current buffer content		
             buffer.Clear();
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Executes the 'sequence progress' action. </summary>
+        ///
+        ///
+        /// <param name="buffer">   The buffer. </param>
+        /// <param name="item">     The item. </param>
+        ///-------------------------------------------------------------------------------------------------
 
         void OnSequenceProgress(Buffer buffer, DMKeyMapItem item)
         {
@@ -259,6 +385,14 @@ namespace XiKeyboard
                 Redraw();
             }
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Executes the 'pseudo pressed' action. </summary>
+        ///
+        ///
+        /// <param name="buffer">   The buffer. </param>
+        /// <param name="item">     The item. </param>
+        ///-------------------------------------------------------------------------------------------------
 
         void OnPseudoPressed(Buffer buffer, DMKeyMapItem item)
         {
@@ -274,7 +408,14 @@ namespace XiKeyboard
             }
         }
 
-        // The user typed the keystroke
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   The user typed the keystroke. </summary>
+        ///
+        ///
+        /// <param name="buffer">   The buffer. </param>
+        /// <param name="item">     The item. </param>
+        ///-------------------------------------------------------------------------------------------------
+
         void OnSequencePressed(Buffer buffer, DMKeyMapItem item)
         {
             MenuEvent menuEvent = new MenuEvent();

@@ -3,44 +3,56 @@
 using System;
 using UnityEngine;
 using XiCore.StringTools;
+using XiKeyboard.Assets.XiKeyboard.Code.Libs;
 using XiKeyboard.KeyMaps;
 using XiKeyboard.Menu;
 
 namespace XiKeyboard.Rendering
 {
-    /// <summary>
-    /// This class renders a panel on the screen. 
-    /// </summary>
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary>   This class renders a panel on the screen. </summary>
+    ///
+    ///-------------------------------------------------------------------------------------------------
+
     public class MenuRender : IMenuRender, IMenuRender_OnGUI
     {
         private readonly BetterStringBuilder stringBuilder = new BetterStringBuilder(80 * 40);
         private string menuText;
         private GUISkin menuSkin;
 
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Default constructor. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
+
         public MenuRender()
         {
             menuSkin = Resources.Load<GUISkin>("XiKeyboard/Skins/Default Skin");
-            menuSkin.box.normal.background = MakeTex(2, 2, new Color(0f, 0f, 0f, 0.7f));
+            menuSkin.box.normal.background = TextureUtils.MakeTex(2, 2, new Color(0f, 0f, 0f, 0.7f));
             menuText = String.Empty;
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Finalizer. </summary>
+        ///
+        ///-------------------------------------------------------------------------------------------------
 
         ~MenuRender()
         {
             menuSkin = null;
             menuText = null;
         }
-        private Texture2D MakeTex(int width, int height, Color col)
-        {
-            Color[] pix = new Color[width * height];
-            for (int i = 0; i < pix.Length; ++i)
-            {
-                pix[i] = col;
-            }
-            Texture2D result = new Texture2D(width, height);
-            result.SetPixels(pix);
-            result.Apply();
-            return result;
-        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Update the menu content. </summary>
+        ///
+        /// <remarks>   Valery, 10/12/2022. </remarks>
+        ///
+        /// <exception cref="Exception">    Thrown when an exception error condition occurs. </exception>
+        ///
+        /// <param name="panel">    The menu. </param>
+        /// <param name="options">  (Optional) Options for controlling the operation. </param>
+        ///-------------------------------------------------------------------------------------------------
 
         void IMenuRender.RenderMenu(MenuPanelRepresentation panel, MenuRenderOptions options = MenuRenderOptions.Default)
         {
@@ -160,6 +172,12 @@ namespace XiKeyboard.Rendering
 
             menuText = stringBuilder.ToString();
         }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Executes the menu rendering. </summary>
+        ///
+        /// <remarks>   Valery, 10/12/2022. </remarks>
+        ///-------------------------------------------------------------------------------------------------
 
         void IMenuRender_OnGUI.OnGUI()
         {
