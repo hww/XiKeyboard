@@ -39,36 +39,37 @@ namespace XiKeyboard.Examples.Menu
 		private void Start()
 		{
 			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-			// Define the menu tree
+			// DefineMenuLine the menu tree
 			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-			// Define menu as member of MenuBar
+			// DefineMenuLine menu as member of MenuBar
 			// One way is to define menu from the MenuBar (see below)
-			//   KeyMap.MenuBar.EasyCreateMenu ("file", "File", "Help text");
+			//   KeyMap.MenuBar.EasyCreateMenu ("file", "File", "Help title");
 			// The other way is to do it from global menu with full
 			// path "menu-bar/file" (see below)
-			var fileMenu = MenuMap.MenuBar.EasyCreateMenu("menu-bar/file", "File", "Help text");
-			
+			var fileMenu = new MenuMap("File", "Help title");
+			DM.MenuBar.DefineLine(null, fileMenu);
+
 			// Create save menu item (shortcut will be only displayed and can be omitted)
 			// The method Save of this class will be bind to this menu item
 			var menuItem1 = new MenuLineSimple("Save", (System.Action)Save, "S-s", "Save current file");
 			
-			// Define this item as member of File menu 
-			fileMenu.AddMenuLine("save", menuItem1);
+			// DefineMenuLine this item as member of File menu 
+			fileMenu.DefineLine("save", menuItem1);
 			
 			// Save As menu line
 			var menuItem2 = new MenuLineSimple("Save As", (System.Action)SaveAs, "S-x S-s", "Save current file as *");
-			fileMenu.AddMenuLine("save-as", menuItem2);
+			fileMenu.DefineLine("save-as", menuItem2);
 			
 			// Export menu line
 			var menuItem3 = new MenuLineSimple("Export", (System.Action)Export, "S-x S-e", "Export current file as *");
-			fileMenu.AddMenuLine("export", menuItem3);
+			fileMenu.DefineLine("export", menuItem3);
 
 			// Line separators
-			fileMenu.AddMenuLine("-1", new MenuSeparator(MenuSeparator.Type.Space));
-			fileMenu.AddMenuLine("-2", new MenuSeparator(MenuSeparator.Type.NoLine));
-			fileMenu.AddMenuLine("-3", new MenuSeparator(MenuSeparator.Type.DashedLine));
-			fileMenu.AddMenuLine("-4", new MenuSeparator(MenuSeparator.Type.SingleLine));
+			fileMenu.DefineLine("-1", new MenuSeparator(MenuSeparator.Type.Space));
+			fileMenu.DefineLine("-2", new MenuSeparator(MenuSeparator.Type.NoLine));
+			fileMenu.DefineLine("-3", new MenuSeparator(MenuSeparator.Type.DashedLine));
+			fileMenu.DefineLine("-4", new MenuSeparator(MenuSeparator.Type.SingleLine));
 
 			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 			// All abow is creating the menu tree but did not define a 

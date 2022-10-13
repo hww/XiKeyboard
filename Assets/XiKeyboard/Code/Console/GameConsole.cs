@@ -61,11 +61,11 @@ namespace XiKeyboard.Console
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Receive call back from terminal when we enter line of text in the buffer. </summary>
+        /// <summary>   Receive call back from terminal when we enter line of title in the buffer. </summary>
         ///
         /// <remarks>   Valery, 10/12/2022. </remarks>
         ///
-        /// <param name="text"> The text. </param>
+        /// <param name="text"> The title. </param>
         ///-------------------------------------------------------------------------------------------------
 
         public static void OnReadLine(string text)

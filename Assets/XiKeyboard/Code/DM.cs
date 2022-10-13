@@ -2,6 +2,7 @@
 
 using System;
 using UnityEngine;
+using XiCore.StringTools;
 using XiKeyboard.KeyMaps;
 using XiKeyboard.Menu;
 using XiKeyboard.Rendering;
@@ -11,7 +12,6 @@ namespace XiKeyboard
     ///-------------------------------------------------------------------------------------------------
     /// <summary>   The interface to menu and keyboard system. </summary>
     ///
-
     ///-------------------------------------------------------------------------------------------------
 
 	public static class DM
@@ -58,7 +58,6 @@ namespace XiKeyboard
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Static constructor. </summary>
         ///
-
         ///-------------------------------------------------------------------------------------------------
 
 		static DM()
@@ -69,7 +68,6 @@ namespace XiKeyboard
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Open default menu. </summary>
         ///
-
         ///-------------------------------------------------------------------------------------------------
 
 		public static void Open() => Controller.Open();
@@ -77,7 +75,6 @@ namespace XiKeyboard
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Open the menu map. </summary>
         ///
-
         ///
         /// <param name="menu"> . </param>
         ///-------------------------------------------------------------------------------------------------
@@ -87,7 +84,6 @@ namespace XiKeyboard
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Close current mmenu. </summary>
         ///
-
         ///-------------------------------------------------------------------------------------------------
 
 		public static void Close() => Controller.Close();
@@ -95,17 +91,15 @@ namespace XiKeyboard
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Toggle visibility. </summary>
         ///
-
         ///-------------------------------------------------------------------------------------------------
 
 		public static void ToggleVisibility() => Controller.ToggleVisibility();
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Get the menu name from the path. </summary>
+        /// <summary>   Get the menu name from the keystroke. </summary>
         ///
-
         ///
-        /// <param name="path"> A menu path. </param>
+        /// <param name="path"> A menu keystroke. </param>
         ///
         /// <returns>   The menu name. </returns>
         ///-------------------------------------------------------------------------------------------------
@@ -117,13 +111,13 @@ namespace XiKeyboard
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Get the menu path (aka folder) and get rid of name. </summary>
+        /// <summary>   Get the menu keystroke (aka folder) and get rid of name. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path"> A menu path. </param>
+        /// <param name="path"> A menu keystroke. </param>
         ///
-        /// <returns>   The menu path. </returns>
+        /// <returns>   The menu keystroke. </returns>
         ///-------------------------------------------------------------------------------------------------
 
 		private static string GetMenuPath(string path)
@@ -133,25 +127,105 @@ namespace XiKeyboard
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Create and define menu map. </summary>
+        /// <summary>   Creates a menu. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     Path to the menu map. </param>
-        /// <param name="title">    The title of menu map. </param>
-        /// <param name="help">     The help tex for menu map. </param>
+        /// <param name="map">          The key map where to add this line. </param>
+        /// <param name="path">         A menu keystroke. </param>
+        /// <param name="title">        The title. </param>
+        /// <param name="help">         The help. </param>
+        /// <param name="afterEvent">   (Optional) The after event. </param>
         ///
-        /// <returns>   A MenuMap. </returns>
+        /// <returns>   The new menu. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-		public static MenuMap EasyCreateMenu(string path, string title, string help) => MenuBar.EasyCreateMenu(path, title, help);
+        public static MenuMap CreateMenu(KeyMap map, string path, string title, string help, string afterEvent = null)
+        {
+            var menuMap = new MenuMap(title, help);
+            var after = afterEvent == null ? KeyEvent.None : KeyEvent.GetPseudoCode(afterEvent);
+            var sequence = KBD.ParsePseudo(path.Split("/"));
+            map.Define(sequence, menuMap, after);
+            return menuMap;
+        }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   DefineMenuLine list of key-strings. This way used for defining menu. </summary>
         ///
+        /// <remarks>   Valery, 10/12/2022. </remarks>
+        ///
+        /// <param name="map">          The key map where to add this line. </param>
+        /// <param name="keystroke">    Full pathname of the file. </param>
+        /// <param name="binding">      The line. </param>
+        ///
+        /// <returns>   True if it succeeds, false if it fails. </returns>
+        ///-------------------------------------------------------------------------------------------------
 
+        public static bool DefineKey(KeyMap map, string keystroke, object binding)
+        {
+            return map.Define(keystroke, binding);
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   DefineMenuLine after. </summary>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <remarks>   Valery,. </remarks>
+        ///
+        /// <param name="map">      The key map where to add this line. </param>
+        /// <param name="path">     Full pathname of the file. </param>
+        /// <param name="line">     The menu line. </param>
+        /// <param name="after">    (Optional) Name of event. </param>
+        ///
+        /// <returns>   True if it succeeds, false if it fails. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public static bool DefineMenuLine(MenuMap map, string path, MenuLine line, string after = null)
+        {
+            if (path == null) path = Humanizer.Decamelize(line.Title);
+            return map.DefineLine(path, line, after);
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   DefineMenuLine after. </summary>
+        ///
+        /// <remarks>   Valery,. </remarks>
+        ///
+        /// <param name="map">      The key map where to add this line. </param>
+        /// <param name="path">     Full pathname of the file. </param>
+        /// <param name="binding">  The line. </param>
+        /// <param name="after">    (Optional) Name of event. </param>
+        ///
+        /// <returns>   True if it succeeds, false if it fails. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public static bool DefineMenuLine(MenuMap map, string path, MenuMap binding, string after = null)
+        {
+            return map.DefineLine(path, binding, after);
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Adds keystroke. </summary>
+        ///
+        /// <remarks>   Valery,. </remarks>
+        ///
+        /// <param name="type"> The type. </param>
+        ///
+        /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="title">    The title. </param>
+        ///-------------------------------------------------------------------------------------------------
+
+        public static MenuLine MenuLine(MenuSeparator.Type type)
+        {
+            return new MenuSeparator(MenuSeparator.Type.SingleLine);
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Adds keystroke. </summary>
+        ///
+        /// <remarks>   Valery,. </remarks>
+        ///
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
@@ -159,19 +233,17 @@ namespace XiKeyboard
         /// <returns>   A DMString. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMString Add(string path, Func<string> getter, string shortcut = null, string help = null)
+		public static DMString MenuLine(string title, Func<string> getter, string shortcut = null, string help = null)
 		{
-			var val = new DMString(GetMenuName(path), getter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+            return new DMString(title, getter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
@@ -180,145 +252,126 @@ namespace XiKeyboard
         /// <returns>   A DMString. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMBool Add(string path, Func<bool> getter, Action<bool> setter = null, string shortcut = null, string help = null)
+		public static DMBool MenuLine(string title, Func<bool> getter, Action<bool> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMBool(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMBool(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds a bool. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
-        ///
-        /// <param name="path">     A menu path. </param>
-        /// <param name="getter">   The getter. </param>
-        /// <param name="setter">   (Optional) The setter. </param>
-        /// <param name="shortcut"> (Optional) The shortcut. </param>
-        /// <param name="help">     (Optional) The help tex for menu map. </param>
-        ///
-        /// <returns>   A DMBool. </returns>
-        ///-------------------------------------------------------------------------------------------------
-
-		public static DMBool AddBool(string path, Func<bool> getter, Action<bool> setter = null, string shortcut = null, string help = null) =>
-			Add(path, getter, setter, shortcut, help);
-
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
-        ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
         /// <typeparam name="T">    Generic type parameter. </typeparam>
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMEnum<T> Add<T>(string path, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) where T : struct, Enum
+		public static DMEnum<T> MenuLine<T>(string title, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) where T : struct, Enum
 		{
-			var val = new DMEnum<T>(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMEnum<T>(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Adds an enum flags. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
         /// <typeparam name="T">    Generic type parameter. </typeparam>
-        /// <param name="path">     A menu path. </param>
+        /// <param name="map">      The key map where to add this line. </param>
+        /// <param name="path">     A menu keystroke. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static void AddEnumFlags<T>(string path, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) where T : struct, Enum
+		public static void DefineEnumFlags<T>(KeyMap map,string path, string title, Func<T> getter, Action<T> setter = null, string shortcut = null, string help = null) where T : struct, Enum
 		{
-			var type = typeof(T);
+            if (path == null) path = Humanizer.Decamelize(title);
+            var type = typeof(T);
 			if (type.IsDefined(typeof(FlagsAttribute), false))
 			{
 				var values = (T[])Enum.GetValues(type);
 				for (var i = 0; i < values.Length; i++)
 				{
 					var value = values[i];
-
-					AddBool(path + " " + value.ToString(),
-						() =>
-						{
-							var intGetter = (int)(object)getter.Invoke();
-							var intValue = (int)(object)value;
-							return (intGetter & intValue) != 0;
-						},
-						v =>
-						{
-							var intGetter = (int)(object)getter.Invoke();
-							var intValue = (int)(object)value;
-							setter.Invoke((T)(object)(intGetter ^ intValue));
-						},
-						shortcut,
-						help);
+                    Func<bool> fgetter = () =>
+                    {
+                        var intGetter = (int)(object)getter.Invoke();
+                        var intValue = (int)(object)value;
+                        return (intGetter & intValue) != 0;
+                    };
+                    Action<bool> fsetter = (bool v) =>
+                    {
+                        var intGetter = (int)(object)getter.Invoke();
+                        var intValue = (int)(object)value;
+                        setter.Invoke((T)(object)(intGetter ^ intValue));
+                    };
+                    var seq = KBD.ParsePseudo(path.Split("/"));
+                    map.Define(path, MenuLine(title + " " + value.ToString(), fgetter, fsetter, shortcut, help));
 				}
 			} else
             {
-				Debug.LogError("The AddEnumFlags expects a Flags enum");
+				Debug.LogError("The DefineEnumFlags expects a Flags enum");
             }
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMUInt8 Add(string path, Func<byte> getter, Action<byte> setter = null, string shortcut = null, string help = null)
+		public static DMUInt8 MenuLine(string title, Func<byte> getter, Action<byte> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMUInt8(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMUInt8(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMUInt16 Add(string path, Func<UInt16> getter, Action<UInt16> setter = null, string shortcut = null, string help = null)
+		public static DMUInt16 MenuLine(string title, Func<UInt16> getter, Action<UInt16> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMUInt16(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMUInt16(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="path">     A menu keystroke. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
@@ -327,290 +380,288 @@ namespace XiKeyboard
         /// <returns>   A DMString. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMUInt32 Add(string path, Func<UInt32> getter, Action<UInt32> setter = null, string shortcut = null, string help = null)
+		public static DMUInt32 MenuLine(string title, Func<UInt32> getter, Action<UInt32> setter = null, string shortcut = null, string help = null)
         {
-			var val = new DMUInt32(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMUInt32(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMUInt64 Add(string path, Func<UInt64> getter, Action<UInt64> setter = null, string shortcut = null, string help = null)
+		public static DMUInt64 MenuLine(string title, Func<UInt64> getter, Action<UInt64> setter = null, string shortcut = null, string help = null)
         {
-			var val = new DMUInt64(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMUInt64(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMInt8 Add(string path, Func<sbyte> getter, Action<sbyte> setter = null, string shortcut = null, string help = null)
+		public static DMInt8 MenuLine(string title, Func<sbyte> getter, Action<sbyte> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMInt8(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMInt8(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMInt16 Add(string path, Func<Int16> getter, Action<Int16> setter = null, string shortcut = null, string help = null)
+		public static DMInt16 MenuLine(string title, Func<Int16> getter, Action<Int16> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMInt16(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMInt16(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMInt32 Add(string path, Func<Int32> getter, Action<Int32> setter = null, string shortcut = null, string help = null)
+		public static DMInt32 MenuLine(string title, Func<Int32> getter, Action<Int32> setter = null, string shortcut = null, string help = null)
         {
-			var val = new DMInt32(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMInt32(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMInt64 Add(string path, Func<Int64> getter, Action<Int64> setter = null, string shortcut = null, string help = null) 		
+		public static DMInt64 MenuLine(string title, Func<Int64> getter, Action<Int64> setter = null, string shortcut = null, string help = null) 		
 		{
-			var val = new DMInt64(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMInt64(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMVector2 Add(string path, Func<Vector2> getter, Action<Vector2> setter = null, string shortcut = null, string help = null)
+		public static DMVector2 MenuLine(string title, Func<Vector2> getter, Action<Vector2> setter = null, string shortcut = null, string help = null)
         {
-			var val = new DMVector2(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMVector2(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMVector3 Add(string path, Func<Vector3> getter, Action<Vector3> setter = null, string shortcut = null, string help = null)
+		public static DMVector3 MenuLine(string title, Func<Vector3> getter, Action<Vector3> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMVector3(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMVector3(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMVector4 Add(string path, Func<Vector4> getter, Action<Vector4> setter = null, string shortcut = null, string help = null)
+		public static DMVector4 MenuLine(string title, Func<Vector4> getter, Action<Vector4> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMVector4(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMVector4(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMQuaternion Add(string path, Func<Quaternion> getter, Action<Quaternion> setter = null, string shortcut = null, string help = null)
+		public static DMQuaternion MenuLine(string title, Func<Quaternion> getter, Action<Quaternion> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMQuaternion(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMQuaternion(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMColor Add(string path, Func<Color> getter, Action<Color> setter = null, string shortcut = null, string help = null)
+		public static DMColor MenuLine(string title, Func<Color> getter, Action<Color> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMColor(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMColor(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMVector2Int Add(string path, Func<Vector2Int> getter, Action<Vector2Int> setter = null, string shortcut = null, string help = null)
+		public static DMVector2Int MenuLine(string title, Func<Vector2Int> getter, Action<Vector2Int> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMVector2Int(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMVector2Int(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMVector3Int Add(string path, Func<Vector3Int> getter, Action<Vector3Int> setter = null, string shortcut = null, string help = null)
+		public static DMVector3Int MenuLine(string title, Func<Vector3Int> getter, Action<Vector3Int> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMVector3Int(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMVector3Int(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Adds path. </summary>
+        /// <summary>   Adds keystroke. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
-        /// <param name="path">     A menu path. </param>
+        /// <param name="title">    The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help tex for menu map. </param>
         ///
         /// <returns>   A DMString. </returns>
+        ///
+        /// ### <param name="path"> A menu keystroke. </param>
         ///-------------------------------------------------------------------------------------------------
 
-		public static DMFloat Add(string path, Func<float> getter, Action<float> setter = null, string shortcut = null, string help = null)
+		public static DMFloat MenuLine(string title, Func<float> getter, Action<float> setter = null, string shortcut = null, string help = null)
 		{
-			var val = new DMFloat(GetMenuName(path), getter, setter, shortcut, help);
-			MenuBar.DefineMenuLine(path, val);
-			return val;
+			return new DMFloat(title, getter, setter, shortcut, help);
 		}
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Produce the sequence which can  be binded to a key. </summary>
         ///
-
+        /// <remarks>   Valery,. </remarks>
         ///
         /// <param name="name">     The name. </param>
         /// <param name="sequence"> The sequence. </param>
@@ -627,7 +678,6 @@ namespace XiKeyboard
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Called every frame, if the MonoBehaviour is enabled. </summary>
         ///
-
         ///-------------------------------------------------------------------------------------------------
 
         public static void Update()
@@ -638,7 +688,6 @@ namespace XiKeyboard
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Called for rendering and handling GUI events. </summary>
         ///
-
         ///-------------------------------------------------------------------------------------------------
 
 		public static void OnGUI()

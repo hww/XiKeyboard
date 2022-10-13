@@ -40,7 +40,7 @@ namespace XiKeyboard.Menu
 				for (var i = 0; i < count; i++)
 				{
 					//var fieldIndex = i;
-					//_fields[i] = _fieldsBranch.Add(names[i],
+					//_fields[i] = _fieldsBranch.MenuLine(names[i],
 					//	() => StructFieldGetter(getter.Invoke(), fieldIndex), v =>
 					//	{
 					//		var vector = getter.Invoke();

@@ -121,7 +121,7 @@ namespace XiKeyboard
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Point is the position of cursor in the text. </summary>
+        /// <summary>   Point is the position of cursor in the title. </summary>
         ///
         /// <exception cref="SystemException">  Thrown when a System error condition occurs. </exception>
         ///
@@ -297,7 +297,7 @@ namespace XiKeyboard
         private int sequenceStarts;
         /// <summary>   Position of entry point. </summary>
         private int point;
-        /// <summary>   Current text size. </summary>
+        /// <summary>   Current title size. </summary>
         private int bufferSize;
         /// <summary>   Selection marker. </summary>
         private int selectionStart;

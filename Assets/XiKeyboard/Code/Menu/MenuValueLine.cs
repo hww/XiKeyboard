@@ -41,7 +41,7 @@ namespace XiKeyboard.Menu
         ///
 
         ///
-        /// <param name="text">     The text. </param>
+        /// <param name="text">     The title. </param>
         /// <param name="getter">   The getter. </param>
         /// <param name="setter">   (Optional) The setter. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
@@ -64,7 +64,7 @@ namespace XiKeyboard.Menu
 		#region Protected Methods
 
 
-		public override string Text => text;
+		public override string Title => text;
 		public override string Help => help;
 		public override string Shorcut => null;
 		public override string Value => ValueToString(_getter());

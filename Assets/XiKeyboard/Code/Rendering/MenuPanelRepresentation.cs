@@ -83,7 +83,7 @@ namespace XiKeyboard.Rendering
                 if (line is MenuLine)
                 {
                     var menuLine = line as MenuLine;
-                    var lineTitle = menuLine.Text;
+                    var lineTitle = menuLine.Title;
                     var vectorCount = menuLine.Count;
                     var lineValue = string.Empty;
                     if (vectorCount == 1)

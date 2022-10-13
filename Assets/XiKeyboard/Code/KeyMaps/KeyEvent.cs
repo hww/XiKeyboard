@@ -84,6 +84,14 @@ namespace XiKeyboard.KeyMaps
         public bool IsValid => code>= 0 && code < KeyModifiers.MaxCode;
 
         ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Gets the code. </summary>
+        ///
+        /// <value> The code. </value>
+        ///-------------------------------------------------------------------------------------------------
+
+        public KeyEvent Code => code;
+
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>   Get name of key code code. </summary>
         ///
         /// <value> The name. </value>
