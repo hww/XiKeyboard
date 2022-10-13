@@ -102,7 +102,7 @@ You can also install via git url by adding this entry in your manifest.json
 "com.hww.xikeyboard": "https://github.com/hww/XiKeyboard.git#upm"
 ```
 	
-## Terminology
+## API
 
 There are sevaral terms you should know before undertand this document
 | Term | Description |
@@ -121,7 +121,7 @@ Could be created multiple buffers, but only one buffer receiving inputs -- the c
 	
 ![Understanding Emacs keyboard](https://raw.githubusercontent.com/hww/XiKeyboard/master/Documentation/XiKeyboard.drawio.png)
 
-## Key Modifiers
+### Key Modifiers
 
 Key modifiers encoded as most significant bits of integer value. The virtual key _Pseudo_ used to generate pseudo keys<sup>Read Below</sup>.
 
@@ -136,7 +136,7 @@ Key modifiers encoded as most significant bits of integer value. The virtual key
 | KeyModifyers.Alt         | 1 << 22     |
 | KeyModifyers.Pseudo      | 1 << 21     |
 
-## KeyEvent
+### KeyEvent
 
 The key Event is container with key code and key modifier. For every pressed key will the key code will be packed with modifier to Event and submit to current input buffer<sup>Read Below</sup>. 
 
@@ -162,7 +162,7 @@ var keyCode = event.KeyCode;                                     // Return KeyCo
 var keyModf = event.Modifyers;                                   // Return KeyModifyers.Shift
 ```
 
-## Pseudo Keys
+### Pseudo Keys
 
 The pseudo codes are virtual keys with unique names. Each pseudocode has a key modifier _Pseudo_ is in pressed state. 
 
@@ -171,7 +171,7 @@ var pseudo = KeyEvent.GetPseudocode("Foo");       // Get random pseudo code with
 var default = KeyEvent.DefaultPseudoCode;         // Get default pseudo code. It has name "default"
 ```
 
-## Humanized Key Name
+### Humanized Key Name
 
 The key code can be converted to humanize name, or reversed. To define the name use method _SetName_
 
@@ -180,7 +180,7 @@ KeyEvent.SetName((int)KeyCode.RightCommand, "\\c-");
 var name = KeyEvent.GetName((int)KeyCode.RightCommand);  // Return "\\c-"
 ```
 
-## Key Sequence
+### Key Sequence
 
 The sequence can be defined as array of events. The example below defines the sequence "C-x C-f"
 
@@ -240,7 +240,7 @@ The constructor requires those two fields as arguments.
 KeyMapItem(int key, object value)
 ```
 
-#### Define Local Binding
+### Define Local Binding
 
 To define and read local binding means does not look at parent key map.
 
@@ -249,7 +249,7 @@ var event = Event.MakeEvent((int)KeyCode.A, KeyModifyers.Shift); // Makes S-a ev
 keyMap.SetLocal(event, "Foo");                                   // Bind to S-a event of this key map the string "Foo"
 var binding = keyMap.GetLocal(event, false);                     // Second argument accept default binding.
 ```
-#### Define Global Binding
+### Define Global Binding
 
 The define binding to the sequence use _Define_ method, use event sequence and object to bind as arguments.
 
@@ -270,7 +270,7 @@ For example lets define menu _File_ and option _Save_ and bind to it a menu item
 Define(new string[]{"File", "Save"}, menuItem )
 ```
 
-#### Lookup Binding
+### Lookup Binding
 
 To lockup biding in hierarchy use _LokupKey_ method.
 
@@ -284,7 +284,7 @@ Additionaly there is version of this method with start and end index in the sequ
 KeyMapItem LokupKey(int[] sequence, int starts, int ends, bool acceptDefaults = false)
 ```
 
-## Global Key Map
+### Global Key Map
 
 The default global key map, can be used in most cases without creating additional key-maps.
 
@@ -292,11 +292,11 @@ The default global key map, can be used in most cases without creating additiona
 var globalKeyMap = KeyMap.GlobalKeymap;
 ```
 
-## Full Keymap
+### Full Keymap
 
 If an element of a key map is a char-table, it counts as holding bindings for all character events with no modifier element n is the binding for the character with code n. This is a compact way to record lots of bindings. A key map with such a char-table is called a full key-map. Other key-maps are called sparse key-maps.
 
-#### Sequence Binding
+### Sequence Binding
 
 This is simple keysequence binding to any key. The pressing this key will invoke this sequence.
 
@@ -311,7 +311,7 @@ The constructor for sequence requires two fields values.
 ```C#
 SequenceBinding(string name, int[] sequence, string help = null)
 ```
-## Menu Map
+### Menu Map
 
 The MenuMap class inherinced from KeyMap and it has the same API.
 
@@ -320,7 +320,7 @@ MenuMap(string title = null, string help = null)
 MenuMap(MenuMap parent, string title = null, string help = null)
 ```
 
-## Mode
+### Mode
 
 To create new mode use constructors.
 
@@ -349,7 +349,7 @@ mode.Disable(); // Print "Disabled"
 
 To get parrent mode use _parentMode_ field and to read key-map use _keyMap_ field. 
 
-## Buffer
+### Buffer
 
 Buffer is similar to text input line. There is only one current buffer is active for input. To create new buffer.
 
@@ -401,7 +401,7 @@ OnSequencePressed.Add((Buffer buffer, KeyMapItem item) =>
 });
 ```
 
-## Menu
+### Menu
 
 The key maps in EMACS also used for making menus. The menu by self is a key map. Where instead of key events used pseudo codes, but menu items as bindings.
 
