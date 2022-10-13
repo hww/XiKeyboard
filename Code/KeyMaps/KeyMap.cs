@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using XiKeyboard.Menu;
+using XiCore.StringTools;
 
 namespace XiKeyboard.KeyMaps
 {
@@ -305,21 +306,34 @@ namespace XiKeyboard.KeyMaps
         /// <exception cref="ArgumentOutOfRangeException">  Thrown when one or more arguments are outside
         ///                                                 the required range. </exception>
         ///
-        /// <param name="evt">      The event. </param>
-        /// <param name="value">    The value. </param>
+        /// <param name="evt">          The event. </param>
+        /// <param name="value">        The value. </param>
+        /// <param name="afterEvent">   (Optional) The afterEvent. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public virtual void SetLocal(KeyEvent evt, object value)
+        public virtual void SetLocal(KeyEvent evt, object value, int afterEvent = 0)
         {
             if (!evt.IsValid)
                 throw new ArgumentOutOfRangeException(nameof(evt));
             var binding = new DMKeyMapItem(evt, value);
+
             var index = GetIndexOf(evt);
             if (index >= 0)
+            {
                 items[index] = binding;
+            }
             else
-                items.Add(binding);
-
+            {
+                if (afterEvent > 0)
+                {
+                    var aferIndex = GetIndexOf(afterEvent);
+                    items.Insert(aferIndex+1, binding);
+                }
+                else
+                {
+                    items.Add(binding);
+                }
+            }
             if (evt == KeyEvent.DefaultPseudoCode)
                 defaultBinding = binding;
         }
@@ -428,62 +442,62 @@ namespace XiKeyboard.KeyMaps
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Define by string expression with '/' separator. </summary>
+        /// <summary>   DefineMenuLine by string expression with '/' separator. </summary>
         ///
         /// <remarks>   Valery, 10/12/2022. </remarks>
         ///
-        /// <param name="path"> Full pathname of the file. </param>
-        /// <param name="line"> The line. </param>
+        /// <param name="path">         Full pathname of the file. </param>
+        /// <param name="value">        The line. </param>
+        /// <param name="afterEvent">   (Optional) Add new event after this event. </param>
         ///
         /// <returns>   A MenuLine. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public MenuLine DefineMenuLine(string path, MenuLine line)
+        public bool DefinePseudo(string path, object value, int afterEvent = 0)
         {
             var sequence = path.Split('/');
             var newSequence = KBD.ParsePseudo(sequence);
-            Define(newSequence, line);
-            if (line.Shorcut != null)
-                GlobalKeymap.SetLocal(line.Shorcut, line);
-            return line;
+            return Define(newSequence, value, afterEvent);
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Define list of key-strings. This way used for defining menu. </summary>
+        /// <summary>   DefineMenuLine list of key-strings. This way used for defining menu. </summary>
         ///
         /// <remarks>   Valery, 10/12/2022. </remarks>
         ///
-        /// <param name="sequence"> The sequence. </param>
-        /// <param name="value">    The value. </param>
+        /// <param name="sequence">     The sequence. </param>
+        /// <param name="value">        The value. </param>
+        /// <param name="afterEvent">   (Optional) Add new event after this event. </param>
         ///
         /// <returns>   True if it succeeds, false if it fails. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public bool DefinePseudo(string[] sequence, object value)
+        public bool DefinePseudo(string[] sequence, object value, int afterEvent = 0)
         {
             var newSequence = KBD.ParsePseudo(sequence);
-            return Define(newSequence, value);
+            return Define(newSequence, value, afterEvent);
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Define by string expression. </summary>
+        /// <summary>   DefineMenuLine by string expression. </summary>
         ///
         /// <remarks>   Valery, 10/12/2022. </remarks>
         ///
-        /// <param name="sequence"> The sequence. </param>
-        /// <param name="value">    The value. </param>
+        /// <param name="sequence">     The sequence. </param>
+        /// <param name="value">        The value. </param>
+        /// <param name="afterEvent">   (Optional) Add new event after this event. </param>
         ///
         /// <returns>   True if it succeeds, false if it fails. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public bool Define(string sequence, object value)
+        public bool Define(string sequence, object value,  int afterEvent = 0)
         {
             var newSequence = KBD.ParseSequence(sequence);
-            return Define(newSequence, value);
+            return Define(newSequence, value, afterEvent);
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Define sequence with given binding. </summary>
+        /// <summary>   DefineMenuLine sequence with given binding. </summary>
         ///
         /// <remarks>   Valery, 10/12/2022. </remarks>
         ///
@@ -491,13 +505,14 @@ namespace XiKeyboard.KeyMaps
         ///                                             null. </exception>
         /// <exception cref="Exception">                Thrown when an exception error condition occurs. </exception>
         ///
-        /// <param name="sequence"> The sequence. </param>
-        /// <param name="value">    The value. </param>
+        /// <param name="sequence">     The sequence. </param>
+        /// <param name="value">        The value. </param>
+        /// <param name="afterEvent">   (Optional) Add new event after this event. </param>
         ///
         /// <returns>   True if it succeeds, false if it fails. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public virtual bool Define(KeyEvent [] sequence, object value)
+        public virtual bool Define(KeyEvent [] sequence, object value, int afterEvent = 0)
         {
             if (sequence == null) throw new ArgumentNullException(nameof(sequence));
 
@@ -515,7 +530,7 @@ namespace XiKeyboard.KeyMaps
                     if (i == lastIndex)
                     {
                         // the currentMap is the target map and it does not have definition 
-                        currentMap.SetLocal(key, value);
+                        currentMap.SetLocal(key, value, afterEvent);
                         return true;
                     }
                     else
@@ -532,7 +547,7 @@ namespace XiKeyboard.KeyMaps
                     if (i == lastIndex)
                     {
                         // currentMap is target map, it has binding but we have to redefine it
-                        currentMap.SetLocal(key, value);
+                        currentMap.SetLocal(key, value, afterEvent);
                         UnityEngine.Debug.LogWarning($"Overwrite menu item [{KBD.ConvertToString(sequence)}]");
                         return true;
                     }
@@ -548,12 +563,6 @@ namespace XiKeyboard.KeyMaps
                 }
             }
             throw new Exception("We can\'t be here");
-        }
-
-        public virtual bool DefineAfter(KeyEvent[] sequence, object value, KeyEvent[] afterSequence)
-        {
-            var iterator = LookupKey(afterSequence, 0, afterSequence.Length-1, false);
-            return true;
         }
     }
 
@@ -605,12 +614,14 @@ namespace XiKeyboard.KeyMaps
         /// <exception cref="ArgumentOutOfRangeException">  Thrown when one or more arguments are outside
         ///                                                 the required range. </exception>
         ///
-        /// <param name="evt">      . </param>
-        /// <param name="value">    . </param>
+        /// <param name="evt">          The event to bind. </param>
+        /// <param name="value">        The value to bind. </param>
+        /// <param name="afterEvent">   (Optional) Unused. </param>
         ///-------------------------------------------------------------------------------------------------
 
-        public override void SetLocal(KeyEvent evt, object value)
+        public override void SetLocal(KeyEvent evt, object value, int afterEvent = 0)
         {
+            UnityEngine.Debug.Assert(afterEvent == 0);
             if (!evt.IsValid)
                 throw new ArgumentOutOfRangeException(nameof(evt));
 
@@ -708,36 +719,63 @@ namespace XiKeyboard.KeyMaps
         }
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Create empty keymap based on parent keymap. </summary>
+        /// <summary>   SetLocal menu line by string expression. </summary>
         ///
         /// <remarks>   Valery, 10/12/2022. </remarks>
         ///
-        /// <param name="parent">   The parent. </param>
-        /// <param name="title">    (Optional) The title. </param>
-        /// <param name="help">     (Optional) The help. </param>
-        ///-------------------------------------------------------------------------------------------------
-
-        public MenuMap(MenuMap parent, string title = null, string help = null) : base(parent, title, help)
-        {
-        }
-
-
-  
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Define by string expression. </summary>
-        ///
-        /// <remarks>   Valery, 10/12/2022. </remarks>
-        ///
-        /// <param name="name"> The name. </param>
-        /// <param name="line"> The line. </param>
+        /// <param name="path">         The path of item or null. </param>
+        /// <param name="line">         The line. </param>
+        /// <param name="afterEvent">   (Optional) The after event. </param>
         ///
         /// <returns>   A MenuLine. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public MenuLine AddMenuLine(string name, MenuLine line)
+        public bool DefineLine(string path, MenuLine line, string afterEvent = null)
+        {
+            if (path == null) path = Humanizer.Decamelize(line.Title);
+            var after = afterEvent==null ? KeyEvent.None : KeyEvent.GetPseudoCode(afterEvent);
+            var sequence = path.Split('/');
+            var code = KBD.ParsePseudo(sequence);
+            return Define(code, line, after);
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Define line. </summary>
+        ///
+        /// <remarks>   Valery,. </remarks>
+        ///
+        /// <param name="path">         Full pathname of the file. </param>
+        /// <param name="map">          The map. </param>
+        /// <param name="afterEvent">   (Optional) The after event. </param>
+        ///
+        /// <returns>   True if it succeeds, false if it fails. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public bool DefineLine(string path, MenuMap map, string afterEvent = null)
+        {
+            if (path == null) path = Humanizer.Decamelize(map.Title);
+            var after = afterEvent == null ? KeyEvent.None : KeyEvent.GetPseudoCode(afterEvent);
+            var sequence = path.Split('/');
+            var code = KBD.ParsePseudo(sequence);
+            return Define(code, map, after);
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   SetLocal menu line by string expression. </summary>
+        ///
+        /// <remarks>   Valery, 10/12/2022. </remarks>
+        ///
+        /// <param name="name">         The name. </param>
+        /// <param name="line">         The line. </param>
+        /// <param name="afterEvent">   (Optional) The after event. </param>
+        ///
+        /// <returns>   A MenuLine. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public MenuLine SetLocal(string name, MenuLine line, int afterEvent = 0)
         {
             var code = KeyEvent.GetPseudoCode(name);
-            SetLocal(code, line);
+            SetLocal(code, line, afterEvent);
             return line;
         }
 

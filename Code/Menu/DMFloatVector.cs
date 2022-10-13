@@ -29,10 +29,11 @@ namespace XiKeyboard.Menu
 
 		#region Public Vars
 
-		public void SetPrecision(int value)
+		public DMFloatVector<TStruct> SetPrecision(int value)
 		{
 			_precision = Mathf.Clamp(value, 0, FloatFormats.Formats.Length - 1);
 			_floatPointScale = (int) Mathf.Pow(10, _precision);
+			return this;
 		}
 
 		#endregion

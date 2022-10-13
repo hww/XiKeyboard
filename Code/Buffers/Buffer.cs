@@ -333,7 +333,7 @@ namespace XiKeyboard.Buffers
         private Mode majorMode;
         /// <summary>   (Immutable) the minor modes. </summary>
         private readonly List<Mode> minorModes = new List<Mode> ( );
-        /// <summary>   (Immutable) buffer for text data. </summary>
+        /// <summary>   (Immutable) buffer for title data. </summary>
         private readonly TextBuffer textBuffer = new TextBuffer ( );
         #endregion
 

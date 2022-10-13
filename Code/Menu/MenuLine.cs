@@ -23,7 +23,7 @@ namespace XiKeyboard.Menu
             Radio
         }
 
-        public virtual string Text => null;
+        public virtual string Title => null;
         public virtual string Help => null;
         public virtual string Shorcut => null;
         public virtual string Value => null;
@@ -80,7 +80,7 @@ namespace XiKeyboard.Menu
         /// <summary>   Constructor. </summary>
         ///
         ///
-        /// <param name="text">     The text. </param>
+        /// <param name="text">     The title. </param>
         /// <param name="shortcut"> (Optional) The shortcut. </param>
         /// <param name="help">     (Optional) The help. </param>
         ///-------------------------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ namespace XiKeyboard.Menu
 
         #region IMenuLine
 
-        public override string Text => text==null ? string.Empty : text;
+        public override string Title => text==null ? string.Empty : text;
         public override string Help => help == null ? string.Empty : help;
         public override string Shorcut => shortcut;
         public override string Value => shortcut == null ? string.Empty : shortcut;
@@ -146,7 +146,7 @@ namespace XiKeyboard.Menu
         public delegate bool Precondition(MenuLineComplex menuLine);
         public delegate MenuLineComplex Filter(MenuLineComplex menuLine);
 
-        protected string text;
+        protected string title;
         protected string help;
         protected string shortcut;
 
@@ -159,7 +159,7 @@ namespace XiKeyboard.Menu
 
         #region IMenuLine
 
-        public override string Text => text == null ? text : string.Empty;
+        public override string Title => title == null ? title : string.Empty;
         public override string Help => help == null ? help : string.Empty;
         public override string Shorcut => shortcut == null ? shortcut : string.Empty;
         public override object Binding => binding;
@@ -187,7 +187,7 @@ namespace XiKeyboard.Menu
 
         public MenuLineComplex(string text, string shortcut = null, string help = null) 
         {
-            this.text = text;
+            this.title = text;
             this.help = help;
             this.shortcut = shortcut;
         }
@@ -315,6 +315,8 @@ namespace XiKeyboard.Menu
 
     public class MenuSeparator : MenuLine
     {
+        private static int randomId = 0;
+
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Values that represent types. </summary>
         ///
@@ -323,6 +325,8 @@ namespace XiKeyboard.Menu
         public enum Type { NoLine, Space, SingleLine, DashedLine }
         /// <summary>   The separator type. </summary>
         public Type type;
+
+        private int id;
 
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   The constructor of separator. </summary>
@@ -333,8 +337,12 @@ namespace XiKeyboard.Menu
 
         public MenuSeparator(Type separatorType) 
         {
+            id = randomId++;
             type = separatorType;
         }
+
+        public override string Title => $"--{id}";
+
     }
 
 }

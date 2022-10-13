@@ -10,7 +10,7 @@ namespace XiKeyboard
     public interface IDisplay
     {
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Write text to the input field. </summary>
+        /// <summary>   Write title to the input field. </summary>
         ///
         /// <param name="message">  The message to write. </param>
         ///-------------------------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace XiKeyboard
         void Write ( string message );
 
         ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Write text to the input field and add new line. </summary>
+        /// <summary>   Write title to the input field and add new line. </summary>
         ///
         /// <param name="message">  The message to write. </param>
         ///-------------------------------------------------------------------------------------------------

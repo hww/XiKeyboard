@@ -174,5 +174,6 @@ namespace XiKeyboard.KeyMaps
                 result[idx++] = KeyEvent.GetPseudoCode(s);
             return result;
         }
+
     }
 }
