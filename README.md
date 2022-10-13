@@ -40,38 +40,6 @@ The other alternative is my simple menu [XiDebugMenu](https://github.com/hww/XiD
 
 If you need more than _XiDebugMenu_ but less than _XiKeyboard_ then consider to use the advanced version [extDebug](https://github.com/Iam1337/extDebug). It has much ballanced number of features and I believe you will have a professional support from autor [Iam1337](https://github.com/Iam1337).
 
-## Installing
-
-The package is available on the openupm registry. You can install it via openupm-cli.
-
-```bash
-openupm add com.hww.xikeyboard
-```
-You can also install via git url by adding this entry in your manifest.json
-
-```bash
-"com.hww.xikeyboard": "https://github.com/hww/XiKeyboard.git#upm"
-```
-	
-## Terminology
-
-There are sevaral terms you should know before undertand this document
-| Term | Description |
-|---|---|
-| *Keyboard vs Menu* | Main thing: Keyboard and menu systems are closely related in Emacs. |
-| *Key modifier* | The bitfield with keep the state of special keys: shift, control, alt, etc. |
-| *Pseudo key* | A virtual key by special key modifier. Used for the menu system. |
-| *KeyEvent* | The data container. Holds the keycode and key modifier. |
-| *KeySequence* | Is the sequance of key events. |
-| *KeyMap* | The table which convert a key event to the binding -- a delegate or an other key map. The maps organized as three and there is a global map at the top. |
-| *Mode* | The data containter with name and a key map. It can be used witt a buffer. |
-| *Buffer* | The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes. |
-| *Minibuffer* | The line on screen with feedback for the curent sequence |
-	
-Could be created multiple buffers, but only one buffer receiving inputs -- the current buffer. The image below has a _buffer2_ as current buffer and _mode1_ as the major mode.
-	
-![Understanding Emacs keyboard](https://raw.githubusercontent.com/hww/XiKeyboard/master/Documentation/XiKeyboard.drawio.png)
-
 ## Usage
 	
 The example below shows how the API can be used to define key sequences. Each key press will print current buffer to log. And in case of two sequences will be printed "Pressed Sequence: N" text (where N is 1 or 2)
@@ -113,6 +81,46 @@ abcS-1defS-2S3
 {Pressed: S-2 S-3}
 ```
 
+The examples with float and integer values and line sperarator below.
+```C#
+var simpleMenu = MenuMap.MenuBar.EasyCreateMenu("menu-bar/simple", "Simple Menu", "Help for simpe menu");
+			
+DM.Add("smenu-bar/imple/tickets-count", () => _ticketsCount, v => _ticketsCount = v);
+DM.Add("menu-bar/simple/-1", MenuSeparator.Type.SingleLine);
+DM.Add("menu-bar/simple/speed", () => _speed, v => _speed = v);
+```
+
+## Installing
+
+The package is available on the openupm registry. You can install it via openupm-cli.
+
+```bash
+openupm add com.hww.xikeyboard
+```
+You can also install via git url by adding this entry in your manifest.json
+
+```bash
+"com.hww.xikeyboard": "https://github.com/hww/XiKeyboard.git#upm"
+```
+	
+## Terminology
+
+There are sevaral terms you should know before undertand this document
+| Term | Description |
+|---|---|
+| *Keyboard vs Menu* | Main thing: Keyboard and menu systems are closely related in Emacs. |
+| *Key modifier* | The bitfield with keep the state of special keys: shift, control, alt, etc. |
+| *Pseudo key* | A virtual key by special key modifier. Used for the menu system. |
+| *KeyEvent* | The data container. Holds the keycode and key modifier. |
+| *KeySequence* | Is the sequance of key events. |
+| *KeyMap* | The table which convert a key event to the binding -- a delegate or an other key map. The maps organized as three and there is a global map at the top. |
+| *Mode* | The data containter with name and a key map. It can be used witt a buffer. |
+| *Buffer* | The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes. |
+| *Minibuffer* | The line on screen with feedback for the curent sequence |
+	
+Could be created multiple buffers, but only one buffer receiving inputs -- the current buffer. The image below has a _buffer2_ as current buffer and _mode1_ as the major mode.
+	
+![Understanding Emacs keyboard](https://raw.githubusercontent.com/hww/XiKeyboard/master/Documentation/XiKeyboard.drawio.png)
 
 ## Key Modifiers
 
