@@ -1,3 +1,10 @@
+## [1.1.8](https://github.com/hww/XiKeyboard/compare/v1.1.7...v1.1.8) (2022-10-13)
+
+
+### Bug Fixes
+
+* **code:** The API changed for flexibility ([7a53a30](https://github.com/hww/XiKeyboard/commit/7a53a30fd63a89e9c4b40bd1058b0fdfd43809e5))
+
 ## [1.1.7](https://github.com/hww/XiKeyboard/compare/v1.1.6...v1.1.7) (2022-10-12)
 
 
