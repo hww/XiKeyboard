@@ -83,11 +83,10 @@ abcS-1defS-2S3
 
 The examples with float and integer values and line sperarator below.
 ```C#
-var simpleMenu = MenuMap.MenuBar.EasyCreateMenu("menu-bar/simple", "Simple Menu", "Help for simpe menu");
-			
-DM.Add("smenu-bar/imple/tickets-count", () => _ticketsCount, v => _ticketsCount = v);
-DM.Add("menu-bar/simple/-1", MenuSeparator.Type.SingleLine);
-DM.Add("menu-bar/simple/speed", () => _speed, v => _speed = v);
+var simpleMenu = DM.CreateMenu(DM.MenuBar, "simple", "Simple Menu", "Help for simpe menu");
+simpleMenu.DefineLine(null, DM.MenuLine("UInt32", () => _uint32, v => _uint32 = v));
+simpleMenu.DefineLine("-1", DM.MenuLine(MenuSeparator.Type.SingleLine));
+simpleMenu.DefineLine(null, DM.MenuLine("Float", () => _float, v => _float = v).SetPrecision(2));
 ```
 
 ## Installing
