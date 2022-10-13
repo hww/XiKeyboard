@@ -70,6 +70,99 @@ namespace XiKeyboard.KeyMaps
     }
 
     ///-------------------------------------------------------------------------------------------------
+    /// <summary>   A dm iterator. Used for addressing to menu item </summary>
+    ///
+    /// <remarks>   Valery,. </remarks>
+    ///-------------------------------------------------------------------------------------------------
+
+    public struct DMIterator
+    {
+        /// <summary>   The key map. </summary>
+        private KeyMap map;
+
+        /// <summary>   Zero-based index of the item. </summary>
+        private int idx;
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Constructor. </summary>
+        ///
+        /// <remarks>   Valery,. </remarks>
+        ///
+        /// <param name="keyMap">   The key map. </param>
+        ///-------------------------------------------------------------------------------------------------
+
+        public DMIterator(KeyMap keyMap, int index = 0)
+        {
+            this.map = keyMap;
+            this.idx = index;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Gets the key map. </summary>
+        ///
+        /// <value> The key map. </value>
+        ///-------------------------------------------------------------------------------------------------
+
+        public KeyMap KeyMap => map;
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Gets the zero-based index of this object. </summary>
+        ///
+        /// <value> The index. </value>
+        ///-------------------------------------------------------------------------------------------------
+
+        public int Index => idx;
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Gets the item. </summary>
+        ///
+        /// <value> The item. </value>
+        ///-------------------------------------------------------------------------------------------------
+
+        public DMKeyMapItem Item => map?[idx];
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Gets a value indicating whether this object is end. </summary>
+        ///
+        /// <value> True if this object is end, false if not. </value>
+        ///-------------------------------------------------------------------------------------------------
+
+        public bool IsEnd => (map == null) || (idx < 0) || (idx >= map.Count);
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Increment operator. </summary>
+        ///
+        /// <remarks>   Valery,. </remarks>
+        ///
+        /// <param name="a">    A DMIterator to process. </param>
+        ///
+        /// <returns>   The result of the operation. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public static DMIterator operator ++(DMIterator a)
+        {
+            a.idx ++;
+            return a;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Decrement operator. </summary>
+        ///
+        /// <remarks>   Valery,. </remarks>
+        ///
+        /// <param name="a">    A DMIterator to process. </param>
+        ///
+        /// <returns>   The result of the operation. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public static DMIterator operator --(DMIterator a)
+        {
+            a.idx--;
+            return a;
+        }
+    }
+
+    ///-------------------------------------------------------------------------------------------------
     /// <summary>
     /// This class have to allow to build the tree of the keymaps. Each keymap contains List of
     /// DMKeyMapItem(s). Additionally the keymap has title and help information as well it refers to
@@ -335,6 +428,27 @@ namespace XiKeyboard.KeyMaps
         }
 
         ///-------------------------------------------------------------------------------------------------
+        /// <summary>   Define by string expression with '/' separator. </summary>
+        ///
+        /// <remarks>   Valery, 10/12/2022. </remarks>
+        ///
+        /// <param name="path"> Full pathname of the file. </param>
+        /// <param name="line"> The line. </param>
+        ///
+        /// <returns>   A MenuLine. </returns>
+        ///-------------------------------------------------------------------------------------------------
+
+        public MenuLine DefineMenuLine(string path, MenuLine line)
+        {
+            var sequence = path.Split('/');
+            var newSequence = KBD.ParsePseudo(sequence);
+            Define(newSequence, line);
+            if (line.Shorcut != null)
+                GlobalKeymap.SetLocal(line.Shorcut, line);
+            return line;
+        }
+
+        ///-------------------------------------------------------------------------------------------------
         /// <summary>   Define list of key-strings. This way used for defining menu. </summary>
         ///
         /// <remarks>   Valery, 10/12/2022. </remarks>
@@ -419,6 +533,8 @@ namespace XiKeyboard.KeyMaps
                     {
                         // currentMap is target map, it has binding but we have to redefine it
                         currentMap.SetLocal(key, value);
+                        UnityEngine.Debug.LogWarning($"Overwrite menu item [{KBD.ConvertToString(sequence)}]");
+                        return true;
                     }
                     else
                     {
@@ -434,6 +550,11 @@ namespace XiKeyboard.KeyMaps
             throw new Exception("We can\'t be here");
         }
 
+        public virtual bool DefineAfter(KeyEvent[] sequence, object value, KeyEvent[] afterSequence)
+        {
+            var iterator = LookupKey(afterSequence, 0, afterSequence.Length-1, false);
+            return true;
+        }
     }
 
     ///-------------------------------------------------------------------------------------------------
@@ -601,48 +722,7 @@ namespace XiKeyboard.KeyMaps
         }
 
 
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Define list of key-strings. This way used for defining menu. </summary>
-        ///
-        /// <remarks>   Valery, 10/12/2022. </remarks>
-        ///
-        /// <param name="path">     Full pathname of the file. </param>
-        /// <param name="title">    The title. </param>
-        /// <param name="help">     The help. </param>
-        ///
-        /// <returns>   A MenuMap. </returns>
-        ///-------------------------------------------------------------------------------------------------
-
-        public MenuMap EasyCreateMenu(string path, string title, string help)
-        {
-            var menu = new MenuMap(title, help);
-            var sequence = path.Split('/');
-            var newSequence = KBD.ParsePseudo(sequence);
-            GlobalKeymap.Define(newSequence, menu);
-            return menu;
-        }
-
-        ///-------------------------------------------------------------------------------------------------
-        /// <summary>   Define by string expression with '/' separator. </summary>
-        ///
-        /// <remarks>   Valery, 10/12/2022. </remarks>
-        ///
-        /// <param name="path"> Full pathname of the file. </param>
-        /// <param name="line"> The line. </param>
-        ///
-        /// <returns>   A MenuLine. </returns>
-        ///-------------------------------------------------------------------------------------------------
-
-        public MenuLine DefineMenuLine(string path, MenuLine line)
-        {
-            var sequence = path.Split('/');
-            var newSequence = KBD.ParsePseudo(sequence);
-            Define(newSequence, line);
-            if (line.Shorcut != null)
-                GlobalKeymap.SetLocal(line.Shorcut, line);
-            return line;
-        }
-
+  
         ///-------------------------------------------------------------------------------------------------
         /// <summary>   Define by string expression. </summary>
         ///
