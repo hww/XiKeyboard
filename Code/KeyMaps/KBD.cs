@@ -28,7 +28,7 @@ namespace XiKeyboard.KeyMaps
         /// <returns>   The given data converted to a string. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public static string ConvertToString(int[] sequence, string separator = null)
+        public static string ConvertToString(KeyEvent[] sequence, string separator = null)
         {
             UnityEngine.Debug.Assert(sequence != null);
             return ConvertToString(sequence, 0, sequence.Length, separator);
@@ -47,7 +47,7 @@ namespace XiKeyboard.KeyMaps
         /// <returns>   The given data converted to a string. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public static string ConvertToString(int[] sequence, int starts, int quantity, string separator = null)
+        public static string ConvertToString(KeyEvent[] sequence, int starts, int quantity, string separator = null)
         {
             UnityEngine.Debug.Assert(sequence != null);
             UnityEngine.Debug.Assert(starts < sequence.Length);
@@ -92,7 +92,7 @@ namespace XiKeyboard.KeyMaps
         /// <returns>   The given data converted to a string list. </returns>
         ///-------------------------------------------------------------------------------------------------
 
-        public static string[] ConvertToStringList(int[] sequence)
+        public static string[] ConvertToStringList(KeyEvent[] sequence)
         {
             UnityEngine.Debug.Assert(sequence != null);
 
