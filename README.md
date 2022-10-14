@@ -62,24 +62,8 @@ void OnGUI()
 }
  ```
 
-Can be binded any value, for example: GameObject, lambda function or menu item. 
-The pressing the sequence: "abcS-1defS-2S-3" will print log below. The S-1, S-2 and S-3 are Shift+1, Shift+2 and Shift+3.
-
-```
-a
-ab
-abc
-abcS-1
-{Pressed: S-1}
-abcS-1d
-abcS-1de
-abcS-1def
-abcS-1defS-2
-abcS-1defS-2S3
-{Pressed: S-2 S-3}
-```
-
 The examples with float and integer values and line sperarator below.
+
 ```C#
 // Simple Menus
 var simpleMenu = DM.CreateMenu(DM.MenuBar, "simple", "Simple Menu", "Help for simpe menu");
