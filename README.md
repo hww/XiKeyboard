@@ -503,32 +503,32 @@ public readonly Precodition buttonState;    // Delegate to get button state
 The constructors for this menu item:
 
 ```C#
-MenuLineComplex(string text,                                  // Menu text
-                    string shortcut = null,                       // Menu shortcut only for screen
-                    string help = null)                           // Menu help 
+MenuLineComplex(string text,                                 // Menu text
+                string shortcut = null,                      // Menu shortcut only for screen
+                string help = null)                          // Menu help 
 
-MenuLineComplex(string text,                                  // Menu text
-                    object binding,                               // Binding to menu: other menu, function, etc
-                    string shortcut = null,                       // Menu shortcut only for screen
-                    string help = null)                           // Menu text
+MenuLineComplex(string text,                                 // Menu text
+                object binding,                              // Binding to menu: other menu, function, etc
+                string shortcut = null,                      // Menu shortcut only for screen
+                string help = null)                          // Menu text
 
-MenuLineComplex(string text,                                  // Menu text
-                    object binging,                               // Binding to menu: other menu, function, etc
-                    Precodition enable = null,                    // Predicate: is this menu active
-                    Precodition visible = null,                   // Predicate: is this menu visible
-                    Filter filter = null,                         // Filter: Method to compute actual menu item
-                    string shortcut = null,                       // Menu shortcut only for screen
-                    string help = null)                           // Menu help 
+MenuLineComplex(string text,                                 // Menu text
+                object binging,                              // Binding to menu: other menu, function, etc
+                Precodition enable = null,                   // Predicate: is this menu active
+                Precodition visible = null,                  // Predicate: is this menu visible
+                Filter filter = null,                        // Filter: Method to compute actual menu item
+                string shortcut = null,                      // Menu shortcut only for screen
+                string help = null)                          // Menu help 
 
-MenuLineComplex(string text,                                  // Menu text
-                    object binging,                               // Binding to menu: other menu, function, etc
-                    Precodition enable = null,                    // Predicate: is this menu active
-                    Precodition visible = null,                   // Predicate: is this menu visible
-                    Filter filter = null,                         // Filter: Method to compute actual menu item
-                    ButtonType buttonType = ButtonType.NoButton,  // Button Type
-                    Precodition buttonState = null,               // Predicate: is this button pressed
-                    string shortcut = null,                       // Menu shortcut only for screen
-                    string help = null)                           // Menu help     
+MenuLineComplex(string text,                                 // Menu text
+                object binging,                              // Binding to menu: other menu, function, etc
+                Precodition enable = null,                   // Predicate: is this menu active
+                Precodition visible = null,                  // Predicate: is this menu visible
+                Filter filter = null,                        // Filter: Method to compute actual menu item
+                ButtonType buttonType = ButtonType.NoButton, // Button Type
+                Precodition buttonState = null,              // Predicate: is this button pressed
+                string shortcut = null,                      // Menu shortcut only for screen
+                string help = null)                          // Menu help     
 ```
 
 Lets make example of menu definition. 
