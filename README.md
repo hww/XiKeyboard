@@ -39,7 +39,11 @@ The other alternative is my simple menu [XiDebugMenu](https://github.com/hww/XiD
 If you need more than _XiDebugMenu_ but less than _XiKeyboard_ then consider to use the advanced version [extDebug](https://github.com/Iam1337/extDebug). It has much ballanced number of features and I believe you will have a professional support from autor [Iam1337](https://github.com/Iam1337).
 
 ## Usage
-	
+
+You can only use the system as InputManager or as DebugMenu. 
+
+### Usage as the input manager
+
 The example below shows how the API can be used to define key sequences. Each key press will print current buffer to log. And in case of two sequences will be printed "Pressed Sequence: N" text (where N is 1 or 2)
 
 ```C#
@@ -50,19 +54,23 @@ void Start ()
 	Buffer.OnSequencePressed.Add(OnSequencePressed);           // On press sequence delegate
 	Buffer.OnKeyPressed.Add(OnKeyPressed);                     // On press key delegate
 }
-void OnSequencePressed(Buffer buffer, KeyMapItem item) {
-	Debug.Log("{" + item.value + "}");	      // Print "Pressed Sequence: N" 	
+void OnSequencePressed(Buffer buffer, KeyMapItem item) 
+{
+	Debug.Log("{" + item.value + "}");	                   // Print "Pressed Sequence: N" 	
 }
-void OnKeyPressed(Buffer buffer, Event evt) {
-	Debug.Log(buffer.GetBufferHumanizedString()); // Just display current buffer content		
+void OnKeyPressed(Buffer buffer, Event evt) 
+{
+	Debug.Log(buffer.GetBufferHumanizedString());              // Just display current buffer content		
 }
 void OnGUI()
 {
-        InputManager.OnGUI(); // Execute the input manager will send key press to the XiKeyboard
+        InputManager.OnGUI();                                      // Update the input manager 
 }
- ```
+```
+ 
+### Usage as the debug menu
 
-The examples with float and integer values and line sperarator below.
+In this case, you can create a complex hierarchical menu tree or many different trees. And you can control the options through both menus and keystrokes.
 
 ```C#
 // Simple Menus
