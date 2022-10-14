@@ -1,4 +1,4 @@
-# XiKeyboard Manager for Unity 3D
+# XiKeyboard manager and menu system for Unity 3D
 
 The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](https://github.com/hww)
 
