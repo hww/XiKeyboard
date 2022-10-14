@@ -1,8 +1,48 @@
-# Keyboard Manager
+# XiKeyboard manager and menu system for Unity 3D
 
-The asset for Unity 3D with keyboard manager similar to Emacs. <sup>Work In Progress</sup> 
+The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](https://github.com/hww)
+
+![](https://img.shields.io/badge/unity-2018.3%20or%20later-green.svg)
+[![⚙ Build and Release](https://github.com/hww/XiKeyboard/actions/workflows/ci.yml/badge.svg)](https://github.com/hww/XiKeyboard/actions/workflows/ci.yml)
+[![openupm](https://img.shields.io/npm/v/com.hww.xikeyboard?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.hww.xikeyboard/)
+[![](https://img.shields.io/github/license/hww/XiKeyboard.svg)](https://github.com/hww/XiKeyboard/blob/master/LICENSE)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
+![Page Image](Documentation/page-image.gif)
+## Status
+
+<sup>Basic functionality works but still there are things todo</sup> 
+
+- [x] Keyboard and Shortcuts System
+- [x] Simple and complex menu lines
+- [x] The menu separator: space, line, dashed
+- [x] Keystroke binding
+- [x] Menu system: open, close, toggle, submbenu 
+- [x] Basic integer and float types support 
+- [x] Enum and the enum flags support
+- [x] Vector3 and other vector classes 
+- [x] Update the documentation
+- [ ] Fix and debug the readline buffer
+- [ ] Make example for multiple menu panels on the screen
+- [ ] Minibuffer frame renderer 
 
 ## Introduction
+
+This package provides a handy API which allows you to easily create handlers for keyboard sequences. For example the sequence `control+c` followed by `control+x` can be specified by the string "C-c C-x". The main purpose of the package is as a debugging tool for game developers. After all, it is desirable for a game developer to have a dozen or more different functions quickly available -- on the keyboard. For a target platform the library can be used easily with a keyboard, or wih long keystrokes aka `L1-blue L1-red Rx`. The XiKeyboard is integrated with simple in game debugging menu.
+
+## Alternative
+
+This keyboard and menu system has designed for functionality and better keyboard support. It is better to use for complex projects with hundreds of shortcuts.
+
+The other alternative is my simple menu [XiDebugMenu](https://github.com/hww/XiDebugMenu) designed for simplicity and low memory footprint.
+
+If you need more than _XiDebugMenu_ but less than _XiKeyboard_ then consider to use the advanced version [extDebug](https://github.com/Iam1337/extDebug). It has much ballanced number of features and I believe you will have a professional support from autor [Iam1337](https://github.com/Iam1337).
+
+## Usage
+
+You can only use the system as InputManager or as DebugMenu. 
+
+### Usage as the input manager
 
 The example below shows how the API can be used to define key sequences. Each key press will print current buffer to log. And in case of two sequences will be printed "Pressed Sequence: N" text (where N is 1 or 2)
 
@@ -14,38 +54,114 @@ void Start ()
 	Buffer.OnSequencePressed.Add(OnSequencePressed);           // On press sequence delegate
 	Buffer.OnKeyPressed.Add(OnKeyPressed);                     // On press key delegate
 }
-void OnSequencePressed(Buffer buffer, KeyMapItem item) {
-	Debug.Log("{" + item.value + "}");	  // Print "Pressed Sequence: N" 	
+void OnSequencePressed(Buffer buffer, KeyMapItem item) 
+{
+	Debug.Log("{" + item.value + "}");	                   // Print "Pressed Sequence: N" 	
 }
-void OnKeyPressed(Buffer buffer, Event evt) {
-	Debug.Log(buffer.GetBufferHumanizedString()); // Just display current buffer content		
+void OnKeyPressed(Buffer buffer, Event evt) 
+{
+	Debug.Log(buffer.GetBufferHumanizedString());              // Just display current buffer content		
 }
- ```
-
-Can be binded any value, for example: GameObject, lambda function or menu item. 
-The pressing the sequence: "abcS-1defS-2S-3" will print log below. The S-1, S-2 and S-3 are Shift+1, Shift+2 and Shift+3.
-
+void OnGUI()
+{
+        InputManager.OnGUI();                                      // Update the input manager 
+}
 ```
-a
-ab
-abc
-abcS-1
-{Pressed: S-1}
-abcS-1d
-abcS-1de
-abcS-1def
-abcS-1defS-2
-abcS-1defS-2S3
-{Pressed: S-2 S-3}
+ 
+### Usage as the debug menu
+
+In this case, you can create a complex hierarchical menu tree or many different trees. And you can control the options through both menus and keystrokes.
+
+```C#
+// Simple Menus
+var simpleMenu = DM.CreateMenu(DM.MenuBar, "simple", "Simple Menu", "Help for simpe menu");
+
+simpleMenu.DefineLine(null, DM.MenuLine("String", () => _string));
+simpleMenu.DefineLine(null, DM.MenuLine("UInt8",  () => _uint8, v => _uint8 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("UInt16", () => _uint16, v => _uint16 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("UInt32", () => _uint32, v => _uint32 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("UInt64", () => _uint64, v => _uint64 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int8",   () => _int8, v => _int8 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int16",  () => _int16, v => _int16 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int32",  () => _int32, v => _int32 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int64",  () => _int64, v => _int64 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Float",  () => _float, v => _float = v).SetPrecision(2));
+
+// To make a separator 
+simpleMenu.DefineLine("-1", DM.MenuLine(MenuSeparator.Type.SingleLine));
+
+// There is no a EnumFlags filed, this method will define multiple bool fields 
+DM.DefineEnumFlags(simpleMenu, "flags", "Flags",        () => _flags, v => _flags = v);
+
+simpleMenu.DefineLine("-6", DM.MenuLine( MenuSeparator.Type.SingleLine));
+simpleMenu.DefineLine(null, DM.MenuLine("Enum",         () => _enum, v => _enum = v));
+simpleMenu.DefineLine("-8", DM.MenuLine(MenuSeparator.Type.DashedLine));
+simpleMenu.DefineLine(null, DM.MenuLine("Bool",         () => _bool, v => _bool = v, "S-b"));
+simpleMenu.DefineLine("-9", DM.MenuLine(MenuSeparator.Type.SingleLine));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 2",     () => _vector2, v => _vector2 = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 3",     () => _vector3, v => _vector3 = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 4",     () => _vector4, v => _vector4 = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Quaternion",   () => _quaternion, v => _quaternion = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Color",        () => _color, v => _color = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 2 Int", () => _vector2Int, v => _vector2Int = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 3 Int", () => _vector3Int, v => _vector3Int = v));
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Submenu
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+var subMenu = DM.CreateMenu(DM.MenuBar, "simple/sub", "Sub Menu", "Help for sub menu menu");
+subMenu.DefineLine(null, DM.MenuLine("String", () => _string));
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// All abow is creating the menu tree but did not define a 
+// shortcuts in the global kay bindings.
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// To make S+F to open file menu
+KeyMap.GlobalKeymap.SetLocal("S-f", simpleMenu);
+KeyMap.GlobalKeymap.SetLocal("S-g", subMenu);
+
+// To display menu uncomment the next line 
+// DM.Open(simpleMenu);
 ```
 
+The code above will render the menu on the picuyre below.
 
+![Example Menu](Documentation/menu-picture-2.png)
 
-## Dependency
+## Installing
 
-This project uses [VARP/Delegates](https://github.com/hww/varp_delegates) library.
+The package is available on the openupm registry. You can install it via openupm-cli.
 
-## Key Modifiers
+```bash
+openupm add com.hww.xikeyboard
+```
+You can also install via git url by adding this entry in your manifest.json
+
+```bash
+"com.hww.xikeyboard": "https://github.com/hww/XiKeyboard.git#upm"
+```
+	
+## API
+
+There are sevaral terms you should know before undertand this document
+| Term | Description |
+|---|---|
+| *Keyboard vs Menu* | Main thing: Keyboard and menu systems are closely related in Emacs. |
+| *Key modifier* | The bitfield with keep the state of special keys: shift, control, alt, etc. |
+| *Pseudo key* | A virtual key by special key modifier. Used for the menu system. |
+| *KeyEvent* | The data container. Holds the keycode and key modifier. |
+| *KeySequence* | Is the sequance of key events. |
+| *KeyMap* | The table which convert a key event to the binding -- a delegate or an other key map. The maps organized as three and there is a global map at the top. |
+| *Mode* | The data containter with name and a key map. It can be used witt a buffer. |
+| *Buffer* | The data container, the event's aray where will be acumulated the events -- the keys pressed by a user. The buffer could have one major and multiple minor modes. |
+| *Minibuffer* | The line on screen with feedback for the curent sequence |
+	
+Could be created multiple buffers, but only one buffer receiving inputs -- the current buffer. The image below has a _buffer2_ as current buffer and _mode1_ as the major mode.
+	
+![Understanding Emacs keyboard](https://raw.githubusercontent.com/hww/XiKeyboard/master/Documentation/XiKeyboard.drawio.png)
+
+### Key Modifiers
 
 Key modifiers encoded as most significant bits of integer value. The virtual key _Pseudo_ used to generate pseudo keys<sup>Read Below</sup>.
 
@@ -60,19 +176,19 @@ Key modifiers encoded as most significant bits of integer value. The virtual key
 | KeyModifyers.Alt         | 1 << 22     |
 | KeyModifyers.Pseudo      | 1 << 21     |
 
-## Event
+### KeyEvent
 
 The key Event is container with key code and key modifier. For every pressed key will the key code will be packed with modifier to Event and submit to current input buffer<sup>Read Below</sup>. 
 
 To create new event there is _MakeEvent_ method.
 
 ```C#
-var event = Event.MakeEvent(KeyCode.A, KeyModifyers.Shift);      // Makes S-a event
+var event = KeyEvent.MakeEvent(KeyCode.A, KeyModifyers.Shift);      // Makes S-a event
 ```
 
 To check event's modifiers there is _IsModifyer_ method.
 
-```C#
+```C# 
 event.IsModifyer(event, KeyModifyers.Shift);                     // Return true
 event.IsModifyer(event, KeyModifyers.Control);                   // Return false
 ```
@@ -86,40 +202,51 @@ var keyCode = event.KeyCode;                                     // Return KeyCo
 var keyModf = event.Modifyers;                                   // Return KeyModifyers.Shift
 ```
 
-## Pseudo Keys
+### Pseudo Keys
 
 The pseudo codes are virtual keys with unique names. Each pseudocode has a key modifier _Pseudo_ is in pressed state. 
 
 ```C#
-var pseudo = Event.GetPseudocode("Foo");       // Get random pseudo code with unique name "Foo"
-var default = Event.DefaultPseudoCode;         // Get default pseudo code. It has name "default"
+var pseudo = KeyEvent.GetPseudocode("Foo");       // Get random pseudo code with unique name "Foo"
+var default = KeyEvent.DefaultPseudoCode;         // Get default pseudo code. It has name "default"
 ```
 
-## Humanized Key Name
+### Humanized Key Name
 
 The key code can be converted to humanize name, or reversed. To define the name use method _SetName_
 
 ```C#
-Event.SetName((int)KeyCode.RightCommand, "\\c-");
-var name = Event.GetName((int)KeyCode.RightCommand);  // Return "\\c-"
+KeyEvent.SetName((int)KeyCode.RightCommand, "\\c-");
+var name = KeyEvent.GetName((int)KeyCode.RightCommand);  // Return "\\c-"
 ```
 
-## Key Sequence
+### Key Sequence
 
 The sequence can be defined as array of events. The example below defines the sequence "C-x C-f"
 
 ```C#
 Event[] sequence = new Event[2] { 
-    Event.MakeEvent((int)KeyCode.X, KeyModifyers.Control), 
-    Event.MakeEvent((int)KeyCode.F, KeyModifyers.Control) 
+    KeyEvent.MakeEvent((int)KeyCode.X, KeyModifyers.Control), 
+    KeyEvent.MakeEvent((int)KeyCode.F, KeyModifyers.Control) 
     };
 ```
 
 Alternative way is parsing the expression <sup>similar to Emacs</sup>.
 
 ```C#
-var sequence = Kbd.ParseExpression("C-x C-f");
+var sequence = KBD.ParseExpression("C-x C-f");
 ```
+For the pseudo codes
+
+```C#
+var sequence = KBD.ParsePseudo("foo/bar/baz");
+```
+To convert the sequence to the text
+
+```C#
+string KBD.ConvertToString(int[] sequence, string separator = null);
+string KBD.ConvertToString(int[] sequence, int starts, int quantity, string separator = null);
+string[] KBD.ConvertToStringList(int[] sequence);
 
 ## Key Map
 
@@ -153,7 +280,7 @@ The constructor requires those two fields as arguments.
 KeyMapItem(int key, object value)
 ```
 
-#### Define Local Binding
+### Define Local Binding
 
 To define and read local binding means does not look at parent key map.
 
@@ -162,7 +289,7 @@ var event = Event.MakeEvent((int)KeyCode.A, KeyModifyers.Shift); // Makes S-a ev
 keyMap.SetLocal(event, "Foo");                                   // Bind to S-a event of this key map the string "Foo"
 var binding = keyMap.GetLocal(event, false);                     // Second argument accept default binding.
 ```
-#### Define Global Binding
+### Define Global Binding
 
 The define binding to the sequence use _Define_ method, use event sequence and object to bind as arguments.
 
@@ -183,7 +310,7 @@ For example lets define menu _File_ and option _Save_ and bind to it a menu item
 Define(new string[]{"File", "Save"}, menuItem )
 ```
 
-#### Lookup Binding
+### Lookup Binding
 
 To lockup biding in hierarchy use _LokupKey_ method.
 
@@ -197,7 +324,7 @@ Additionaly there is version of this method with start and end index in the sequ
 KeyMapItem LokupKey(int[] sequence, int starts, int ends, bool acceptDefaults = false)
 ```
 
-## Global Key Map
+### Global Key Map
 
 The default global key map, can be used in most cases without creating additional key-maps.
 
@@ -205,11 +332,11 @@ The default global key map, can be used in most cases without creating additiona
 var globalKeyMap = KeyMap.GlobalKeymap;
 ```
 
-## Full Keymap
+### Full Keymap
 
 If an element of a key map is a char-table, it counts as holding bindings for all character events with no modifier element n is the binding for the character with code n. This is a compact way to record lots of bindings. A key map with such a char-table is called a full key-map. Other key-maps are called sparse key-maps.
 
-#### Sequence Binding
+### Sequence Binding
 
 This is simple keysequence binding to any key. The pressing this key will invoke this sequence.
 
@@ -224,9 +351,16 @@ The constructor for sequence requires two fields values.
 ```C#
 SequenceBinding(string name, int[] sequence, string help = null)
 ```
+### Menu Map
 
+The MenuMap class inherinced from KeyMap and it has the same API.
 
-## Mode
+```C#
+MenuMap(string title = null, string help = null)
+MenuMap(MenuMap parent, string title = null, string help = null)
+```
+
+### Mode
 
 To create new mode use constructors.
 
@@ -255,7 +389,7 @@ mode.Disable(); // Print "Disabled"
 
 To get parrent mode use _parentMode_ field and to read key-map use _keyMap_ field. 
 
-## Buffer
+### Buffer
 
 Buffer is similar to text input line. There is only one current buffer is active for input. To create new buffer.
 
@@ -307,7 +441,7 @@ OnSequencePressed.Add((Buffer buffer, KeyMapItem item) =>
 });
 ```
 
-## Menu
+### Menu
 
 The key maps in EMACS also used for making menus. The menu by self is a key map. Where instead of key events used pseudo codes, but menu items as bindings.
 
@@ -377,32 +511,32 @@ public readonly Precodition buttonState;    // Delegate to get button state
 The constructors for this menu item:
 
 ```C#
-MenuLineComplex(string text,                                  // Menu text
-                    string shortcut = null,                       // Menu shortcut only for screen
-                    string help = null)                           // Menu help 
+MenuLineComplex(string text,                                 // Menu text
+                string shortcut = null,                      // Menu shortcut only for screen
+                string help = null)                          // Menu help 
 
-MenuLineComplex(string text,                                  // Menu text
-                    object binding,                               // Binding to menu: other menu, function, etc
-                    string shortcut = null,                       // Menu shortcut only for screen
-                    string help = null)                           // Menu text
+MenuLineComplex(string text,                                 // Menu text
+                object binding,                              // Binding to menu: other menu, function, etc
+                string shortcut = null,                      // Menu shortcut only for screen
+                string help = null)                          // Menu text
 
-MenuLineComplex(string text,                                  // Menu text
-                    object binging,                               // Binding to menu: other menu, function, etc
-                    Precodition enable = null,                    // Predicate: is this menu active
-                    Precodition visible = null,                   // Predicate: is this menu visible
-                    Filter filter = null,                         // Filter: Method to compute actual menu item
-                    string shortcut = null,                       // Menu shortcut only for screen
-                    string help = null)                           // Menu help 
+MenuLineComplex(string text,                                 // Menu text
+                object binging,                              // Binding to menu: other menu, function, etc
+                Precodition enable = null,                   // Predicate: is this menu active
+                Precodition visible = null,                  // Predicate: is this menu visible
+                Filter filter = null,                        // Filter: Method to compute actual menu item
+                string shortcut = null,                      // Menu shortcut only for screen
+                string help = null)                          // Menu help 
 
-MenuLineComplex(string text,                                  // Menu text
-                    object binging,                               // Binding to menu: other menu, function, etc
-                    Precodition enable = null,                    // Predicate: is this menu active
-                    Precodition visible = null,                   // Predicate: is this menu visible
-                    Filter filter = null,                         // Filter: Method to compute actual menu item
-                    ButtonType buttonType = ButtonType.NoButton,  // Button Type
-                    Precodition buttonState = null,               // Predicate: is this button pressed
-                    string shortcut = null,                       // Menu shortcut only for screen
-                    string help = null)                           // Menu help     
+MenuLineComplex(string text,                                 // Menu text
+                object binging,                              // Binding to menu: other menu, function, etc
+                Precodition enable = null,                   // Predicate: is this menu active
+                Precodition visible = null,                  // Predicate: is this menu visible
+                Filter filter = null,                        // Filter: Method to compute actual menu item
+                ButtonType buttonType = ButtonType.NoButton, // Button Type
+                Precodition buttonState = null,              // Predicate: is this button pressed
+                string shortcut = null,                      // Menu shortcut only for screen
+                string help = null)                          // Menu help     
 ```
 
 Lets make example of menu definition. 
@@ -444,7 +578,5 @@ Will display:
 
 ![menu-picture-1](Documentation/menu-picture-1.png)
 
-But this can be done by shorter way. 
-
-<sup>To Do ...</sup>
+Press C-s will print the text _File Saved_
 
