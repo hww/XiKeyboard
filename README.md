@@ -77,32 +77,32 @@ In this case, you can create a complex hierarchical menu tree or many different 
 var simpleMenu = DM.CreateMenu(DM.MenuBar, "simple", "Simple Menu", "Help for simpe menu");
 
 simpleMenu.DefineLine(null, DM.MenuLine("String", () => _string));
-simpleMenu.DefineLine(null, DM.MenuLine("UInt8", () => _uint8, v => _uint8 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("UInt8",  () => _uint8, v => _uint8 = v));
 simpleMenu.DefineLine(null, DM.MenuLine("UInt16", () => _uint16, v => _uint16 = v));
 simpleMenu.DefineLine(null, DM.MenuLine("UInt32", () => _uint32, v => _uint32 = v));
 simpleMenu.DefineLine(null, DM.MenuLine("UInt64", () => _uint64, v => _uint64 = v));
-simpleMenu.DefineLine(null, DM.MenuLine("Int8", () => _int8, v => _int8 = v));
-simpleMenu.DefineLine(null, DM.MenuLine("Int16", () => _int16, v => _int16 = v));
-simpleMenu.DefineLine(null, DM.MenuLine("Int32", () => _int32, v => _int32 = v));
-simpleMenu.DefineLine(null, DM.MenuLine("Int64", () => _int64, v => _int64 = v));
-simpleMenu.DefineLine(null, DM.MenuLine("Float", () => _float, v => _float = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Int8",   () => _int8, v => _int8 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int16",  () => _int16, v => _int16 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int32",  () => _int32, v => _int32 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int64",  () => _int64, v => _int64 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Float",  () => _float, v => _float = v).SetPrecision(2));
 
 // To make a separator 
 simpleMenu.DefineLine("-1", DM.MenuLine(MenuSeparator.Type.SingleLine));
 
 // There is no a EnumFlags filed, this method will define multiple bool fields 
-DM.DefineEnumFlags(simpleMenu, "flags", "Flags", () => _flags, v => _flags = v);
+DM.DefineEnumFlags(simpleMenu, "flags", "Flags",        () => _flags, v => _flags = v);
 
 simpleMenu.DefineLine("-6", DM.MenuLine( MenuSeparator.Type.SingleLine));
-simpleMenu.DefineLine(null, DM.MenuLine("Enum", () => _enum, v => _enum = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Enum",         () => _enum, v => _enum = v));
 simpleMenu.DefineLine("-8", DM.MenuLine(MenuSeparator.Type.DashedLine));
-simpleMenu.DefineLine(null, DM.MenuLine("Bool", () => _bool, v => _bool = v, "S-b"));
+simpleMenu.DefineLine(null, DM.MenuLine("Bool",         () => _bool, v => _bool = v, "S-b"));
 simpleMenu.DefineLine("-9", DM.MenuLine(MenuSeparator.Type.SingleLine));
-simpleMenu.DefineLine(null, DM.MenuLine("Vector 2", () => _vector2, v => _vector2 = v).SetPrecision(2));
-simpleMenu.DefineLine(null, DM.MenuLine("Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2));
-simpleMenu.DefineLine(null, DM.MenuLine("Vector 4", () => _vector4, v => _vector4 = v).SetPrecision(2));
-simpleMenu.DefineLine(null, DM.MenuLine("Quaternion", () => _quaternion, v => _quaternion = v).SetPrecision(2));
-simpleMenu.DefineLine(null, DM.MenuLine("Color", () => _color, v => _color = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 2",     () => _vector2, v => _vector2 = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 3",     () => _vector3, v => _vector3 = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 4",     () => _vector4, v => _vector4 = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Quaternion",   () => _quaternion, v => _quaternion = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Color",        () => _color, v => _color = v).SetPrecision(2));
 simpleMenu.DefineLine(null, DM.MenuLine("Vector 2 Int", () => _vector2Int, v => _vector2Int = v));
 simpleMenu.DefineLine(null, DM.MenuLine("Vector 3 Int", () => _vector3Int, v => _vector3Int = v));
 
