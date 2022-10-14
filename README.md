@@ -30,8 +30,6 @@ The asset for Unity 3D with keyboard manager similar to Emacs  created by [hww](
 
 This package provides a handy API which allows you to easily create handlers for keyboard sequences. For example the sequence `control+c` followed by `control+x` can be specified by the string "C-c C-x". The main purpose of the package is as a debugging tool for game developers. After all, it is desirable for a game developer to have a dozen or more different functions quickly available -- on the keyboard. For a target platform the library can be used easily with a keyboard, or wih long keystrokes aka `L1-blue L1-red Rx`. The XiKeyboard is integrated with simple in game debugging menu.
 
-![Example Menu](Documentation/menu-picture-2.png)
-
 ## Alternative
 
 This keyboard and menu system has designed for functionality and better keyboard support. It is better to use for complex projects with hundreds of shortcuts.
@@ -83,11 +81,61 @@ abcS-1defS-2S3
 
 The examples with float and integer values and line sperarator below.
 ```C#
+// Simple Menus
 var simpleMenu = DM.CreateMenu(DM.MenuBar, "simple", "Simple Menu", "Help for simpe menu");
+
+simpleMenu.DefineLine(null, DM.MenuLine("String", () => _string));
+simpleMenu.DefineLine(null, DM.MenuLine("UInt8", () => _uint8, v => _uint8 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("UInt16", () => _uint16, v => _uint16 = v));
 simpleMenu.DefineLine(null, DM.MenuLine("UInt32", () => _uint32, v => _uint32 = v));
-simpleMenu.DefineLine("-1", DM.MenuLine(MenuSeparator.Type.SingleLine));
+simpleMenu.DefineLine(null, DM.MenuLine("UInt64", () => _uint64, v => _uint64 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int8", () => _int8, v => _int8 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int16", () => _int16, v => _int16 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int32", () => _int32, v => _int32 = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Int64", () => _int64, v => _int64 = v));
 simpleMenu.DefineLine(null, DM.MenuLine("Float", () => _float, v => _float = v).SetPrecision(2));
+
+// To make a separator 
+simpleMenu.DefineLine("-1", DM.MenuLine(MenuSeparator.Type.SingleLine));
+
+// There is no a EnumFlags filed, this method will define multiple bool fields 
+DM.DefineEnumFlags(simpleMenu, "flags", "Flags", () => _flags, v => _flags = v);
+
+simpleMenu.DefineLine("-6", DM.MenuLine( MenuSeparator.Type.SingleLine));
+simpleMenu.DefineLine(null, DM.MenuLine("Enum", () => _enum, v => _enum = v));
+simpleMenu.DefineLine("-8", DM.MenuLine(MenuSeparator.Type.DashedLine));
+simpleMenu.DefineLine(null, DM.MenuLine("Bool", () => _bool, v => _bool = v, "S-b"));
+simpleMenu.DefineLine("-9", DM.MenuLine(MenuSeparator.Type.SingleLine));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 2", () => _vector2, v => _vector2 = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 3", () => _vector3, v => _vector3 = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 4", () => _vector4, v => _vector4 = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Quaternion", () => _quaternion, v => _quaternion = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Color", () => _color, v => _color = v).SetPrecision(2));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 2 Int", () => _vector2Int, v => _vector2Int = v));
+simpleMenu.DefineLine(null, DM.MenuLine("Vector 3 Int", () => _vector3Int, v => _vector3Int = v));
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Submenu
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+var subMenu = DM.CreateMenu(DM.MenuBar, "simple/sub", "Sub Menu", "Help for sub menu menu");
+subMenu.DefineLine(null, DM.MenuLine("String", () => _string));
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// All abow is creating the menu tree but did not define a 
+// shortcuts in the global kay bindings.
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// To make S+F to open file menu
+KeyMap.GlobalKeymap.SetLocal("S-f", simpleMenu);
+KeyMap.GlobalKeymap.SetLocal("S-g", subMenu);
+
+// To display menu uncomment the next line 
+// DM.Open(simpleMenu);
 ```
+
+The code above will render the menu on the picuyre below.
+
+![Example Menu](Documentation/menu-picture-2.png)
 
 ## Installing
 
